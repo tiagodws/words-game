@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  CssBaseline,
+  StyledEngineProvider,
+  ThemeProvider,
+} from '@mui/material';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { FC } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { theme } from './components/theme';
+import { Main } from './pages';
 
-function App() {
+const queryClient = new QueryClient();
+
+export const App: FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <Main />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
-}
-
-export default App;
+};

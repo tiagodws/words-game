@@ -1,0 +1,23 @@
+{
+  "github": {
+    "release": true
+  },
+  "git": {
+    "push": true,
+    "commit": true,
+    "requireUpstream": false,
+    "requireCleanWorkingDir": false,
+    "addUntrackedFiles": false,
+    "commitMessage": "Release ${version} [ci skip]",
+    "tagName": "${version}"
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "angular",
+      "infile": "CHANGELOG.md"
+    }
+  },
+  "hooks": {
+    "before:init": "git checkout main"
+  }
+}
