@@ -1,7 +1,8 @@
 import { Keyframes, keyframes } from '@emotion/react';
 import { Theme, useTheme } from '@mui/material';
-import { Box, darken } from '@mui/system';
+import { Box, darken, lighten } from '@mui/system';
 import { FC, useEffect, useState } from 'react';
+import { useElementSize } from 'usehooks-ts';
 import { Char } from '../../hooks/game/char';
 import { Text } from '../text';
 
@@ -26,7 +27,7 @@ const bgColorMap: Record<CellState, (theme: Theme) => string> = {
   incorrect: (theme: Theme) => theme.palette.grey[800],
   hint: (theme: Theme) => theme.palette.info.main,
   invalid: (theme: Theme) => theme.palette.background.default,
-  disabled: (theme: Theme) => theme.palette.grey[900],
+  disabled: (theme: Theme) => lighten(theme.palette.background.default, 0.05),
 };
 
 const borderColorMap: Record<CellState, (theme: Theme) => string> = {
@@ -35,7 +36,7 @@ const borderColorMap: Record<CellState, (theme: Theme) => string> = {
   incorrect: (theme: Theme) => darken(bgColorMap.incorrect(theme), 0.2),
   hint: (theme: Theme) => darken(bgColorMap.hint(theme), 0.2),
   invalid: (theme: Theme) => theme.palette.divider,
-  disabled: (theme: Theme) => darken(bgColorMap.disabled(theme), 0.2),
+  disabled: (theme: Theme) => lighten(bgColorMap.disabled(theme), 0.08),
 };
 
 const useStateColors = (state: CellState) => {
@@ -70,6 +71,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
   const { char, isFocused, state = 'default', onClick } = props;
   const { bgcolor, borderColor } = useStateColors(state);
   const [animation, setAnimation] = useState<Keyframes>();
+  const [containerRef, { width }] = useElementSize();
 
   useEffect(() => {
     if (state === 'invalid') {
@@ -85,15 +87,16 @@ export const CharCell: FC<CharCellProps> = (props) => {
 
   return (
     <Box
+      ref={containerRef}
       sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         borderStyle: 'solid',
         borderColor,
-        borderRadius: 0,
+        borderRadius: 0.5,
         borderWidth: 2,
-        borderBottomWidth: isFocused ? 6 : undefined,
+        borderBottomWidth: isFocused ? 8 : undefined,
         width: '100%',
         aspectRatio: '1',
         bgcolor,
@@ -105,8 +108,8 @@ export const CharCell: FC<CharCellProps> = (props) => {
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}
     >
-      <Text fontWeight="800" fontSize="200%">
-        {char?.toUpperCase()}
+      <Text fontWeight="800" fontSize={width * 0.5}>
+        {char?.toUpperCase() || ' '}
       </Text>
     </Box>
   );

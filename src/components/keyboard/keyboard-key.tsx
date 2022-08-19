@@ -1,5 +1,5 @@
 import { Box, darken, Theme, useTheme } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { CSSProperties, FC, ReactNode } from 'react';
 import { Text } from '../text';
 
 export type KeyState = 'default' | 'correct' | 'incorrect' | 'hint';
@@ -9,6 +9,7 @@ type KeyboardKeyProps = {
   state?: KeyState;
   icon?: ReactNode;
   lockAspectRatio?: boolean;
+  fontSize?: CSSProperties['fontSize'];
   onClick?: () => void;
 };
 
@@ -27,7 +28,14 @@ const useStateColors = (state: KeyState) => {
 };
 
 export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
-  const { label, state = 'default', icon, lockAspectRatio, onClick } = props;
+  const {
+    label,
+    state = 'default',
+    icon,
+    lockAspectRatio,
+    fontSize,
+    onClick,
+  } = props;
   const { bgcolor } = useStateColors(state);
 
   return (
@@ -52,7 +60,7 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
         },
       }}
     >
-      {icon ? icon : <Text>{label?.toUpperCase()}</Text>}
+      {icon ? icon : <Text fontSize={fontSize}>{label?.toUpperCase()}</Text>}
     </Box>
   );
 };

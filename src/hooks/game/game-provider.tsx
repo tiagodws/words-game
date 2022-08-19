@@ -170,9 +170,15 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
       state: getCellState(validWord, i),
     }));
 
-    setSubmittedWords((prev) => [...prev, submittedWord]);
     setInputState({ inputArray: getArrayOfSize(wordLength), currentPos: 0 });
-  }, [wordLength, inputState.inputArray, getCellState]);
+    setSubmittedWords((prev) => {
+      if (prev.length >= tries) {
+        return prev;
+      }
+
+      return [...prev, submittedWord];
+    });
+  }, [tries, wordLength, inputState.inputArray, getCellState]);
 
   useEffect(() => {
     if (!submittedWords.length) {
