@@ -5,21 +5,21 @@ import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { CharCell } from '../char-cell';
 
 const Row: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid
-    container
-    gap={1}
-    sx={{
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexWrap: 'nowrap',
-    }}
-  >
-    {children}
+  <Grid item sx={{ minHeight: 0 }}>
+    <Grid container sx={{ gap: 1, justifyContent: 'center', height: '100%' }}>
+      {children}
+    </Grid>
   </Grid>
 );
 
 const Column: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid item sx={{ maxWidth: '5rem', flex: 1 }}>
+  <Grid
+    item
+    xs={1.6}
+    sm={1.2}
+    md={0.8}
+    sx={{ minHeight: 0, minWidth: 0, height: '100%' }}
+  >
     {children}
   </Grid>
 );
@@ -43,23 +43,21 @@ export const WordBoard: FC = () => {
       container
       direction="column"
       sx={{
+        gap: 1,
         flexWrap: 'nowrap',
         height: '100%',
-        justifyContent: 'center',
-        gap: 1,
         overflow: 'hidden',
+        alignContent: 'center',
       }}
     >
       {submittedWords.map((submittedWord, i) => (
-        <Grid item key={i}>
-          <Row>
-            {submittedWord.map(({ char, state }, i) => (
-              <Column key={i}>
-                <CharCell char={char} state={state} />
-              </Column>
-            ))}
-          </Row>
-        </Grid>
+        <Row key={i}>
+          {submittedWord.map(({ char, state }, i) => (
+            <Column key={i}>
+              <CharCell char={char} state={state} />
+            </Column>
+          ))}
+        </Row>
       ))}
 
       {triesArray.map((_, i) =>

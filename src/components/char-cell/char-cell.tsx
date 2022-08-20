@@ -47,7 +47,7 @@ const useStateColors = (state: CellState) => {
   };
 };
 
-const jump = keyframes(`
+const invalid = keyframes(`
 from, to {
   transform: translate3d(0,0,0);
 }
@@ -57,13 +57,23 @@ from, to {
 }
 `);
 
-const blink = keyframes(`
+const fill = keyframes(`
 from, to {
   transform: scale(1);
 }
 
 50% {
-  transform: scale(1.05);
+  transform: scale(0.95);
+}
+`);
+
+const erase = keyframes(`
+from, to {
+  transform: scale(1);
+}
+
+50% {
+  transform: scale(0.95);
 }
 `);
 
@@ -75,12 +85,17 @@ export const CharCell: FC<CharCellProps> = (props) => {
 
   useEffect(() => {
     if (state === 'invalid') {
-      setAnimation(jump);
+      setAnimation(invalid);
       return;
     }
 
     if (state === 'default' && char) {
-      setAnimation(blink);
+      setAnimation(fill);
+      return;
+    }
+
+    if (state === 'default' && !char) {
+      setAnimation(erase);
       return;
     }
   }, [state, char]);
@@ -97,7 +112,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
         borderRadius: 0.5,
         borderWidth: 2,
         borderBottomWidth: isFocused ? 8 : undefined,
-        width: '100%',
+        height: '100%',
         aspectRatio: '1',
         bgcolor,
         transition: 'all 0.2s',

@@ -42,7 +42,7 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
     <Box
       onClick={onClick}
       sx={{
-        p: 0.5,
+        px: 0.5,
         backgroundColor: 'grey.700',
         display: 'flex',
         alignItems: 'center',

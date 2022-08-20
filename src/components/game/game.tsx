@@ -13,19 +13,13 @@ export const Game: FC = () => {
         direction="column"
         sx={{ height: '100%', flexWrap: 'nowrap', py: 2, gap: 4 }}
       >
-        <Grid item sx={{ flex: 1 }}>
+        <Grid item xs={8} sx={{ minHeight: 0 }}>
           <Container sx={{ height: '100%' }}>
-            <Grid container spacing={4} sx={{ height: '100%' }}>
-              <Grid item xs={12}>
-                <WordBoard />
-              </Grid>
-
-              {/* Add more boards */}
-            </Grid>
+            <WordBoard />
           </Container>
         </Grid>
 
-        <Grid item sx={{ flex: 0 }}>
+        <Grid item xs={4} sx={{ minHeight: 0 }}>
           <Container>
             <Keyboard />
           </Container>
