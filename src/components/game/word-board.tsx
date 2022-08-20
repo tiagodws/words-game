@@ -6,20 +6,22 @@ import { CharCell } from '../char-cell';
 
 const Row: FC<{ children: ReactNode }> = ({ children }) => (
   <Grid item sx={{ minHeight: 0 }}>
-    <Grid container sx={{ gap: 1, justifyContent: 'center', height: '100%' }}>
+    <Grid
+      container
+      sx={{
+        gap: 1,
+        justifyContent: 'center',
+        height: '100%',
+        flexWrap: 'nowrap',
+      }}
+    >
       {children}
     </Grid>
   </Grid>
 );
 
 const Column: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid
-    item
-    xs={1.6}
-    sm={1.2}
-    md={0.8}
-    sx={{ minHeight: 0, minWidth: 0, height: '100%' }}
-  >
+  <Grid item xs={1.6} sm={1.2} md={0.8} lg={0.6} sx={{ height: '100%' }}>
     {children}
   </Grid>
 );
@@ -48,6 +50,7 @@ export const WordBoard: FC = () => {
         height: '100%',
         overflow: 'hidden',
         alignContent: 'center',
+        justifyContent: 'flex-end',
       }}
     >
       {submittedWords.map((submittedWord, i) => (
