@@ -8,7 +8,6 @@ type KeyboardKeyProps = {
   label: string;
   state?: KeyState;
   icon?: ReactNode;
-  lockAspectRatio?: boolean;
   fontSize?: CSSProperties['fontSize'];
   onClick?: () => void;
 };
@@ -28,21 +27,15 @@ const useStateColors = (state: KeyState) => {
 };
 
 export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
-  const {
-    label,
-    state = 'default',
-    icon,
-    lockAspectRatio,
-    fontSize,
-    onClick,
-  } = props;
+  const { label, state = 'default', icon, fontSize, onClick } = props;
   const { bgcolor } = useStateColors(state);
 
   return (
     <Box
       onClick={onClick}
       sx={{
-        px: 0.5,
+        px: 1,
+        py: 1.5,
         backgroundColor: 'grey.700',
         display: 'flex',
         alignItems: 'center',
@@ -53,7 +46,6 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
         bgcolor,
         width: '100%',
         height: '100%',
-        aspectRatio: lockAspectRatio ? '1 / 1.3' : undefined,
         userSelect: 'none',
         '&:hover': {
           bgcolor: darken(bgcolor, 0.2),

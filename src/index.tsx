@@ -5,6 +5,11 @@ import './index.css';
 import './locales/i18n';
 import reportWebVitals from './reportWebVitals';
 
+window.screen.orientation.lock('portrait').then(
+  () => {},
+  () => {}
+);
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

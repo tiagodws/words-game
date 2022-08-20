@@ -33,11 +33,15 @@ const thirdRow = [Char.z, Char.x, Char.c, Char.v, Char.b, Char.n, Char.m];
 
 const spacing = 0.5;
 const Row: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid item xs={12}>
+  <Grid item sx={{ minHeight: 0 }}>
     <Grid
       container
-      spacing={spacing}
-      sx={{ flexWrap: 'nowrap', justifyContent: 'center' }}
+      sx={{
+        flexWrap: 'nowrap',
+        justifyContent: 'center',
+        height: '100%',
+        gap: spacing,
+      }}
     >
       {children}
     </Grid>
@@ -60,14 +64,24 @@ export const Keyboard: FC = () => {
   const fontSize = Math.pow(width, 0.45);
 
   return (
-    <Grid container ref={containerRef} spacing={spacing}>
+    <Grid
+      container
+      ref={containerRef}
+      direction="column"
+      sx={{
+        height: '100%',
+        minHeight: 0,
+        flexWrap: 'nowrap',
+        gap: spacing,
+        justifyContent: 'flex-end',
+      }}
+    >
       <Row>
         {firstRow.map((char) => (
           <Column key={char}>
             <KeyboardKey
               label={char}
               state={charStates[char]}
-              lockAspectRatio
               onClick={() => fill(char)}
               fontSize={fontSize}
             />
@@ -81,7 +95,6 @@ export const Keyboard: FC = () => {
             <KeyboardKey
               label={char}
               state={charStates[char]}
-              lockAspectRatio
               onClick={() => fill(char)}
               fontSize={fontSize}
             />
@@ -104,7 +117,6 @@ export const Keyboard: FC = () => {
             <KeyboardKey
               label={char}
               state={charStates[char]}
-              lockAspectRatio
               onClick={() => fill(char)}
               fontSize={fontSize}
             />
