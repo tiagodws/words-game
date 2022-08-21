@@ -133,25 +133,25 @@ export const theme = createTheme({
       secondary: '#CCCCCC',
     },
     primary: {
-      main: '#619b8a',
+      main: '#333333',
     },
     secondary: {
-      main: '#a1c181',
+      main: '#dddddd',
     },
     success: {
-      main: '#7a9909',
+      main: '#43aa8b',
     },
     error: {
-      main: '#d1342c',
+      main: '#EA1313',
     },
     warning: {
-      main: '#d1712c',
+      main: '#f9c74f',
     },
     info: {
-      main: '#3372d6',
+      main: '#277da1',
     },
     background: {
-      default: '#20162e',
+      default: '#767676',
     },
     common: {
       black: '#333333',
