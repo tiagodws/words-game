@@ -4,6 +4,7 @@ import { CharStates, SubmittedWord } from './game-provider';
 
 export type GameContextData = {
   wordLength: number;
+  tries: number;
   triesLeft: number;
   currentWord: Char[];
   submittedWords: SubmittedWord[];
@@ -22,6 +23,7 @@ export type GameContextData = {
 
 export const GameContext = React.createContext<GameContextData>({
   wordLength: 0,
+  tries: 0,
   triesLeft: 0,
   currentWord: [],
   submittedWords: [],

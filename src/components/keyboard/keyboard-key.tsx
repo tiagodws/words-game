@@ -4,7 +4,7 @@ import { Text } from '../text';
 
 export type KeyState = 'default' | 'correct' | 'incorrect' | 'hint';
 
-type KeyboardKeyProps = {
+export type KeyboardKeyProps = {
   label: string;
   state?: KeyState;
   icon?: ReactNode;
@@ -34,8 +34,6 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
     <Box
       onClick={onClick}
       sx={{
-        px: 1,
-        py: 1.5,
         backgroundColor: 'grey.700',
         display: 'flex',
         alignItems: 'center',
