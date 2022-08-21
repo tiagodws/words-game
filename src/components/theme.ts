@@ -131,9 +131,10 @@ export const theme = createTheme({
     text: {
       primary: '#F5F5F5',
       secondary: '#CCCCCC',
+      disabled: '#CCCCCC88',
     },
     primary: {
-      main: '#333333',
+      main: '#25557e',
     },
     secondary: {
       main: '#dddddd',
@@ -141,17 +142,15 @@ export const theme = createTheme({
     success: {
       main: '#43aa8b',
     },
-    error: {
-      main: '#e5383b',
-    },
     warning: {
       main: '#f4a261',
     },
     info: {
-      main: '#0466c8',
+      main: '#25557e',
     },
     background: {
       default: '#767676',
+      paper: '#767676',
     },
     common: {
       black: '#333333',

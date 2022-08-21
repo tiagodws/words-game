@@ -3,11 +3,13 @@ import { FC } from 'react';
 import { GameProvider } from '../../hooks/game';
 import { Container } from '../container';
 import { Keyboard } from '../keyboard';
+import { ResultModal } from './result-modal';
 import { WordBoard } from './word-board';
 
 export const Game: FC = () => {
   return (
     <GameProvider wordLength={5} tries={6}>
+      <ResultModal />
       <Box
         sx={{
           display: 'flex',
@@ -23,7 +25,6 @@ export const Game: FC = () => {
             display: 'flex',
             alignItems: 'center',
             py: '2vh',
-            px: '2vw',
           }}
         >
           <WordBoard />
@@ -36,7 +37,6 @@ export const Game: FC = () => {
             display: 'flex',
             alignItems: 'flex-end',
             py: '2vh',
-            px: '2vw',
           }}
         >
           <Keyboard />

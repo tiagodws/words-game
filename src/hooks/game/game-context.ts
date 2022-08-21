@@ -1,8 +1,9 @@
 import React from 'react';
-import { CharStates, SubmittedWord, Word } from './types';
+import { CharStates, GameState, SubmittedWord, Word } from './types';
 import { WordInput } from './use-word-input';
 
 export type GameContextData = {
+  state: GameState;
   word: Word;
   wordLength: number;
   tries: number;
@@ -10,9 +11,11 @@ export type GameContextData = {
   submittedWords: SubmittedWord[];
   charStates: CharStates;
   input: WordInput;
+  reset: () => void;
 };
 
 export const GameContext = React.createContext<GameContextData>({
+  state: GameState.Playing,
   word: [],
   wordLength: 0,
   tries: 0,
@@ -31,4 +34,5 @@ export const GameContext = React.createContext<GameContextData>({
     focusNextIndex: () => {},
     focusPreviousIndex: () => {},
   },
+  reset: () => {},
 });

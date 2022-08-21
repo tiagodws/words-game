@@ -21,7 +21,7 @@ export type WordInput = {
   currentIndex: number;
   invalidIndexes: number[];
   type: (value: string) => void;
-  erase: () => void;
+  erase: (goBack?: boolean) => void;
   submit: () => void;
   focusIndex: (index: number) => void;
   focusEmptyIndex: () => void;
@@ -44,10 +44,10 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
   });
 
   const type = useCallback((value: string) => {
-    const lowerCase = value && value.toLowerCase();
-    const isValidChar = Object.values(Char).includes(lowerCase as Char);
+    const upperCase = value && value.toUpperCase();
+    const isValidChar = Object.values(Char).includes(upperCase as Char);
 
-    if (lowerCase && !isValidChar) {
+    if (upperCase && !isValidChar) {
       return;
     }
 
@@ -58,7 +58,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
         return state;
       }
 
-      const char = lowerCase as Char;
+      const char = upperCase as Char;
       const newValues = [...values];
       newValues[currentIndex] = char as Char;
       const newPos = getEmptyIndex(currentIndex, newValues);
@@ -67,14 +67,14 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     });
   }, []);
 
-  const erase = useCallback(() => {
+  const erase = useCallback((goBack?: boolean) => {
     setInputState((state) => {
       const { values, currentIndex } = state;
       const newValues = [...values];
       const isCurrentIndexEmpty = !newValues[currentIndex];
       const isPreviousIndexEmpty = !newValues[currentIndex - 1];
 
-      if (!isCurrentIndexEmpty) {
+      if (!isCurrentIndexEmpty || !goBack) {
         newValues[currentIndex] = undefined;
         return { values: newValues, currentIndex, invalidIndexes: [] };
       }

@@ -17,6 +17,7 @@ type TextProps = {
   color?: string;
   fontSize?: CSSProperties['fontSize'];
   fontWeight?: CSSProperties['fontWeight'];
+  textAlign?: CSSProperties['textAlign'];
 };
 
 export const Text = forwardRef<HTMLSpanElement | null, TextProps>(

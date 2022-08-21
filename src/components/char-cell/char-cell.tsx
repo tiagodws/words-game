@@ -2,7 +2,6 @@ import { Keyframes, keyframes } from '@emotion/react';
 import { Theme, useTheme, Zoom } from '@mui/material';
 import { Box, darken, lighten } from '@mui/system';
 import { CSSProperties, FC, useEffect, useState } from 'react';
-import { Char } from '../../hooks/game/char';
 import { Text } from '../text';
 
 export type CellState =
@@ -14,7 +13,7 @@ export type CellState =
   | 'disabled';
 
 export type CharCellProps = {
-  char?: Char;
+  char?: string;
   state?: CellState;
   isFocused?: boolean;
   fontSize?: CSSProperties['fontSize'];

@@ -70,12 +70,12 @@ export const Header: FC<HeaderProps> = () => {
                 key={i}
                 sx={{
                   mx: height * 0.06 * 0.05,
-                  height: height * 0.5,
-                  width: height * 0.5,
+                  height: height * 0.45,
+                  width: height * 0.45,
                 }}
               >
                 <CharCell
-                  state={'disabled'}
+                  state={isNaN(Number(char)) ? 'disabled' : 'correct'}
                   char={char as Char}
                   fontSize={height * 0.25}
                 />
