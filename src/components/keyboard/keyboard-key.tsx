@@ -16,7 +16,7 @@ const bgColorMap: Record<KeyState, (theme: Theme) => string> = {
   default: (theme: Theme) => theme.palette.grey[600],
   correct: (theme: Theme) => theme.palette.success.main,
   incorrect: (theme: Theme) => theme.palette.grey[800],
-  hint: (theme: Theme) => theme.palette.info.main,
+  hint: (theme: Theme) => theme.palette.warning.main,
 };
 
 const borderColorMap: Record<KeyState, (theme: Theme) => string> = {
