@@ -18,7 +18,7 @@ export const Game: FC = () => {
       >
         <Container
           sx={{
-            flex: 2,
+            flex: 5,
             minHeight: 0,
             display: 'flex',
             alignItems: 'center',
@@ -31,7 +31,7 @@ export const Game: FC = () => {
 
         <Container
           sx={{
-            flex: 1,
+            flex: 2,
             minHeight: 0,
             display: 'flex',
             alignItems: 'flex-end',

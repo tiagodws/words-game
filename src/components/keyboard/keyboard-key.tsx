@@ -13,7 +13,7 @@ export type KeyboardKeyProps = {
 };
 
 const bgColorMap: Record<KeyState, (theme: Theme) => string> = {
-  default: (theme: Theme) => theme.palette.grey[600],
+  default: (theme: Theme) => theme.palette.grey[500],
   correct: (theme: Theme) => theme.palette.success.main,
   incorrect: (theme: Theme) => theme.palette.grey[800],
   hint: (theme: Theme) => theme.palette.warning.main,

@@ -37,10 +37,33 @@ const getNextPos = (input: InputState, loop?: boolean) => {
 
 const getNextEmptyPos = (input: InputState) => {
   const { inputArray, currentPos } = input;
-  const nextEmptyPos = inputArray.findIndex(
-    (char, i) => !char && (i > currentPos || i === inputArray.length - 1)
+  const emptyPositions = inputArray.reduce<{ first?: number; next?: number }>(
+    (result, char, i) => {
+      if (result.first !== undefined && result.next !== undefined) {
+        return result;
+      }
+
+      const newResult = { ...result };
+
+      if (
+        !char &&
+        newResult.next === undefined &&
+        (i > currentPos || i === inputArray.length - 1)
+      ) {
+        newResult.next = i;
+      }
+
+      if (!char && newResult.first === undefined) {
+        newResult.first = i;
+      }
+
+      return newResult;
+    },
+    {}
   );
-  const newPos = nextEmptyPos === -1 ? inputArray.length : nextEmptyPos;
+
+  const newPos =
+    emptyPositions.next ?? emptyPositions.first ?? inputArray.length;
   return newPos;
 };
 
@@ -213,12 +236,8 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
   }, [submittedWords]);
 
   useEffect(() => {
-    if (!invalidPos.length) {
-      return;
-    }
-
     setInvalidPos([]);
-  }, [inputState.inputArray, invalidPos.length]);
+  }, [inputState.inputArray]);
 
   return (
     <GameContext.Provider
