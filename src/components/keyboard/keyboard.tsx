@@ -3,7 +3,6 @@ import { FC } from 'react';
 import { useElementSize } from 'usehooks-ts';
 import { Char, useGame } from '../../hooks/game';
 import { KeyboardKey, KeyboardKeyProps } from './keyboard-key';
-import { useKeyboard } from './use-keyboard';
 
 const firstRow = [
   Char.q,
@@ -53,8 +52,8 @@ const Key: FC<
 );
 
 export const Keyboard: FC = () => {
-  useKeyboard();
-  const { charStates, fill, erase, submitWord } = useGame();
+  const { charStates, input } = useGame();
+  const { type, erase, submit } = input;
   const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
     useElementSize();
 
@@ -87,7 +86,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           fontSize={keyboardFontSize}
-          onClick={() => fill(char)}
+          onClick={() => type(char)}
           state={charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
@@ -102,7 +101,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           fontSize={keyboardFontSize}
-          onClick={() => fill(char)}
+          onClick={() => type(char)}
           state={charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
@@ -124,7 +123,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           fontSize={keyboardFontSize}
-          onClick={() => fill(char)}
+          onClick={() => type(char)}
           state={charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
@@ -136,7 +135,7 @@ export const Keyboard: FC = () => {
         label={'ENTER'}
         size={5}
         fontSize={keyboardFontSize}
-        onClick={() => submitWord()}
+        onClick={() => submit()}
         itemHeight={keyboardKeyHeight}
         itemWidth={keyboardKeyWidth}
       />

@@ -142,10 +142,10 @@ export const theme = createTheme({
       main: '#43aa8b',
     },
     error: {
-      main: '#EA1313',
+      main: '#e5383b',
     },
     warning: {
-      main: '#f8961e',
+      main: '#f4a261',
     },
     info: {
       main: '#0466c8',
