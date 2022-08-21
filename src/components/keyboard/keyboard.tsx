@@ -1,9 +1,8 @@
-import BackspaceIcon from '@mui/icons-material/Backspace';
-import { Grid } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { Box } from '@mui/material';
+import { FC } from 'react';
 import { useElementSize } from 'usehooks-ts';
 import { Char, useGame } from '../../hooks/game';
-import { KeyboardKey } from './keyboard-key';
+import { KeyboardKey, KeyboardKeyProps } from './keyboard-key';
 import { useKeyboard } from './use-keyboard';
 
 const firstRow = [
@@ -31,106 +30,94 @@ const secondRow = [
 ];
 const thirdRow = [Char.z, Char.x, Char.c, Char.v, Char.b, Char.n, Char.m];
 
-const spacing = 0.5;
-const Row: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid item sx={{ minHeight: 0 }}>
-    <Grid
-      container
-      sx={{
-        flexWrap: 'nowrap',
-        justifyContent: 'center',
-        height: '100%',
-        gap: spacing,
-      }}
-    >
-      {children}
-    </Grid>
-  </Grid>
-);
+const rows = 3;
+const cols = 22;
+const defaultKeySize = 2;
 
-const Column: FC<{ children: ReactNode; size?: number }> = ({
-  children,
-  size = 1,
-}) => (
-  <Grid item xs={1 * size} sm={0.8 * size} md={0.6 * size}>
-    {children}
-  </Grid>
+const Key: FC<
+  {
+    size?: number;
+  } & KeyboardKeyProps
+> = ({ size = defaultKeySize, ...props }) => (
+  <Box sx={{ gridColumn: `span ${size}`, m: '2px' }}>
+    <KeyboardKey {...props} />
+  </Box>
 );
 
 export const Keyboard: FC = () => {
-  const { charStates, fill, erase, submitWord } = useGame();
   useKeyboard();
-  const [containerRef, { width }] = useElementSize();
-  const fontSize = Math.pow(width, 0.45);
+  const { charStates, fill, erase, submitWord } = useGame();
+  const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
+    useElementSize();
+
+  const keyboardKeyHeight = Math.min(keyboardHeight / rows, 64);
+  const keyboardKeyWidth = Math.min(keyboardWidth / cols, 32);
+
+  const keyboardFontSize = Math.min(
+    keyboardKeyWidth * defaultKeySize > keyboardKeyHeight
+      ? keyboardKeyHeight * 0.6
+      : keyboardKeyWidth * defaultKeySize * 0.6,
+    24
+  );
 
   return (
-    <Grid
-      container
-      ref={containerRef}
-      direction="column"
+    <Box
+      ref={keyboardContainer}
       sx={{
+        display: 'grid',
         height: '100%',
-        minHeight: 0,
-        flexWrap: 'nowrap',
-        gap: spacing,
-        justifyContent: 'flex-end',
+        width: '100%',
+        maxHeight: 280,
+        gridTemplateRows: `repeat(${rows}, ${keyboardKeyHeight}px)`,
+        gridTemplateColumns: `repeat(${cols}, ${keyboardKeyWidth}px)`,
+        justifyContent: 'center',
+        alignContent: 'flex-end',
       }}
     >
-      <Row>
-        {firstRow.map((char) => (
-          <Column key={char}>
-            <KeyboardKey
-              label={char}
-              state={charStates[char]}
-              onClick={() => fill(char)}
-              fontSize={fontSize}
-            />
-          </Column>
-        ))}
-      </Row>
+      {firstRow.map((char) => (
+        <Key
+          key={char}
+          label={char}
+          fontSize={keyboardFontSize}
+          onClick={() => fill(char)}
+          state={charStates[char]}
+        />
+      ))}
+      <Box />
+      <Box />
 
-      <Row>
-        {secondRow.map((char) => (
-          <Column key={char}>
-            <KeyboardKey
-              label={char}
-              state={charStates[char]}
-              onClick={() => fill(char)}
-              fontSize={fontSize}
-            />
-          </Column>
-        ))}
+      <Box />
+      {secondRow.map((char) => (
+        <Key
+          key={char}
+          label={char}
+          fontSize={keyboardFontSize}
+          onClick={() => fill(char)}
+          state={charStates[char]}
+        />
+      ))}
+      <Box />
+      <Key label={'<'} fontSize={keyboardFontSize} onClick={() => erase()} />
 
-        <Column size={2}>
-          <KeyboardKey
-            label={'Backspace'}
-            icon={<BackspaceIcon />}
-            onClick={() => erase()}
-            fontSize={fontSize}
-          />
-        </Column>
-      </Row>
+      <Box />
+      <Box />
+      {thirdRow.map((char) => (
+        <Key
+          key={char}
+          label={char}
+          fontSize={keyboardFontSize}
+          onClick={() => fill(char)}
+          state={charStates[char]}
+        />
+      ))}
 
-      <Row>
-        {thirdRow.map((char) => (
-          <Column key={char}>
-            <KeyboardKey
-              label={char}
-              state={charStates[char]}
-              onClick={() => fill(char)}
-              fontSize={fontSize}
-            />
-          </Column>
-        ))}
-
-        <Column size={3}>
-          <KeyboardKey
-            label={'Enter'}
-            fontSize={fontSize}
-            onClick={() => submitWord()}
-          />
-        </Column>
-      </Row>
-    </Grid>
+      <Box />
+      <Key
+        label={'ENTER'}
+        size={5}
+        fontSize={keyboardFontSize}
+        onClick={() => submitWord()}
+      />
+    </Box>
   );
 };

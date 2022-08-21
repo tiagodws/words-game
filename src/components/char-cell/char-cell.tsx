@@ -1,8 +1,7 @@
 import { Keyframes, keyframes } from '@emotion/react';
 import { Theme, useTheme } from '@mui/material';
 import { Box, darken, lighten } from '@mui/system';
-import { FC, useEffect, useState } from 'react';
-import { useElementSize } from 'usehooks-ts';
+import { CSSProperties, FC, useEffect, useState } from 'react';
 import { Char } from '../../hooks/game/char';
 import { Text } from '../text';
 
@@ -14,10 +13,11 @@ export type CellState =
   | 'invalid'
   | 'disabled';
 
-type CharCellProps = {
+export type CharCellProps = {
   char?: Char;
   state?: CellState;
   isFocused?: boolean;
+  fontSize?: CSSProperties['fontSize'];
   onClick?: () => void;
 };
 
@@ -78,10 +78,9 @@ from, to {
 `);
 
 export const CharCell: FC<CharCellProps> = (props) => {
-  const { char, isFocused, state = 'default', onClick } = props;
+  const { char, isFocused, state = 'default', fontSize, onClick } = props;
   const { bgcolor, borderColor } = useStateColors(state);
   const [animation, setAnimation] = useState<Keyframes>();
-  const [containerRef, { width }] = useElementSize();
 
   useEffect(() => {
     if (state === 'invalid') {
@@ -102,7 +101,6 @@ export const CharCell: FC<CharCellProps> = (props) => {
 
   return (
     <Box
-      ref={containerRef}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -113,7 +111,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
         borderWidth: 2,
         borderBottomWidth: isFocused ? 8 : undefined,
         height: '100%',
-        aspectRatio: '1',
+        width: '100%',
         bgcolor,
         transition: 'all 0.2s',
         userSelect: 'none',
@@ -123,8 +121,8 @@ export const CharCell: FC<CharCellProps> = (props) => {
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}
     >
-      <Text fontWeight="800" fontSize={width * 0.5}>
-        {char?.toUpperCase() || ' '}
+      <Text fontWeight="800" fontSize={fontSize}>
+        {char?.toUpperCase()}
       </Text>
     </Box>
   );

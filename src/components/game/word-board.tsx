@@ -1,34 +1,20 @@
-import { Grid } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { Box } from '@mui/material';
+import { FC, Fragment } from 'react';
+import { useElementSize } from 'usehooks-ts';
 import { useGame } from '../../hooks/game';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
-import { CharCell } from '../char-cell';
+import { CharCell, CharCellProps } from '../char-cell';
 
-const Row: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid item sx={{ minHeight: 0 }}>
-    <Grid
-      container
-      sx={{
-        gap: 1,
-        justifyContent: 'center',
-        height: '100%',
-        flexWrap: 'nowrap',
-      }}
-    >
-      {children}
-    </Grid>
-  </Grid>
-);
-
-const Column: FC<{ children: ReactNode }> = ({ children }) => (
-  <Grid item xs={1.6} sm={1.2} md={0.8} lg={0.6} sx={{ height: '100%' }}>
-    {children}
-  </Grid>
+const Char: FC<CharCellProps> = (props) => (
+  <Box sx={{ m: '2px' }}>
+    <CharCell {...props} />
+  </Box>
 );
 
 export const WordBoard: FC = () => {
   const {
     wordLength,
+    tries,
     triesLeft,
     submittedWords,
     inputArray,
@@ -37,56 +23,58 @@ export const WordBoard: FC = () => {
     focusPos,
   } = useGame();
 
-  const triesArray = getArrayOfSize(triesLeft);
+  const rows = tries;
+  const cols = wordLength;
+
   const wordLengthArray = getArrayOfSize(wordLength);
+  const triesArray = getArrayOfSize(triesLeft);
+
+  const [boardContainer, { width: boardWidth, height: boardHeight }] =
+    useElementSize();
+
+  const boardBiggerDim = Math.max(cols, rows);
+  const boardItemSize =
+    boardHeight > boardWidth
+      ? boardWidth / boardBiggerDim
+      : boardHeight / boardBiggerDim;
+  const fontSize = Math.min(boardItemSize * 0.6, 24);
 
   return (
-    <Grid
-      container
-      direction="column"
+    <Box
+      ref={boardContainer}
       sx={{
-        gap: 1,
-        flexWrap: 'nowrap',
+        display: 'grid',
         height: '100%',
-        overflow: 'hidden',
+        width: '100%',
+        maxHeight: 520,
+        gridTemplateRows: `repeat(${rows}, ${boardItemSize}px)`,
+        gridTemplateColumns: `repeat(${cols}, ${boardItemSize}px)`,
+        justifyContent: 'center',
         alignContent: 'center',
-        justifyContent: 'flex-end',
       }}
     >
       {submittedWords.map((submittedWord, i) => (
-        <Row key={i}>
-          {submittedWord.map(({ char, state }, i) => (
-            <Column key={i}>
-              <CharCell char={char} state={state} />
-            </Column>
+        <Fragment key={i}>
+          {submittedWord.map((char, j) => (
+            <Char key={`${i},${j}`} {...char} fontSize={fontSize} />
           ))}
-        </Row>
+        </Fragment>
       ))}
 
       {triesArray.map((_, i) =>
-        i ? (
-          <Row key={i}>
-            {wordLengthArray.map((_, i) => (
-              <Column key={i}>
-                <CharCell state="disabled" />
-              </Column>
-            ))}
-          </Row>
-        ) : (
-          <Row key={i}>
-            {inputArray.map((_, i) => (
-              <Column key={i}>
-                <CharCell
-                  char={inputArray[i]}
-                  onClick={() => focusPos(i)}
-                  isFocused={currentPos === i}
-                  state={invalidPos.includes(i) ? 'invalid' : 'default'}
-                />
-              </Column>
-            ))}
-          </Row>
-        )
+        i
+          ? wordLengthArray.map((_, j) => <Char key={j} state="disabled" />)
+          : inputArray.map((char, j) => (
+              <Char
+                key={j}
+                char={char}
+                onClick={() => focusPos(j)}
+                isFocused={currentPos === j}
+                state={invalidPos.includes(j) ? 'invalid' : 'default'}
+                fontSize={fontSize}
+              />
+            ))
       )}
-    </Grid>
+    </Box>
   );
 };

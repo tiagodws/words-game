@@ -224,6 +224,7 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
     <GameContext.Provider
       value={{
         wordLength,
+        tries,
         triesLeft: tries - submittedWords.length,
         currentWord,
         submittedWords,

@@ -8,7 +8,7 @@ type ContainerProps = {
 
 export const Container: FC<ContainerProps> = ({ children, sx }) => {
   return (
-    <MuiContainer maxWidth={'lg'} sx={{ position: 'relative', ...sx }}>
+    <MuiContainer maxWidth={'md'} sx={{ position: 'relative', ...sx }}>
       {children}
     </MuiContainer>
   );
