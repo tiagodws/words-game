@@ -111,7 +111,7 @@ export const Keyboard: FC = () => {
       <Key
         label={'<'}
         fontSize={keyboardFontSize}
-        onClick={() => erase()}
+        onClick={() => erase(true)}
         itemHeight={keyboardKeyHeight}
         itemWidth={keyboardKeyWidth}
       />

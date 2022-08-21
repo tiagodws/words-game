@@ -73,8 +73,9 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
       const newValues = [...values];
       const isCurrentIndexEmpty = !newValues[currentIndex];
       const isPreviousIndexEmpty = !newValues[currentIndex - 1];
+      const isValidIndex = currentIndex < values.length;
 
-      if (!isCurrentIndexEmpty || !goBack) {
+      if (!isCurrentIndexEmpty || (!goBack && isValidIndex)) {
         newValues[currentIndex] = undefined;
         return { values: newValues, currentIndex, invalidIndexes: [] };
       }
