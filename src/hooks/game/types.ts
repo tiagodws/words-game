@@ -1,5 +1,11 @@
 import { Char } from '../../components/char-cell';
 
+export enum GameState {
+  Playing = 'playing',
+  Won = 'won',
+  Lost = 'lost',
+}
+
 export enum CharState {
   Correct = 'correct',
   Incorrect = 'incorrect',

@@ -5,29 +5,29 @@ import { Char, useGame } from '../../hooks/game';
 import { KeyboardKey, KeyboardKeyProps } from './keyboard-key';
 
 const firstRow = [
-  Char.q,
-  Char.w,
-  Char.e,
-  Char.r,
-  Char.t,
-  Char.y,
-  Char.u,
-  Char.i,
-  Char.o,
-  Char.p,
+  Char.Q,
+  Char.W,
+  Char.E,
+  Char.R,
+  Char.T,
+  Char.Y,
+  Char.U,
+  Char.I,
+  Char.O,
+  Char.P,
 ];
 const secondRow = [
-  Char.a,
-  Char.s,
-  Char.d,
-  Char.f,
-  Char.g,
-  Char.h,
-  Char.j,
-  Char.k,
-  Char.l,
+  Char.A,
+  Char.S,
+  Char.D,
+  Char.F,
+  Char.G,
+  Char.H,
+  Char.J,
+  Char.K,
+  Char.L,
 ];
-const thirdRow = [Char.z, Char.x, Char.c, Char.v, Char.b, Char.n, Char.m];
+const thirdRow = [Char.Z, Char.X, Char.C, Char.V, Char.B, Char.N, Char.M];
 
 const rows = 3;
 const cols = 22;
