@@ -1,5 +1,6 @@
 import InfoIcon from '@mui/icons-material/Info';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Grid, IconButton } from '@mui/material';
 import { FC } from 'react';
@@ -19,7 +20,7 @@ export const Header: FC<HeaderProps> = () => {
     <Box
       ref={container}
       sx={{
-        px: 4,
+        px: 1,
         width: '100%',
         height: '10vh',
         maxHeight: 64,
@@ -35,13 +36,19 @@ export const Header: FC<HeaderProps> = () => {
             justifyContent: 'center',
             height: '100%',
             flexWrap: 'nowrap',
-            gap: 4,
+            gap: 1,
           }}
         >
-          <Grid item xs={2}>
+          <Grid item sx={{ flex: 1 }}>
             <Grid container spacing={1} sx={{ flexWrap: 'nowrap' }}>
               <Grid item>
-                <IconButton color="secondary">
+                <IconButton color="secondary" size="small">
+                  <MoreVertIcon sx={{ fontSize: height * 0.4 }} />
+                </IconButton>
+              </Grid>
+
+              <Grid item>
+                <IconButton color="secondary" size="small">
                   <InfoIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>
@@ -50,9 +57,8 @@ export const Header: FC<HeaderProps> = () => {
 
           <Grid
             item
-            xs={8}
             sx={{
-              flex: 1,
+              flex: 0,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -63,34 +69,34 @@ export const Header: FC<HeaderProps> = () => {
               <Box
                 key={i}
                 sx={{
-                  m: height * 0.06 * 0.05,
-                  height: height * 0.6,
-                  width: height * 0.6,
+                  mx: height * 0.06 * 0.05,
+                  height: height * 0.5,
+                  width: height * 0.5,
                 }}
               >
                 <CharCell
                   state={'disabled'}
                   char={char as Char}
-                  fontSize={height * 0.3}
+                  fontSize={height * 0.25}
                 />
               </Box>
             ))}
           </Grid>
 
-          <Grid item xs={2}>
+          <Grid item sx={{ flex: 1 }}>
             <Grid
               container
               sx={{ justifyContent: 'flex-end', flexWrap: 'nowrap' }}
               spacing={1}
             >
               <Grid item>
-                <IconButton color="secondary">
+                <IconButton color="secondary" size="small">
                   <LeaderboardIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>
 
               <Grid item>
-                <IconButton color="secondary">
+                <IconButton color="secondary" size="small">
                   <SettingsIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>

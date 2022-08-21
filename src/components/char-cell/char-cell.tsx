@@ -59,23 +59,15 @@ const useStateColors = (state: CellState) => {
 
 const invalid = keyframes(`
 from, to {
-  transform: translate3d(0,0,0);
+  opacity: 1;
 }
 
 50% {
-  transform: translate3d(0, -10px, 0);
+  opacity: 0.3;
 }
 `);
 
-const fill = keyframes(`
-from, to {
-  transform: scale(1);
-}
-
-50% {
-  transform: scale(1);
-}
-`);
+const fill = keyframes(``);
 
 const erase = keyframes(`
 from, to {
