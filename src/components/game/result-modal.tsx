@@ -8,23 +8,53 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GameState, useGame } from '../../hooks/game';
+import { GameState, useGame, Word } from '../../hooks/game';
 import { CharCell } from '../char-cell';
 import { Text } from '../text';
 
+type ModalData = {
+  word: Word;
+  state: GameState;
+};
+
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const { state, word, charStates, reset } = useGame();
-  const [isModalOpen, setIsModalOpen] = useState(state !== GameState.Playing);
+  const { state, word, reset } = useGame();
+  const [modalData, setModalData] = useState<ModalData>({ word, state });
+  const [isOpen, setIsOpen] = useState(state !== GameState.Playing);
+  const [isExited, setIsExited] = useState(false);
 
   useEffect(() => {
-    setIsModalOpen(state !== GameState.Playing);
-  }, [state]);
+    if (isOpen && modalData.word !== word) {
+      setIsOpen(false);
+    }
 
-  return isModalOpen ? (
-    <Dialog open>
+    if (isExited) {
+      setModalData({ word, state });
+    }
+  }, [isOpen, isExited, state, word, modalData.word]);
+
+  useEffect(() => {
+    if (modalData.state !== GameState.Playing) {
+      setIsOpen(true);
+    }
+  }, [modalData.state]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsExited(false);
+    }
+  }, [isOpen]);
+
+  return (
+    <Dialog
+      open={isOpen}
+      TransitionProps={{ onExited: () => setIsExited(true) }}
+    >
       <DialogTitle textAlign="center">
-        {state === GameState.Won ? t('stats:titleWon') : t('stats:titleLost')}
+        {modalData.state === GameState.Won
+          ? t('stats:titleWon')
+          : t('stats:titleLost')}
       </DialogTitle>
       <DialogContent>
         <Grid
@@ -42,7 +72,7 @@ export const ResultModal: FC = () => {
                 mt: 1,
               }}
             >
-              {word.map((char, i) => (
+              {modalData.word.map((char, i) => (
                 <Box
                   key={i}
                   sx={{
@@ -51,11 +81,7 @@ export const ResultModal: FC = () => {
                     width: 36,
                   }}
                 >
-                  <CharCell
-                    state={charStates[char]}
-                    char={char}
-                    fontSize={16}
-                  />
+                  <CharCell char={char} fontSize={16} />
                 </Box>
               ))}
             </Box>
@@ -69,5 +95,5 @@ export const ResultModal: FC = () => {
         </Grid>
       </DialogContent>
     </Dialog>
-  ) : null;
+  );
 };
