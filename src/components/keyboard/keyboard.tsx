@@ -63,9 +63,9 @@ export const Keyboard: FC = () => {
 
   const keyboardFontSize = Math.min(
     keyboardKeyWidth * defaultKeySize > keyboardKeyHeight
-      ? keyboardKeyHeight * 0.5
-      : keyboardKeyWidth * defaultKeySize * 0.6,
-    24
+      ? keyboardKeyHeight * 0.4
+      : keyboardKeyWidth * defaultKeySize * 0.5,
+    22
   );
 
   return (
