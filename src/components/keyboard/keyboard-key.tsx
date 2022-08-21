@@ -62,7 +62,7 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
         bgcolor,
         borderStyle: 'solid',
         borderColor,
-        borderWidth: 2,
+        borderWidth: 1,
         width: '100%',
         height: '100%',
         userSelect: 'none',
