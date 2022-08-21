@@ -21,9 +21,9 @@ const bgColorMap: Record<KeyState, (theme: Theme) => string> = {
 
 const borderColorMap: Record<KeyState, (theme: Theme) => string> = {
   default: (theme: Theme) => lighten(bgColorMap.default(theme), 0.7),
-  correct: (theme: Theme) => darken(bgColorMap.correct(theme), 0.2),
-  incorrect: (theme: Theme) => darken(bgColorMap.incorrect(theme), 0.2),
-  hint: (theme: Theme) => darken(bgColorMap.hint(theme), 0.2),
+  correct: (theme: Theme) => darken(bgColorMap.correct(theme), 0.4),
+  incorrect: (theme: Theme) => darken(bgColorMap.incorrect(theme), 0.4),
+  hint: (theme: Theme) => darken(bgColorMap.hint(theme), 0.4),
 };
 
 const fontColorMap: Record<KeyState, (theme: Theme) => string> = {

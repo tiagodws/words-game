@@ -1,41 +1,34 @@
 import React from 'react';
-import { Char } from './char';
-import { CharStates, SubmittedWord } from './game-provider';
+import { CharStates, SubmittedWord, Word } from './types';
+import { WordInput } from './use-word-input';
 
 export type GameContextData = {
+  word: Word;
   wordLength: number;
   tries: number;
   triesLeft: number;
-  currentWord: Char[];
   submittedWords: SubmittedWord[];
-  invalidPos: number[];
-  inputArray: (Char | undefined)[];
-  currentPos: number;
   charStates: CharStates;
-  focusPos(pos: number): void;
-  focusNextEmptyPos(): void;
-  focusNextPos(loop?: boolean): void;
-  focusPreviousPos(loop?: boolean): void;
-  fill(value: string): void;
-  erase(): void;
-  submitWord(): void;
+  input: WordInput;
 };
 
 export const GameContext = React.createContext<GameContextData>({
+  word: [],
   wordLength: 0,
   tries: 0,
   triesLeft: 0,
-  currentWord: [],
   submittedWords: [],
-  invalidPos: [],
-  inputArray: [],
-  currentPos: 0,
   charStates: {},
-  focusPos: () => {},
-  focusNextEmptyPos: () => {},
-  focusNextPos: () => {},
-  focusPreviousPos: () => {},
-  fill: () => {},
-  erase: () => {},
-  submitWord: () => {},
+  input: {
+    values: [],
+    currentIndex: 0,
+    invalidIndexes: [],
+    type: () => {},
+    erase: () => {},
+    submit: () => [],
+    focusIndex: () => {},
+    focusEmptyIndex: () => {},
+    focusNextIndex: () => {},
+    focusPreviousIndex: () => {},
+  },
 });

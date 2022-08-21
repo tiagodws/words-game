@@ -1,8 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { CellState } from '../../components/char-cell';
-import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { Char } from './char';
 import { GameContext } from './game-context';
+import { getCharState } from './get-char-state';
+import { KeyboardListener } from './keyboard-listener';
+import { CharState, CharStates, SubmittedWord, Word } from './types';
+import { useWordInput } from './use-word-input';
 import { words } from './words';
 
 export type GameProviderProps = {
@@ -11,197 +13,31 @@ export type GameProviderProps = {
   children?: React.ReactNode;
 };
 
-export type CharState = Exclude<CellState, 'default' | 'invalid' | 'disabled'>;
-
-export type SubmittedWord = {
-  char: Char;
-  state: CharState;
-}[];
-
-export type CharStates = Partial<Record<Char, CharState>>;
-
-type InputValue = Char | undefined;
-
-type InputState = {
-  inputArray: InputValue[];
-  currentPos: number;
-};
-
-const getNextPos = (input: InputState, loop?: boolean) => {
-  const { inputArray, currentPos } = input;
-  const focusFirst = loop && currentPos >= inputArray.length - 1;
-  const nextPos = Math.min(inputArray.length - 1, currentPos + 1);
-  const newPos = focusFirst ? 0 : nextPos;
-  return newPos;
-};
-
-const getNextEmptyPos = (input: InputState) => {
-  const { inputArray, currentPos } = input;
-  const emptyPositions = inputArray.reduce<{ first?: number; next?: number }>(
-    (result, char, i) => {
-      if (result.first !== undefined && result.next !== undefined) {
-        return result;
-      }
-
-      const newResult = { ...result };
-
-      if (
-        !char &&
-        newResult.next === undefined &&
-        (i > currentPos || i === inputArray.length - 1)
-      ) {
-        newResult.next = i;
-      }
-
-      if (!char && newResult.first === undefined) {
-        newResult.first = i;
-      }
-
-      return newResult;
-    },
-    {}
-  );
-
-  const newPos =
-    emptyPositions.next ?? emptyPositions.first ?? inputArray.length;
-  return newPos;
-};
-
-const getPrevPos = (input: InputState, loop?: boolean) => {
-  const { inputArray, currentPos } = input;
-  const focusLast = loop && currentPos === 0;
-  const previousPos = Math.max(0, currentPos - 1);
-  const newPos = focusLast ? inputArray.length - 1 : previousPos;
-  return newPos;
-};
-
 export const GameProvider: FC<GameProviderProps> = (props) => {
   const { wordLength, tries, children } = props;
-  const [submittedWords, setSubmittedWords] = useState<SubmittedWord[]>([]);
-  const [currentWord] = useState(
+  const [word] = useState(
     words[Math.floor(Math.random() * words.length)]
       .toLowerCase()
       .split('') as Char[]
   );
-  const [inputState, setInputState] = useState<InputState>({
-    inputArray: getArrayOfSize(wordLength),
-    currentPos: 0,
-  });
-  const [invalidPos, setInvalidPos] = useState<number[]>([]);
+  const [submittedWords, setSubmittedWords] = useState<SubmittedWord[]>([]);
   const [charStates, setCharStates] = useState({} as CharStates);
 
-  const fill = (value: string) => {
-    const lowerCase = value && value.toLowerCase();
-    const isValidChar = Object.values(Char).includes(lowerCase as Char);
+  const onSubmitSuccess = useCallback(
+    (newWord: Word) => {
+      const submittedWord = newWord.map((char, i) => ({
+        char,
+        state: getCharState(i, newWord, word),
+      }));
 
-    if (lowerCase && !isValidChar) {
-      return;
-    }
-
-    setInputState(({ inputArray, currentPos }) => {
-      if (currentPos >= inputArray.length) {
-        return { inputArray, currentPos };
-      }
-
-      const char = lowerCase as Char;
-      const newInputArray = [...inputArray];
-      newInputArray[currentPos] = char as Char;
-      const newPos = getNextEmptyPos({ inputArray: newInputArray, currentPos });
-
-      return { inputArray: newInputArray, currentPos: newPos };
-    });
-  };
-
-  const erase = () => {
-    setInputState(({ inputArray, currentPos }) => {
-      const newInputArray = [...inputArray];
-      const isCurrentPosEmpty = !newInputArray[currentPos];
-      const isPreviousPosEmpty = !newInputArray[currentPos - 1];
-
-      if (!isCurrentPosEmpty) {
-        newInputArray[currentPos] = undefined;
-        return { inputArray: newInputArray, currentPos };
-      }
-
-      if (!isPreviousPosEmpty) {
-        newInputArray[currentPos - 1] = undefined;
-        return { inputArray: newInputArray, currentPos: currentPos - 1 };
-      }
-
-      if (currentPos) {
-        return { inputArray, currentPos: currentPos - 1 };
-      }
-
-      return { inputArray, currentPos };
-    });
-  };
-
-  const getCellState = useCallback(
-    (submittedWord: Char[], i: number): CharState => {
-      const char = submittedWord[i];
-
-      if (currentWord[i] === char) {
-        return 'correct';
-      }
-
-      const misses = currentWord.reduce<number[]>((result, wordChar, i) => {
-        if (wordChar === char && submittedWord[i] !== wordChar) {
-          return [...result, i];
-        }
-
-        return result;
-      }, []);
-
-      const tries = submittedWord.reduce<number[]>(
-        (result, submittedChar, i) => {
-          if (submittedChar === char && currentWord[i] !== submittedChar) {
-            return [...result, i];
-          }
-          return result;
-        },
-        []
-      );
-
-      const hints = tries.slice(0, misses.length);
-
-      if (hints.includes(i)) {
-        return 'hint';
-      }
-
-      return 'incorrect';
+      setSubmittedWords((prev) => [...prev, submittedWord]);
     },
-    [currentWord]
+    [word]
   );
 
-  const submitWord = useCallback(() => {
-    const word = [...inputState.inputArray];
-    const emptyChars = word.reduce<number[]>((result, char, i) => {
-      if (!char) {
-        return [...result, i];
-      }
-      return result;
-    }, []);
+  const onSubmitError = useCallback(() => {}, []);
 
-    if (emptyChars.length) {
-      setInvalidPos(emptyChars);
-      return;
-    }
-
-    const validWord = word as Char[];
-    const submittedWord = validWord.map((char, i) => ({
-      char,
-      state: getCellState(validWord, i),
-    }));
-
-    setInputState({ inputArray: getArrayOfSize(wordLength), currentPos: 0 });
-    setSubmittedWords((prev) => {
-      if (prev.length >= tries) {
-        return prev;
-      }
-
-      return [...prev, submittedWord];
-    });
-  }, [tries, wordLength, inputState.inputArray, getCellState]);
+  const input = useWordInput({ wordLength, onSubmitSuccess, onSubmitError });
 
   useEffect(() => {
     if (!submittedWords.length) {
@@ -216,17 +52,17 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
       lastWord.forEach(({ char, state }) => {
         const prevState = prev[char];
 
-        if (prevState === state || prevState === 'correct') {
+        if (prevState === state || prevState === CharState.Correct) {
           return;
         }
 
-        if (!prevState || state === 'correct') {
+        if (!prevState || state === CharState.Correct) {
           newState[char] = state;
           return;
         }
 
-        if (prevState === 'hint' || state === 'hint') {
-          newState[char] = 'hint';
+        if (prevState === CharState.Hint || state === CharState.Hint) {
+          newState[char] = CharState.Hint;
           return;
         }
       });
@@ -235,44 +71,27 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
     });
   }, [submittedWords]);
 
-  useEffect(() => {
-    setInvalidPos([]);
-  }, [inputState.inputArray]);
-
   return (
     <GameContext.Provider
       value={{
+        word,
         wordLength,
         tries,
         triesLeft: tries - submittedWords.length,
-        currentWord,
         submittedWords,
-        invalidPos,
-        inputArray: inputState.inputArray,
-        currentPos: inputState.currentPos,
         charStates,
-        focusPos: (pos: number) =>
-          setInputState((state) => ({ ...state, currentPos: pos })),
-        focusNextEmptyPos: () =>
-          setInputState((state) => ({
-            ...state,
-            currentPos: getNextEmptyPos(state),
-          })),
-        focusNextPos: (loop?: boolean) =>
-          setInputState((state) => ({
-            ...state,
-            currentPos: getNextPos(state, loop),
-          })),
-        focusPreviousPos: (loop?: boolean) =>
-          setInputState((state) => ({
-            ...state,
-            currentPos: getPrevPos(state, loop),
-          })),
-        fill,
-        erase,
-        submitWord,
+        input,
       }}
     >
+      <KeyboardListener
+        onArrowLeft={() => input.focusPreviousIndex(true)}
+        onArrowRight={() => input.focusNextIndex(true)}
+        onTab={() => input.focusNextIndex(true)}
+        onBackspace={() => input.erase()}
+        onSpace={() => input.focusEmptyIndex()}
+        onChar={(char) => input.type(char)}
+        onEnter={() => input.submit()}
+      />
       {children}
     </GameContext.Provider>
   );

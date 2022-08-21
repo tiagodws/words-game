@@ -5,6 +5,8 @@ import { useSquareCellBoard } from '../../hooks/use-square-cell-board';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { CharCell, CharCellProps } from '../char-cell';
 
+const BOARD_MAX_HEIGHT_PX = 520;
+
 const Char: FC<CharCellProps & { itemSize: number }> = ({
   itemSize,
   ...props
@@ -15,17 +17,8 @@ const Char: FC<CharCellProps & { itemSize: number }> = ({
 );
 
 export const WordBoard: FC = () => {
-  const {
-    wordLength,
-    tries,
-    triesLeft,
-    submittedWords,
-    inputArray,
-    currentPos,
-    invalidPos,
-    focusPos,
-  } = useGame();
-
+  const { wordLength, tries, triesLeft, submittedWords, input } = useGame();
+  const { values, currentIndex, invalidIndexes, focusIndex } = input;
   const rows = tries;
   const cols = wordLength;
   const wordLengthArray = getArrayOfSize(wordLength);
@@ -43,7 +36,7 @@ export const WordBoard: FC = () => {
         display: 'grid',
         height: '100%',
         width: '100%',
-        maxHeight: 520,
+        maxHeight: BOARD_MAX_HEIGHT_PX,
         gridTemplateRows: `repeat(${rows}, ${itemSize}px)`,
         gridTemplateColumns: `repeat(${cols}, ${itemSize}px)`,
         justifyContent: 'center',
@@ -63,13 +56,13 @@ export const WordBoard: FC = () => {
           ? wordLengthArray.map((_, j) => (
               <Char key={j} state="disabled" itemSize={itemSize} />
             ))
-          : inputArray.map((char, j) => (
+          : values.map((char, j) => (
               <Char
                 key={j}
                 char={char}
-                onClick={() => focusPos(j)}
-                isFocused={currentPos === j}
-                state={invalidPos.includes(j) ? 'invalid' : 'default'}
+                onClick={() => focusIndex(j)}
+                isFocused={currentIndex === j}
+                state={invalidIndexes.includes(j) ? 'invalid' : 'default'}
                 fontSize={fontSize}
                 itemSize={itemSize}
               />

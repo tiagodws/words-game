@@ -26,26 +26,26 @@ const bgColorMap: Record<CellState, (theme: Theme) => string> = {
   correct: (theme: Theme) => theme.palette.success.main,
   incorrect: (theme: Theme) => theme.palette.grey[800],
   hint: (theme: Theme) => theme.palette.warning.main,
-  invalid: (theme: Theme) => theme.palette.background.default,
-  disabled: (theme: Theme) => darken(theme.palette.background.default, 0.2),
+  invalid: (theme: Theme) => bgColorMap.default(theme),
+  disabled: (theme: Theme) => theme.palette.grey[700],
 };
 
 const borderColorMap: Record<CellState, (theme: Theme) => string> = {
   default: (theme: Theme) => lighten(bgColorMap.default(theme), 0.7),
-  correct: (theme: Theme) => darken(bgColorMap.correct(theme), 0.2),
-  incorrect: (theme: Theme) => darken(bgColorMap.incorrect(theme), 0.2),
-  hint: (theme: Theme) => darken(bgColorMap.hint(theme), 0.2),
-  invalid: (theme: Theme) => bgColorMap.invalid(theme),
-  disabled: (theme: Theme) => darken(bgColorMap.disabled(theme), 0.1),
+  correct: (theme: Theme) => darken(bgColorMap.correct(theme), 0.4),
+  incorrect: (theme: Theme) => darken(bgColorMap.incorrect(theme), 0.4),
+  hint: (theme: Theme) => darken(bgColorMap.hint(theme), 0.4),
+  invalid: (theme: Theme) => theme.palette.warning.main,
+  disabled: (theme: Theme) => darken(bgColorMap.disabled(theme), 0.4),
 };
 
 const fontColorMap: Record<CellState, (theme: Theme) => string> = {
   default: (theme: Theme) => theme.palette.text.primary,
-  correct: (theme: Theme) => theme.palette.text.primary,
-  incorrect: (theme: Theme) => theme.palette.text.primary,
-  hint: (theme: Theme) => theme.palette.text.primary,
-  invalid: (theme: Theme) => theme.palette.text.primary,
-  disabled: (theme: Theme) => theme.palette.text.primary,
+  correct: (theme: Theme) => fontColorMap.default(theme),
+  incorrect: (theme: Theme) => fontColorMap.default(theme),
+  hint: (theme: Theme) => fontColorMap.default(theme),
+  invalid: (theme: Theme) => fontColorMap.default(theme),
+  disabled: (theme: Theme) => fontColorMap.default(theme),
 };
 
 const useStateColors = (state: CellState) => {
@@ -63,11 +63,18 @@ from, to {
 }
 
 50% {
-  opacity: 0.3;
+  opacity: 0.6;
 }
 `);
 
-const fill = keyframes(``);
+const type = keyframes(`
+from, to {
+  transform: scale(1);
+}
+
+50% {
+  transform: scale(1.05);
+}`);
 
 const erase = keyframes(`
 from, to {
@@ -92,7 +99,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
     }
 
     if (state === 'default' && char) {
-      setAnimation(fill);
+      setAnimation(type);
       return;
     }
 
