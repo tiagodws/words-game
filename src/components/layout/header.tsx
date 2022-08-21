@@ -1,6 +1,6 @@
 import InfoIcon from '@mui/icons-material/Info';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Grid, IconButton } from '@mui/material';
 import { FC } from 'react';
@@ -43,11 +43,11 @@ export const Header: FC<HeaderProps> = () => {
             <Grid container spacing={1} sx={{ flexWrap: 'nowrap' }}>
               <Grid item>
                 <IconButton color="secondary" size="small">
-                  <MoreVertIcon sx={{ fontSize: height * 0.4 }} />
+                  <MenuIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>
 
-              <Grid item>
+              <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
                 <IconButton color="secondary" size="small">
                   <InfoIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
@@ -95,7 +95,7 @@ export const Header: FC<HeaderProps> = () => {
                 </IconButton>
               </Grid>
 
-              <Grid item>
+              <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
                 <IconButton color="secondary" size="small">
                   <SettingsIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
