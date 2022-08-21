@@ -148,7 +148,7 @@ export const theme = createTheme({
       main: '#f8961e',
     },
     info: {
-      main: '#5a189a',
+      main: '#0466c8',
     },
     background: {
       default: '#767676',
