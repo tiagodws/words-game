@@ -22,21 +22,30 @@ export type CharCellProps = {
 };
 
 const bgColorMap: Record<CellState, (theme: Theme) => string> = {
-  default: (theme: Theme) => theme.palette.background.default,
+  default: (theme: Theme) => lighten(theme.palette.background.default, 0.1),
   correct: (theme: Theme) => theme.palette.success.main,
   incorrect: (theme: Theme) => theme.palette.grey[800],
   hint: (theme: Theme) => theme.palette.info.main,
   invalid: (theme: Theme) => theme.palette.background.default,
-  disabled: (theme: Theme) => lighten(theme.palette.background.default, 0.05),
+  disabled: (theme: Theme) => darken(theme.palette.background.default, 0.2),
 };
 
 const borderColorMap: Record<CellState, (theme: Theme) => string> = {
-  default: (theme: Theme) => theme.palette.divider,
+  default: (theme: Theme) => lighten(bgColorMap.default(theme), 0.7),
   correct: (theme: Theme) => darken(bgColorMap.correct(theme), 0.2),
   incorrect: (theme: Theme) => darken(bgColorMap.incorrect(theme), 0.2),
   hint: (theme: Theme) => darken(bgColorMap.hint(theme), 0.2),
-  invalid: (theme: Theme) => theme.palette.divider,
-  disabled: (theme: Theme) => lighten(bgColorMap.disabled(theme), 0.08),
+  invalid: (theme: Theme) => bgColorMap.invalid(theme),
+  disabled: (theme: Theme) => darken(bgColorMap.disabled(theme), 0.1),
+};
+
+const fontColorMap: Record<CellState, (theme: Theme) => string> = {
+  default: (theme: Theme) => theme.palette.text.primary,
+  correct: (theme: Theme) => theme.palette.text.primary,
+  incorrect: (theme: Theme) => theme.palette.text.primary,
+  hint: (theme: Theme) => theme.palette.text.primary,
+  invalid: (theme: Theme) => theme.palette.text.primary,
+  disabled: (theme: Theme) => theme.palette.text.primary,
 };
 
 const useStateColors = (state: CellState) => {
@@ -44,6 +53,7 @@ const useStateColors = (state: CellState) => {
   return {
     bgcolor: bgColorMap[state](theme),
     borderColor: borderColorMap[state](theme),
+    color: fontColorMap[state](theme),
   };
 };
 
@@ -79,8 +89,9 @@ from, to {
 
 export const CharCell: FC<CharCellProps> = (props) => {
   const { char, isFocused, state = 'default', fontSize, onClick } = props;
-  const { bgcolor, borderColor } = useStateColors(state);
+  const { bgcolor, borderColor, color } = useStateColors(state);
   const [animation, setAnimation] = useState<Keyframes>();
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     if (state === 'invalid') {
@@ -93,23 +104,28 @@ export const CharCell: FC<CharCellProps> = (props) => {
       return;
     }
 
-    if (state === 'default' && !char) {
+    if (isDirty && state === 'default' && !char) {
       setAnimation(erase);
       return;
     }
-  }, [state, char]);
+  }, [state, char, isDirty]);
+
+  useEffect(() => {
+    if (char && !isDirty) {
+      setIsDirty(true);
+    }
+  }, [char, isDirty]);
 
   return (
     <Box
-      sx={{
+      sx={(theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 0.5,
         borderStyle: 'solid',
         borderColor,
-        borderRadius: 0.5,
         borderWidth: 2,
-        borderBottomWidth: isFocused ? 8 : undefined,
         height: '100%',
         width: '100%',
         bgcolor,
@@ -117,11 +133,12 @@ export const CharCell: FC<CharCellProps> = (props) => {
         userSelect: 'none',
         cursor: onClick ? 'pointer' : 'default',
         animation: animation ? `${animation} 400ms` : undefined,
-      }}
+        boxShadow: `2px 2px ${theme.palette.common.black}`,
+      })}
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}
     >
-      <Text fontWeight="800" fontSize={fontSize}>
+      <Text fontWeight="bold" fontSize={fontSize} color={color}>
         {char?.toUpperCase()}
       </Text>
     </Box>

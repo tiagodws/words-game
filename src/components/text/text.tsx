@@ -14,11 +14,15 @@ type TextProps = {
     | 'body1'
     | 'body2'
     | 'caption';
-  color?: 'primary' | 'secondary';
+  color?: string;
   fontSize?: CSSProperties['fontSize'];
   fontWeight?: CSSProperties['fontWeight'];
 };
 
 export const Text: FC<TextProps> = ({ children, ...props }) => {
-  return <Typography {...props}>{children}</Typography>;
+  return (
+    <Typography {...props} sx={{ textShadow: '0px 0px 2px #33333355' }}>
+      {children}
+    </Typography>
+  );
 };

@@ -39,7 +39,7 @@ const Key: FC<
     size?: number;
   } & KeyboardKeyProps
 > = ({ size = defaultKeySize, ...props }) => (
-  <Box sx={{ gridColumn: `span ${size}`, m: '2px' }}>
+  <Box sx={{ gridColumn: `span ${size}`, m: '4px' }}>
     <KeyboardKey {...props} />
   </Box>
 );
@@ -55,7 +55,7 @@ export const Keyboard: FC = () => {
 
   const keyboardFontSize = Math.min(
     keyboardKeyWidth * defaultKeySize > keyboardKeyHeight
-      ? keyboardKeyHeight * 0.6
+      ? keyboardKeyHeight * 0.5
       : keyboardKeyWidth * defaultKeySize * 0.6,
     24
   );
