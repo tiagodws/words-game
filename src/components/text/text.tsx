@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { CSSProperties } from '@mui/styled-engine';
-import { FC } from 'react';
+import { forwardRef } from 'react';
 
 type TextProps = {
   children: React.ReactNode;
@@ -19,10 +19,16 @@ type TextProps = {
   fontWeight?: CSSProperties['fontWeight'];
 };
 
-export const Text: FC<TextProps> = ({ children, ...props }) => {
-  return (
-    <Typography {...props} sx={{ textShadow: '0px 0px 2px #33333355' }}>
-      {children}
-    </Typography>
-  );
-};
+export const Text = forwardRef<HTMLSpanElement | null, TextProps>(
+  ({ children, ...props }, ref) => {
+    return (
+      <Typography
+        ref={ref}
+        {...props}
+        sx={{ textShadow: '1px 1px 2px #33333399' }}
+      >
+        {children}
+      </Typography>
+    );
+  }
+);

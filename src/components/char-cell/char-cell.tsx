@@ -1,5 +1,5 @@
 import { Keyframes, keyframes } from '@emotion/react';
-import { Theme, useTheme } from '@mui/material';
+import { Theme, useTheme, Zoom } from '@mui/material';
 import { Box, darken, lighten } from '@mui/system';
 import { CSSProperties, FC, useEffect, useState } from 'react';
 import { Char } from '../../hooks/game/char';
@@ -25,7 +25,7 @@ const bgColorMap: Record<CellState, (theme: Theme) => string> = {
   default: (theme: Theme) => lighten(theme.palette.background.default, 0.1),
   correct: (theme: Theme) => theme.palette.success.main,
   incorrect: (theme: Theme) => theme.palette.grey[800],
-  hint: (theme: Theme) => theme.palette.info.main,
+  hint: (theme: Theme) => theme.palette.warning.main,
   invalid: (theme: Theme) => theme.palette.background.default,
   disabled: (theme: Theme) => darken(theme.palette.background.default, 0.2),
 };
@@ -73,7 +73,7 @@ from, to {
 }
 
 50% {
-  transform: scale(0.95);
+  transform: scale(1);
 }
 `);
 
@@ -125,10 +125,10 @@ export const CharCell: FC<CharCellProps> = (props) => {
         borderRadius: 0.5,
         borderStyle: 'solid',
         borderColor,
-        borderWidth: 2,
+        borderWidth: isFocused ? 4 : 2,
         height: '100%',
         width: '100%',
-        bgcolor,
+        bgcolor: isFocused ? lighten(bgcolor, 0.3) : bgcolor,
         transition: 'all 0.2s',
         userSelect: 'none',
         cursor: onClick ? 'pointer' : 'default',
@@ -138,9 +138,11 @@ export const CharCell: FC<CharCellProps> = (props) => {
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}
     >
-      <Text fontWeight="bold" fontSize={fontSize} color={color}>
-        {char?.toUpperCase()}
-      </Text>
+      <Zoom appear={false} in={!!char} timeout={400}>
+        <Text fontWeight="bold" fontSize={fontSize} color={color}>
+          {char?.toUpperCase()}
+        </Text>
+      </Zoom>
     </Box>
   );
 };
