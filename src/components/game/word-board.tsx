@@ -5,8 +5,11 @@ import { useSquareCellBoard } from '../../hooks/use-square-cell-board';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { CharCell, CharCellProps } from '../char-cell';
 
-const Char: FC<CharCellProps> = (props) => (
-  <Box sx={{ m: '4px' }}>
+const Char: FC<CharCellProps & { itemSize: number }> = ({
+  itemSize,
+  ...props
+}) => (
+  <Box sx={{ m: `${itemSize * 0.05}px` }}>
     <CharCell {...props} />
   </Box>
 );
@@ -50,14 +53,16 @@ export const WordBoard: FC = () => {
       {submittedWords.map((submittedWord, i) => (
         <Fragment key={i}>
           {submittedWord.map((char, j) => (
-            <Char key={j} {...char} fontSize={fontSize} />
+            <Char key={j} {...char} fontSize={fontSize} itemSize={itemSize} />
           ))}
         </Fragment>
       ))}
 
       {triesArray.map((_, i) =>
         i
-          ? wordLengthArray.map((_, j) => <Char key={j} state="disabled" />)
+          ? wordLengthArray.map((_, j) => (
+              <Char key={j} state="disabled" itemSize={itemSize} />
+            ))
           : inputArray.map((char, j) => (
               <Char
                 key={j}
@@ -66,6 +71,7 @@ export const WordBoard: FC = () => {
                 isFocused={currentPos === j}
                 state={invalidPos.includes(j) ? 'invalid' : 'default'}
                 fontSize={fontSize}
+                itemSize={itemSize}
               />
             ))
       )}

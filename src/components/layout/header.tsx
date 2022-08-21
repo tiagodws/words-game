@@ -62,7 +62,11 @@ export const Header: FC<HeaderProps> = () => {
             {titleArray.map((char, i) => (
               <Box
                 key={i}
-                sx={{ m: '2px', height: height * 0.6, width: height * 0.6 }}
+                sx={{
+                  m: height * 0.06 * 0.05,
+                  height: height * 0.6,
+                  width: height * 0.6,
+                }}
               >
                 <CharCell
                   state={'disabled'}
