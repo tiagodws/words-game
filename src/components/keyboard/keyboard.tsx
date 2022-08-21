@@ -37,9 +37,17 @@ const defaultKeySize = 2;
 const Key: FC<
   {
     size?: number;
+    itemWidth: number;
+    itemHeight: number;
   } & KeyboardKeyProps
-> = ({ size = defaultKeySize, ...props }) => (
-  <Box sx={{ gridColumn: `span ${size}`, m: '4px' }}>
+> = ({ size = defaultKeySize, itemHeight, itemWidth, ...props }) => (
+  <Box
+    sx={{
+      gridColumn: `span ${size}`,
+      mx: `${itemWidth * 0.05}px`,
+      my: `${itemWidth * 0.05}px`,
+    }}
+  >
     <KeyboardKey {...props} />
   </Box>
 );
@@ -81,6 +89,8 @@ export const Keyboard: FC = () => {
           fontSize={keyboardFontSize}
           onClick={() => fill(char)}
           state={charStates[char]}
+          itemHeight={keyboardKeyHeight}
+          itemWidth={keyboardKeyWidth}
         />
       ))}
       <Box />
@@ -94,10 +104,18 @@ export const Keyboard: FC = () => {
           fontSize={keyboardFontSize}
           onClick={() => fill(char)}
           state={charStates[char]}
+          itemHeight={keyboardKeyHeight}
+          itemWidth={keyboardKeyWidth}
         />
       ))}
       <Box />
-      <Key label={'<'} fontSize={keyboardFontSize} onClick={() => erase()} />
+      <Key
+        label={'<'}
+        fontSize={keyboardFontSize}
+        onClick={() => erase()}
+        itemHeight={keyboardKeyHeight}
+        itemWidth={keyboardKeyWidth}
+      />
 
       <Box />
       <Box />
@@ -108,6 +126,8 @@ export const Keyboard: FC = () => {
           fontSize={keyboardFontSize}
           onClick={() => fill(char)}
           state={charStates[char]}
+          itemHeight={keyboardKeyHeight}
+          itemWidth={keyboardKeyWidth}
         />
       ))}
 
@@ -117,6 +137,8 @@ export const Keyboard: FC = () => {
         size={5}
         fontSize={keyboardFontSize}
         onClick={() => submitWord()}
+        itemHeight={keyboardKeyHeight}
+        itemWidth={keyboardKeyWidth}
       />
     </Box>
   );
