@@ -5,12 +5,14 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  Skeleton,
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GameState, useGame, Word } from '../../hooks/game';
 import { CharCell } from '../char-cell';
 import { Text } from '../text';
+import { useWordDefinition } from './use-word-definition';
 
 type ModalData = {
   word: Word;
@@ -19,10 +21,11 @@ type ModalData = {
 
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const { state, word, reset } = useGame();
+  const { state, word, charStates, reset } = useGame();
   const [modalData, setModalData] = useState<ModalData>({ word, state });
   const [isOpen, setIsOpen] = useState(state !== GameState.Playing);
-  const [isExited, setIsExited] = useState(false);
+  const [isExited, setIsExited] = useState(true);
+  const { definition, source } = useWordDefinition(word.join(''));
 
   useEffect(() => {
     if (isOpen && modalData.word !== word) {
@@ -63,28 +66,53 @@ export const ResultModal: FC = () => {
           sx={{ alignItems: 'center', justifyContent: 'center' }}
         >
           <Grid item xs={12}>
-            <Text textAlign="center">{t('stats:theWordWas')}</Text>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mt: 1,
-              }}
+            <Grid
+              container
+              direction="column"
+              spacing={2}
+              sx={{ flexWrap: 'nowrap' }}
             >
-              {modalData.word.map((char, i) => (
+              <Grid item>
+                <Text textAlign="center">{t('stats:theWordWas')}</Text>
+              </Grid>
+
+              <Grid item>
                 <Box
-                  key={i}
                   sx={{
-                    mx: '2px',
-                    height: 36,
-                    width: 36,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  <CharCell char={char} fontSize={16} />
+                  {modalData.word.map((char, i) => (
+                    <Box
+                      key={i}
+                      sx={{
+                        mx: '2px',
+                        height: 36,
+                        width: 36,
+                      }}
+                    >
+                      <CharCell
+                        char={char}
+                        state={charStates[char]}
+                        fontSize={16}
+                      />
+                    </Box>
+                  ))}
                 </Box>
-              ))}
-            </Box>
+              </Grid>
+
+              <Grid item>
+                <Text textAlign="center">
+                  {definition ? (
+                    t('stats:wordDefinition', { definition })
+                  ) : (
+                    <Skeleton />
+                  )}
+                </Text>
+              </Grid>
+            </Grid>
           </Grid>
 
           <Grid item xs={12}>
