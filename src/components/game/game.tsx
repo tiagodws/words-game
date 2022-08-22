@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { GameProvider } from '../../hooks/game';
 import { Container } from '../container';
 import { Keyboard } from '../keyboard';
-import { ResultModal } from './result-modal';
+import { ResultModal } from '../result-modal/result-modal';
 import { WordBoard } from './word-board';
 
 export const Game: FC = () => {

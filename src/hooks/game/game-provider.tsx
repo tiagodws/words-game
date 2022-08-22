@@ -1,11 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { Char } from './char';
 import { GameContext } from './game-context';
 import { getCharState } from './get-char-state';
 import { KeyboardListener } from './keyboard-listener';
 import { CharState, CharStates, GameState, SubmittedWord, Word } from './types';
 import { useWordInput } from './use-word-input';
-import { words } from './words';
 
 export type GameProviderProps = {
   wordLength: number;
@@ -13,24 +11,31 @@ export type GameProviderProps = {
   children?: React.ReactNode;
 };
 
-const getWord = () =>
-  words[Math.floor(Math.random() * words.length)]
-    .toUpperCase()
-    .split('') as Char[];
+const loadWordStrings = (wordLength: number): string[] => {
+  const wordFile = require(`./words/words-${wordLength}.json`);
+  return wordFile;
+};
+
+const getWord = (wordStrings: string[]): Word => {
+  return wordStrings[Math.floor(Math.random() * wordStrings.length)].split(
+    ''
+  ) as Word;
+};
 
 export const GameProvider: FC<GameProviderProps> = (props) => {
   const { wordLength, tries, children } = props;
-  const [word, setWord] = useState(getWord());
+  const [wordStrings, setWordStrings] = useState(loadWordStrings(wordLength));
+  const [word, setWord] = useState(getWord(wordStrings));
   const [submittedWords, setSubmittedWords] = useState<SubmittedWord[]>([]);
   const [charStates, setCharStates] = useState({} as CharStates);
   const [state, setState] = useState(GameState.Playing);
 
   const reset = useCallback(() => {
-    setWord(getWord());
+    setWord(getWord(wordStrings));
     setSubmittedWords([]);
     setCharStates({});
     setState(GameState.Playing);
-  }, []);
+  }, [wordStrings]);
 
   const onSubmitSuccess = useCallback(
     (newWord: Word) => {
@@ -44,9 +49,19 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
     [word]
   );
 
-  const onSubmitError = useCallback(() => {}, []);
+  const input = useWordInput({
+    wordLength,
+    wordStrings,
+    onSubmitSuccess,
+  });
 
-  const input = useWordInput({ wordLength, onSubmitSuccess, onSubmitError });
+  useEffect(() => {
+    setWordStrings(loadWordStrings(wordLength));
+  }, [wordLength]);
+
+  useEffect(() => {
+    reset();
+  }, [wordStrings, reset]);
 
   useEffect(() => {
     if (!submittedWords.length) {

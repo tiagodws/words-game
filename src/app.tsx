@@ -4,6 +4,7 @@ import {
   ThemeProvider,
 } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SnackbarProvider } from 'notistack';
 import { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './components/theme';
@@ -17,9 +18,14 @@ export const App: FC = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <Main />
-          </BrowserRouter>
+          <SnackbarProvider
+            maxSnack={1}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          >
+            <BrowserRouter>
+              <Main />
+            </BrowserRouter>
+          </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StyledEngineProvider>

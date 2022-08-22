@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { Char } from './char';
@@ -31,12 +32,13 @@ export type WordInput = {
 
 type UseWordInputProps = {
   wordLength: number;
+  wordStrings: string[];
   onSubmitSuccess: (word: Word) => void;
-  onSubmitError: (err: Error) => void;
 };
 
 export const useWordInput = (props: UseWordInputProps): WordInput => {
-  const { wordLength, onSubmitSuccess, onSubmitError } = props;
+  const { wordLength, wordStrings, onSubmitSuccess } = props;
+  const { enqueueSnackbar } = useSnackbar();
   const [inputState, setInputState] = useState<WordInputState>({
     values: getArrayOfSize(wordLength),
     currentIndex: 0,
@@ -112,7 +114,18 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
 
     if (invalidIndexes.length) {
       setInputState((state) => ({ ...state, invalidIndexes }));
-      onSubmitError(new Error('Word is not complete'));
+      enqueueSnackbar('Word is not complete', { variant: 'warning' });
+      return;
+    }
+
+    const isValidWord = wordStrings.some((w) => w === word.join(''));
+
+    if (!isValidWord) {
+      setInputState((state) => ({
+        ...state,
+        invalidIndexes: word.map((_, i) => i),
+      }));
+      enqueueSnackbar('This word is not accepted', { variant: 'warning' });
       return;
     }
 
@@ -123,7 +136,13 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     });
 
     onSubmitSuccess(word as Char[]);
-  }, [inputState.values, wordLength, onSubmitError, onSubmitSuccess]);
+  }, [
+    inputState.values,
+    wordLength,
+    wordStrings,
+    enqueueSnackbar,
+    onSubmitSuccess,
+  ]);
 
   const focusIndex = useCallback((index: number) => {
     setInputState((state) => ({ ...state, currentIndex: index }));
