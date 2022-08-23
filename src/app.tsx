@@ -3,14 +3,13 @@ import {
   StyledEngineProvider,
   ThemeProvider,
 } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { SnackbarProvider } from 'notistack';
 import { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './components/theme';
 import { Main } from './pages';
-
-const queryClient = new QueryClient();
+import { queryClient } from './react-query';
 
 export const App: FC = () => {
   return (

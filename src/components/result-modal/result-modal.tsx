@@ -1,11 +1,11 @@
 import {
   Box,
   Button,
+  Chip,
   Dialog,
   DialogContent,
   DialogTitle,
   Grid,
-  Skeleton,
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ export const ResultModal: FC = () => {
   const [modalData, setModalData] = useState<ModalData>({ word, state });
   const [isOpen, setIsOpen] = useState(state !== GameState.Playing);
   const [isExited, setIsExited] = useState(true);
-  const { data, source } = useWordData(word);
+  const { data } = useWordData(word);
 
   useEffect(() => {
     if (isOpen && modalData.word !== word) {
@@ -107,32 +107,36 @@ export const ResultModal: FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Text textAlign="center">
-              {data ? (
-                t('stats:wordDefinition', {
-                  definition: data.meaning.definition,
-                })
-              ) : (
-                <Skeleton />
-              )}
-            </Text>
+            {data?.meaning && (
+              <Text textAlign="center" component="div">
+                {data?.meaning?.partOfSpeech && (
+                  <Chip
+                    label={data?.meaning?.partOfSpeech}
+                    size="small"
+                    sx={{ mr: 1 }}
+                  />
+                )}
 
-            <Text
-              textAlign="center"
-              variant="caption"
-              color="secondary"
-              fontSize="0.5rem"
-            >
-              {source ? (
+                {t('stats:wordDefinition', {
+                  definition: data.meaning?.definition,
+                })}
+              </Text>
+            )}
+
+            {data?.source && (
+              <Text
+                textAlign="center"
+                variant="caption"
+                color="secondary"
+                fontSize="0.5rem"
+              >
                 <Trans
                   i18nKey="stats:wordDefinitionSource"
-                  values={{ source }}
-                  components={[<Link href={source} />]}
+                  values={{ source: data.source }}
+                  components={[<Link href={data?.source} />]}
                 />
-              ) : (
-                <Skeleton />
-              )}
-            </Text>
+              </Text>
+            )}
           </Grid>
 
           <Grid item xs={12}>
