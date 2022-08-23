@@ -1,6 +1,7 @@
-import { useSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
+import { useSnacks } from '../../use-snacks';
 import { Char } from './../char';
 import { Word } from './../types';
 import {
@@ -38,8 +39,9 @@ type UseWordInputProps = {
 
 export const useWordInput = (props: UseWordInputProps): WordInput => {
   const { wordLength, onSubmitSuccess } = props;
-  const { enqueueSnackbar } = useSnackbar();
+  const { showSnack } = useSnacks();
   const possibleWords = usePossibleWords({ wordLength });
+  const { t } = useTranslation(['validation']);
   const [inputState, setInputState] = useState<WordInputState>({
     values: getArrayOfSize(wordLength),
     currentIndex: 0,
@@ -115,7 +117,9 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
 
     if (invalidIndexes.length) {
       setInputState((state) => ({ ...state, invalidIndexes }));
-      enqueueSnackbar('Word is not complete', { variant: 'warning' });
+      showSnack(t('validation:incomplete'), {
+        variant: 'warning',
+      });
       return;
     }
 
@@ -127,7 +131,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
         invalidIndexes: word.map((_, i) => i),
       }));
 
-      enqueueSnackbar('This word is not accepted', { variant: 'warning' });
+      showSnack(t('validation:notValid'), { variant: 'warning' });
       return;
     }
 
@@ -142,8 +146,9 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     inputState.values,
     possibleWords,
     wordLength,
-    enqueueSnackbar,
+    showSnack,
     onSubmitSuccess,
+    t,
   ]);
 
   const focusIndex = useCallback((index: number) => {

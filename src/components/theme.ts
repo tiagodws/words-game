@@ -17,19 +17,6 @@ export const theme = createTheme({
         },
       },
     },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& textarea': {
-            resize: 'vertical',
-          },
-        },
-      },
-      defaultProps: {
-        minRows: 5,
-        maxRows: 5,
-      },
-    },
     MuiTypography: {
       styleOverrides: {
         root: {
@@ -45,75 +32,10 @@ export const theme = createTheme({
         },
       },
     },
-    MuiFormHelperText: {
+    MuiAlert: {
       styleOverrides: {
         root: {
-          marginLeft: 0,
-        },
-      },
-    },
-    MuiListSubheader: {
-      styleOverrides: {
-        root: {
-          fontSize: '0.8rem',
-          lineHeight: '32px',
-          '*+&': {
-            marginTop: '16px',
-          },
-        },
-      },
-    },
-    MuiListItemText: {
-      styleOverrides: {
-        primary: {
-          fontSize: '1rem',
-          fontWeight: 500,
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        root: {
-          legend: {
-            overflow: 'hidden',
-          },
-        },
-      },
-    },
-    MuiAccordion: {
-      defaultProps: {
-        elevation: 0,
-        disableGutters: true,
-      },
-      styleOverrides: {
-        root: {
-          '&:before': {
-            height: 0,
-          },
-        },
-      },
-    },
-    MuiAccordionSummary: {
-      styleOverrides: {
-        root: {
-          paddingLeft: 0,
-          paddingRight: 0,
-          border: 'none',
-        },
-      },
-    },
-    MuiAccordionDetails: {
-      styleOverrides: {
-        root: {
-          paddingLeft: 0,
-          paddingRight: 0,
-        },
-      },
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          minWidth: 200,
+          boxShadow: `3px 3px #333333`,
         },
       },
     },

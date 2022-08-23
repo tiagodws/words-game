@@ -4,10 +4,10 @@ import {
   ThemeProvider,
 } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { SnackbarProvider } from 'notistack';
 import { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './components/theme';
+import { SnacksProvider } from './hooks/use-snacks';
 import { Main } from './pages';
 import { queryClient } from './react-query';
 
@@ -17,14 +17,11 @@ export const App: FC = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <SnackbarProvider
-            maxSnack={1}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          >
+          <SnacksProvider>
             <BrowserRouter>
               <Main />
             </BrowserRouter>
-          </SnackbarProvider>
+          </SnacksProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StyledEngineProvider>
