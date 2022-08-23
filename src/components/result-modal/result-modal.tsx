@@ -133,7 +133,7 @@ export const ResultModal: FC = () => {
                 <Trans
                   i18nKey="stats:wordDefinitionSource"
                   values={{ source: data.source }}
-                  components={[<Link href={data?.source} />]}
+                  components={[<Link href={data?.source} target="_blank" />]}
                 />
               </Text>
             )}

@@ -14,7 +14,6 @@ type HeaderProps = {};
 export const Header: FC<HeaderProps> = () => {
   const { t } = useTranslation(['header', 'common']);
   const [container, { height }] = useElementSize();
-  const titleArray = t('common:title').split('');
 
   return (
     <Box
