@@ -124,18 +124,20 @@ export const ResultModal: FC = () => {
             )}
 
             {data?.source && (
-              <Text
-                textAlign="center"
-                variant="caption"
-                color="secondary"
-                fontSize="0.5rem"
-              >
-                <Trans
-                  i18nKey="stats:wordDefinitionSource"
-                  values={{ source: data.source }}
-                  components={[<Link href={data?.source} target="_blank" />]}
-                />
-              </Text>
+              <Box sx={{ mt: 1 }}>
+                <Text
+                  textAlign="center"
+                  variant="caption"
+                  color="secondary"
+                  fontSize="0.5rem"
+                >
+                  <Trans
+                    i18nKey="stats:wordDefinitionSource"
+                    values={{ source: data.source }}
+                    components={[<Link href={data?.source} target="_blank" />]}
+                  />
+                </Text>
+              </Box>
             )}
           </Grid>
 
