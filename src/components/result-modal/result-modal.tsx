@@ -8,14 +8,15 @@ import {
   Skeleton,
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { GameState, useGame, Word } from '../../hooks/game';
 import { CharCell } from '../char-cell';
+import { Link } from '../link';
 import { Text } from '../text';
-import { useWordDefinition } from './use-word-definition';
+import { useWordData } from './use-word-data';
 
 type ModalData = {
-  word: Word;
+  word?: Word;
   state: GameState;
 };
 
@@ -25,7 +26,7 @@ export const ResultModal: FC = () => {
   const [modalData, setModalData] = useState<ModalData>({ word, state });
   const [isOpen, setIsOpen] = useState(state !== GameState.Playing);
   const [isExited, setIsExited] = useState(true);
-  const { definition, source } = useWordDefinition(word.join(''));
+  const { data, source } = useWordData(word);
 
   useEffect(() => {
     if (isOpen && modalData.word !== word) {
@@ -84,7 +85,7 @@ export const ResultModal: FC = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  {modalData.word.map((char, i) => (
+                  {modalData.word?.map((char, i) => (
                     <Box
                       key={i}
                       sx={{
@@ -102,17 +103,36 @@ export const ResultModal: FC = () => {
                   ))}
                 </Box>
               </Grid>
-
-              <Grid item>
-                <Text textAlign="center">
-                  {definition ? (
-                    t('stats:wordDefinition', { definition })
-                  ) : (
-                    <Skeleton />
-                  )}
-                </Text>
-              </Grid>
             </Grid>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Text textAlign="center">
+              {data ? (
+                t('stats:wordDefinition', {
+                  definition: data.meaning.definition,
+                })
+              ) : (
+                <Skeleton />
+              )}
+            </Text>
+
+            <Text
+              textAlign="center"
+              variant="caption"
+              color="secondary"
+              fontSize="0.5rem"
+            >
+              {source ? (
+                <Trans
+                  i18nKey="stats:wordDefinitionSource"
+                  values={{ source }}
+                  components={[<Link href={source} />]}
+                />
+              ) : (
+                <Skeleton />
+              )}
+            </Text>
           </Grid>
 
           <Grid item xs={12}>

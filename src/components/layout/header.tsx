@@ -6,8 +6,8 @@ import { Box, Grid, IconButton } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useElementSize } from 'usehooks-ts';
-import { Char, CharCell } from '../char-cell';
 import { Container } from '../container';
+import { DynamicLogo } from './dynamic-logo';
 
 type HeaderProps = {};
 
@@ -65,22 +65,7 @@ export const Header: FC<HeaderProps> = () => {
               height: '100%',
             }}
           >
-            {titleArray.map((char, i) => (
-              <Box
-                key={i}
-                sx={{
-                  mx: height * 0.06 * 0.05,
-                  height: height * 0.45,
-                  width: height * 0.45,
-                }}
-              >
-                <CharCell
-                  state={isNaN(Number(char)) ? 'disabled' : 'correct'}
-                  char={char as Char}
-                  fontSize={height * 0.25}
-                />
-              </Box>
-            ))}
+            <DynamicLogo containerHeight={height} word={t('common:title')} />
           </Grid>
 
           <Grid item sx={{ flex: 1 }}>

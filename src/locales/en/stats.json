@@ -3,5 +3,6 @@
   "titleLost": "Oh no!",
   "theWordWas": "The word was",
   "tryAgain": "Try again",
-  "wordDefinition": "\"{{definition}}\""
+  "wordDefinition": "{{definition}}",
+  "wordDefinitionSource": "Source: <0>{{source}}</0>"
 }
