@@ -3,7 +3,7 @@ import { CSSProperties } from '@mui/styled-engine';
 import { forwardRef } from 'react';
 
 type TextProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?:
     | 'h1'
     | 'h2'
@@ -15,18 +15,20 @@ type TextProps = {
     | 'body2'
     | 'caption';
   color?: string;
+  component?: 'div' | 'span' | 'p';
   fontSize?: CSSProperties['fontSize'];
   fontWeight?: CSSProperties['fontWeight'];
   textAlign?: CSSProperties['textAlign'];
 };
 
 export const Text = forwardRef<HTMLSpanElement | null, TextProps>(
-  ({ children, ...props }, ref) => {
+  ({ children, component = 'p', ...props }, ref) => {
     return (
       <Typography
         ref={ref}
-        {...props}
         sx={{ textShadow: '1px 1px 2px #33333399' }}
+        component={component}
+        {...props}
       >
         {children}
       </Typography>

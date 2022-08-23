@@ -1,8 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { GameContext } from './game-context';
-import { getCharState } from './get-char-state';
+import { getCharState, getCharStates } from './get-char-state';
 import { KeyboardListener } from './keyboard-listener';
 import { CharState, CharStates, GameState, SubmittedWord, Word } from './types';
+import { useWord } from './use-word';
 import { useWordInput } from './use-word-input';
 
 export type GameProviderProps = {
@@ -11,34 +12,19 @@ export type GameProviderProps = {
   children?: React.ReactNode;
 };
 
-const loadWordStrings = (wordLength: number): string[] => {
-  const wordFile = require(`./words/words-${wordLength}.json`);
-  return wordFile;
-};
-
-const getWord = (wordStrings: string[]): Word => {
-  return wordStrings[Math.floor(Math.random() * wordStrings.length)].split(
-    ''
-  ) as Word;
-};
-
 export const GameProvider: FC<GameProviderProps> = (props) => {
   const { wordLength, tries, children } = props;
-  const [wordStrings, setWordStrings] = useState(loadWordStrings(wordLength));
-  const [word, setWord] = useState(getWord(wordStrings));
+  const { word, changeWord: reset } = useWord({ wordLength });
   const [submittedWords, setSubmittedWords] = useState<SubmittedWord[]>([]);
   const [charStates, setCharStates] = useState({} as CharStates);
   const [state, setState] = useState(GameState.Playing);
 
-  const reset = useCallback(() => {
-    setWord(getWord(wordStrings));
-    setSubmittedWords([]);
-    setCharStates({});
-    setState(GameState.Playing);
-  }, [wordStrings]);
-
   const onSubmitSuccess = useCallback(
     (newWord: Word) => {
+      if (!word) {
+        return;
+      }
+
       const submittedWord = newWord.map((char, i) => ({
         char,
         state: getCharState(i, newWord, word),
@@ -51,17 +37,14 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
 
   const input = useWordInput({
     wordLength,
-    wordStrings,
     onSubmitSuccess,
   });
 
   useEffect(() => {
-    setWordStrings(loadWordStrings(wordLength));
-  }, [wordLength]);
-
-  useEffect(() => {
-    reset();
-  }, [wordStrings, reset]);
+    setSubmittedWords([]);
+    setCharStates({});
+    setState(GameState.Playing);
+  }, [word]);
 
   useEffect(() => {
     if (!submittedWords.length) {
@@ -76,29 +59,7 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
       setState(GameState.Lost);
     }
 
-    setCharStates((prev) => {
-      const newState = { ...prev };
-
-      lastWord.forEach(({ char, state }) => {
-        const prevState = prev[char];
-
-        if (prevState === state || prevState === CharState.Correct) {
-          return;
-        }
-
-        if (!prevState || state === CharState.Correct) {
-          newState[char] = state;
-          return;
-        }
-
-        if (prevState === CharState.Hint || state === CharState.Hint) {
-          newState[char] = CharState.Hint;
-          return;
-        }
-      });
-
-      return newState;
-    });
+    setCharStates((prev) => getCharStates(lastWord, prev));
   }, [submittedWords, tries]);
 
   return (
@@ -108,7 +69,7 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
         word,
         wordLength,
         tries,
-        triesLeft: tries - submittedWords.length,
+        triesLeft: word ? tries - submittedWords.length : 0,
         submittedWords,
         charStates,
         input,

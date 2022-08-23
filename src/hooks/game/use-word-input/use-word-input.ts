@@ -1,13 +1,14 @@
 import { useSnackbar } from 'notistack';
-import { useCallback, useState } from 'react';
-import { getArrayOfSize } from '../../utils/get-array-of-size';
-import { Char } from './char';
+import { useCallback, useEffect, useState } from 'react';
+import { getArrayOfSize } from '../../../utils/get-array-of-size';
+import { Char } from './../char';
+import { Word } from './../types';
 import {
   getEmptyIndex,
   getNextIndex,
   getPreviousIndex,
 } from './input-navigation';
-import { Word } from './types';
+import { usePossibleWords } from './use-possible-words';
 
 export type WordInputValue = Char | undefined;
 
@@ -32,13 +33,13 @@ export type WordInput = {
 
 type UseWordInputProps = {
   wordLength: number;
-  wordStrings: string[];
-  onSubmitSuccess: (word: Word) => void;
+  onSubmitSuccess: (submittedWord: Word) => void;
 };
 
 export const useWordInput = (props: UseWordInputProps): WordInput => {
-  const { wordLength, wordStrings, onSubmitSuccess } = props;
+  const { wordLength, onSubmitSuccess } = props;
   const { enqueueSnackbar } = useSnackbar();
+  const possibleWords = usePossibleWords({ wordLength });
   const [inputState, setInputState] = useState<WordInputState>({
     values: getArrayOfSize(wordLength),
     currentIndex: 0,
@@ -118,13 +119,14 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
       return;
     }
 
-    const isValidWord = wordStrings.some((w) => w === word.join(''));
+    const isValidWord = possibleWords.some((w) => w === word.join(''));
 
     if (!isValidWord) {
       setInputState((state) => ({
         ...state,
         invalidIndexes: word.map((_, i) => i),
       }));
+
       enqueueSnackbar('This word is not accepted', { variant: 'warning' });
       return;
     }
@@ -138,8 +140,8 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     onSubmitSuccess(word as Char[]);
   }, [
     inputState.values,
+    possibleWords,
     wordLength,
-    wordStrings,
     enqueueSnackbar,
     onSubmitSuccess,
   ]);
@@ -168,6 +170,14 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
       currentIndex: getPreviousIndex(state.currentIndex, state.values, loop),
     }));
   }, []);
+
+  useEffect(() => {
+    setInputState({
+      values: getArrayOfSize(wordLength),
+      currentIndex: 0,
+      invalidIndexes: [],
+    });
+  }, [wordLength, possibleWords]);
 
   return {
     currentIndex: inputState.currentIndex,

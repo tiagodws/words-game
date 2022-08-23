@@ -22,7 +22,7 @@ export const WordBoard: FC = () => {
   const rows = tries;
   const cols = wordLength;
   const wordLengthArray = getArrayOfSize(wordLength);
-  const triesArray = getArrayOfSize(triesLeft);
+  const triesArray = triesLeft > 1 ? getArrayOfSize(triesLeft - 1) : [];
 
   const [boardContainer, { itemSize, fontSize }] = useSquareCellBoard({
     rows,
@@ -51,23 +51,27 @@ export const WordBoard: FC = () => {
         </Fragment>
       ))}
 
-      {triesArray.map((_, i) =>
-        i
-          ? wordLengthArray.map((_, j) => (
-              <Char key={j} state="disabled" itemSize={itemSize} />
-            ))
-          : values.map((char, j) => (
-              <Char
-                key={j}
-                char={char}
-                onClick={() => focusIndex(j)}
-                isFocused={currentIndex === j}
-                state={invalidIndexes.includes(j) ? 'invalid' : 'default'}
-                fontSize={fontSize}
-                itemSize={itemSize}
-              />
-            ))
-      )}
+      {triesLeft
+        ? values.map((char, j) => (
+            <Char
+              key={j}
+              char={char}
+              onClick={() => focusIndex(j)}
+              isFocused={currentIndex === j}
+              state={invalidIndexes.includes(j) ? 'invalid' : 'default'}
+              fontSize={fontSize}
+              itemSize={itemSize}
+            />
+          ))
+        : null}
+
+      {triesArray.map((_, i) => (
+        <Fragment key={i}>
+          {wordLengthArray.map((_, j) => (
+            <Char key={j} state="disabled" itemSize={itemSize} />
+          ))}
+        </Fragment>
+      ))}
     </Box>
   );
 };

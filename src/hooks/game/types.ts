@@ -1,4 +1,4 @@
-import { Char } from '../../components/char-cell';
+import { Char } from './char';
 
 export enum GameState {
   Playing = 'playing',

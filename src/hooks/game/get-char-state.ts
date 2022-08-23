@@ -1,4 +1,4 @@
-import { CharState, Word } from './types';
+import { CharState, CharStates, SubmittedWord, Word } from './types';
 
 export const getCharState = (
   i: number,
@@ -33,4 +33,35 @@ export const getCharState = (
   }
 
   return CharState.Incorrect;
+};
+
+export const getCharStates = (
+  submittedWord: SubmittedWord,
+  states: CharStates,
+  i = 0
+): CharStates => {
+  if (i >= submittedWord.length) {
+    return states;
+  }
+
+  const { char, state } = submittedWord[i];
+  const prevState = states[char];
+
+  if (prevState === state || prevState === CharState.Correct) {
+    return getCharStates(submittedWord, states, i + 1);
+  }
+
+  if (!prevState || state === CharState.Correct) {
+    return getCharStates(submittedWord, { ...states, [char]: state }, i + 1);
+  }
+
+  if (prevState === CharState.Hint || state === CharState.Hint) {
+    return getCharStates(
+      submittedWord,
+      { ...states, [char]: CharState.Hint },
+      i + 1
+    );
+  }
+
+  return states;
 };

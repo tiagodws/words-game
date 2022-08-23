@@ -4,7 +4,7 @@ import { WordInput } from './use-word-input';
 
 export type GameContextData = {
   state: GameState;
-  word: Word;
+  word?: Word;
   wordLength: number;
   tries: number;
   triesLeft: number;
@@ -16,7 +16,6 @@ export type GameContextData = {
 
 export const GameContext = React.createContext<GameContextData>({
   state: GameState.Playing,
-  word: [],
   wordLength: 0,
   tries: 0,
   triesLeft: 0,
