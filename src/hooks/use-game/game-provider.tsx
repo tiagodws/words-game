@@ -1,31 +1,30 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { TrackingEvent, useTracking } from '../use-tracking';
 import { GameContext } from './game-context';
-import { getCharState, getCharStates } from './get-char-state';
+import { GameState, getGameState } from './game-state';
+import { getCharState } from './get-char-state';
 import { KeyboardListener } from './keyboard-listener';
-import {
-  CharState,
-  CharStates,
-  GameStatus,
-  SubmittedWord,
-  Word,
-} from './types';
+import { GameStatus, Word } from './types';
 import { useWord } from './use-word';
 import { useWordInput } from './use-word-input';
 
-export type GameProviderProps = {
+export type GameConfig = {
   wordLength: number;
   totalTries: number;
+};
+
+export type GameProviderProps = {
+  config: GameConfig;
   children?: React.ReactNode;
 };
 
 export const GameProvider: FC<GameProviderProps> = (props) => {
-  const { wordLength, totalTries, children } = props;
-  const { word, changeWord: reset } = useWord({ wordLength });
-  const [submittedWords, setSubmittedWords] = useState<SubmittedWord[]>([]);
-  const [charStates, setCharStates] = useState({} as CharStates);
-  const [state, setState] = useState(GameStatus.Playing);
+  const { config, children } = props;
   const { sendEvent } = useTracking();
+  const { word, changeWord: reset } = useWord({
+    wordLength: config.wordLength,
+  });
+  const [state, setState] = useState<GameState>(getGameState(config, word));
 
   const onSubmitSuccess = useCallback(
     (newWord: Word) => {
@@ -38,71 +37,60 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
         state: getCharState(i, newWord, word),
       }));
 
-      setSubmittedWords((prev) => [...prev, submittedWord]);
+      setState((prev) =>
+        getGameState(config, word, {
+          ...prev,
+          submittedWords: [...prev.submittedWords, submittedWord],
+        })
+      );
     },
-    [word]
+    [word, config]
   );
 
   const input = useWordInput({
-    wordLength,
+    config,
     onSubmitSuccess,
   });
 
-  const sendFinishedEvent = useCallback(
-    (isWin: boolean) => {
-      sendEvent(TrackingEvent.GameFinished, {
-        isWin,
-        word,
-        wordLength,
-        totalTries,
-        tries: submittedWords.length,
-      });
-    },
-    [submittedWords, word, wordLength, totalTries, sendEvent]
-  );
+  useEffect(() => {
+    setState(getGameState(config, word));
+  }, [word, config]);
 
   useEffect(() => {
-    setSubmittedWords([]);
-    setCharStates({});
-    setState(GameStatus.Playing);
+    const tries = state.submittedWords.length;
 
-    if (word) {
-      sendEvent(TrackingEvent.GameStarted, { word });
+    if (state.status === GameStatus.Won) {
+      sendEvent(TrackingEvent.GameFinished, { word, config, tries });
     }
-  }, [word, sendEvent]);
+
+    if (state.status === GameStatus.Lost) {
+      console.log(state);
+      sendEvent(TrackingEvent.GameFinished, { word, config, tries });
+    }
+  }, [word, state.status, state.submittedWords, config, sendEvent]);
 
   useEffect(() => {
-    if (!submittedWords.length) {
-      return;
+    if (state.status === GameStatus.Loading) {
+      sendEvent(TrackingEvent.GameLoading, { config });
     }
 
-    const lastWord = submittedWords[submittedWords.length - 1];
-
-    if (lastWord.every((char) => char.state === CharState.Correct)) {
-      setState(GameStatus.Won);
-    } else if (submittedWords.length >= totalTries) {
-      setState(GameStatus.Lost);
+    if (state.status === GameStatus.Playing) {
+      sendEvent(TrackingEvent.GameStarted, { word, config });
     }
-
-    setCharStates((prev) => getCharStates(lastWord, prev));
-  }, [submittedWords, totalTries, sendFinishedEvent]);
+  }, [word, config, state.status, sendEvent]);
 
   return (
     <GameContext.Provider
       value={{
-        state,
         word,
-        wordLength,
-        totalTries: totalTries,
-        triesLeft: word ? totalTries - submittedWords.length : 0,
-        submittedWords,
-        charStates,
+        state,
+        config,
         input,
         reset,
       }}
     >
       <KeyboardListener
-        isEnabled={state === GameStatus.Playing}
+        isEnabled={state.status === GameStatus.Playing}
         onArrowLeft={() => input.focusPreviousIndex(true)}
         onArrowRight={() => input.focusNextIndex(true)}
         onTab={(shiftKey) =>

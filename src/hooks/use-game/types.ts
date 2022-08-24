@@ -1,6 +1,7 @@
 import { Char } from './char';
 
 export enum GameStatus {
+  Loading = 'loading',
   Playing = 'playing',
   Won = 'won',
   Lost = 'lost',
