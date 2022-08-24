@@ -80,10 +80,8 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
 
     if (lastWord.every((char) => char.state === CharState.Correct)) {
       setState(GameStatus.Won);
-      sendFinishedEvent(true);
     } else if (submittedWords.length >= totalTries) {
       setState(GameStatus.Lost);
-      sendFinishedEvent(false);
     }
 
     setCharStates((prev) => getCharStates(lastWord, prev));
