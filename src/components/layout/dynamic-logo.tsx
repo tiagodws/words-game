@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { Char } from '../../hooks/game';
+import { Char } from '../../hooks/use-game';
 import { CellState, CharCell } from '../char-cell';
 
 type DynamicLogoProps = {

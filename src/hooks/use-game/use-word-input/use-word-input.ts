@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
 import { useSnacks } from '../../use-snacks';
-import { Char } from './../char';
-import { Word } from './../types';
+import { Char } from '../char';
+import { Word } from '../types';
 import {
   getEmptyIndex,
   getNextIndex,

@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC, Fragment } from 'react';
-import { useGame } from '../../hooks/game';
+import { useGame } from '../../hooks/use-game';
 import { useSquareCellBoard } from '../../hooks/use-square-cell-board';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { CharCell, CharCellProps } from '../char-cell';

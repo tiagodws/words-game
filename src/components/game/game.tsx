@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
-import { GameProvider } from '../../hooks/game';
+import { GameProvider } from '../../hooks/use-game';
 import { Container } from '../container';
 import { Keyboard } from '../keyboard';
 import { ResultModal } from '../result-modal/result-modal';
