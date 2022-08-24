@@ -30,12 +30,12 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
     const tries = state.submittedWords.length;
 
     if (state.status === GameStatus.Won) {
-      sendEvent(TrackingEvent.GameFinished, { word, config, tries });
+      sendEvent(TrackingEvent.GameWon, { word, config, tries });
     }
 
     if (state.status === GameStatus.Lost) {
       console.log(state);
-      sendEvent(TrackingEvent.GameFinished, { word, config, tries });
+      sendEvent(TrackingEvent.GameLost, { word, config, tries });
     }
   }, [config, state, sendEvent]);
 
