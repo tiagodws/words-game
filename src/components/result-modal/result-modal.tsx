@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { GameState, useGame, Word } from '../../hooks/use-game';
+import { GameStatus, useGame, Word } from '../../hooks/use-game';
 import { CharCell } from '../char-cell';
 import { Link } from '../link';
 import { Text } from '../text';
@@ -17,14 +17,14 @@ import { useWordData } from './use-word-data';
 
 type ModalData = {
   word?: Word;
-  state: GameState;
+  state: GameStatus;
 };
 
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
   const { state, word, charStates, reset } = useGame();
   const [modalData, setModalData] = useState<ModalData>({ word, state });
-  const [isOpen, setIsOpen] = useState(state !== GameState.Playing);
+  const [isOpen, setIsOpen] = useState(state !== GameStatus.Playing);
   const [isExited, setIsExited] = useState(true);
   const { data } = useWordData(word);
 
@@ -39,7 +39,7 @@ export const ResultModal: FC = () => {
   }, [isOpen, isExited, state, word, modalData.word]);
 
   useEffect(() => {
-    if (modalData.state !== GameState.Playing) {
+    if (modalData.state !== GameStatus.Playing) {
       setIsOpen(true);
     }
   }, [modalData.state]);
@@ -56,7 +56,7 @@ export const ResultModal: FC = () => {
       TransitionProps={{ onExited: () => setIsExited(true) }}
     >
       <DialogTitle textAlign="center">
-        {modalData.state === GameState.Won
+        {modalData.state === GameStatus.Won
           ? t('stats:titleWon')
           : t('stats:titleLost')}
       </DialogTitle>

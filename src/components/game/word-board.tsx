@@ -17,7 +17,13 @@ const Char: FC<CharCellProps & { itemSize: number }> = ({
 );
 
 export const WordBoard: FC = () => {
-  const { wordLength, tries, triesLeft, submittedWords, input } = useGame();
+  const {
+    wordLength,
+    totalTries: tries,
+    triesLeft,
+    submittedWords,
+    input,
+  } = useGame();
   const { values, currentIndex, invalidIndexes, isFocused, focusIndex } = input;
   const rows = tries;
   const cols = wordLength;
