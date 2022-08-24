@@ -1,11 +1,9 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { TrackingEvent, useTracking } from '../use-tracking';
 import { GameContext } from './game-context';
-import { GameState, getGameState } from './game-state';
-import { getCharState } from './get-char-state';
 import { KeyboardListener } from './keyboard-listener';
-import { GameStatus, Word } from './types';
-import { useWord } from './use-word';
+import { GameStatus } from './types';
+import { useGameState } from './use-game-state';
 import { useWordInput } from './use-word-input';
 
 export type GameConfig = {
@@ -21,43 +19,15 @@ export type GameProviderProps = {
 export const GameProvider: FC<GameProviderProps> = (props) => {
   const { config, children } = props;
   const { sendEvent } = useTracking();
-  const { word, changeWord: reset } = useWord({
-    wordLength: config.wordLength,
-  });
-  const [state, setState] = useState<GameState>(getGameState(config, word));
-
-  const onSubmitSuccess = useCallback(
-    (newWord: Word) => {
-      if (!word) {
-        return;
-      }
-
-      const submittedWord = newWord.map((char, i) => ({
-        char,
-        state: getCharState(i, newWord, word),
-      }));
-
-      setState((prev) =>
-        getGameState(config, word, {
-          ...prev,
-          submittedWords: [...prev.submittedWords, submittedWord],
-        })
-      );
-    },
-    [word, config]
-  );
-
+  const { state, submitWord, newGame } = useGameState(config);
   const input = useWordInput({
     config,
-    onSubmitSuccess,
+    onSubmitSuccess: submitWord,
   });
 
   useEffect(() => {
-    setState(getGameState(config, word));
-  }, [word, config]);
-
-  useEffect(() => {
-    const tries = state.submittedWords.length;
+    const { word, submittedWords } = state;
+    const tries = submittedWords.length;
 
     if (state.status === GameStatus.Won) {
       sendEvent(TrackingEvent.GameFinished, { word, config, tries });
@@ -67,9 +37,11 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
       console.log(state);
       sendEvent(TrackingEvent.GameFinished, { word, config, tries });
     }
-  }, [word, state.status, state.submittedWords, config, sendEvent]);
+  }, [config, state, sendEvent]);
 
   useEffect(() => {
+    const word = state.word;
+
     if (state.status === GameStatus.Loading) {
       sendEvent(TrackingEvent.GameLoading, { config });
     }
@@ -77,16 +49,15 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
     if (state.status === GameStatus.Playing) {
       sendEvent(TrackingEvent.GameStarted, { word, config });
     }
-  }, [word, config, state.status, sendEvent]);
+  }, [config, state.status, state.word, sendEvent]);
 
   return (
     <GameContext.Provider
       value={{
-        word,
         state,
         config,
         input,
-        reset,
+        newGame,
       }}
     >
       <KeyboardListener

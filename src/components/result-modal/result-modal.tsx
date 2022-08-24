@@ -17,7 +17,7 @@ import { useWordData } from './use-word-data';
 
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const { word, state, reset } = useGame();
+  const { word, state, newGame } = useGame();
   const { data } = useWordData(word);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -114,7 +114,7 @@ export const ResultModal: FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Button variant="contained" fullWidth onClick={reset}>
+            <Button variant="contained" fullWidth onClick={newGame}>
               {t('stats:tryAgain')}
             </Button>
           </Grid>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { GameConfig } from './game-provider';
-import { GameState } from './game-state';
 import { GameStatus, Word } from './types';
+import { GameState } from './use-game-state';
 import { WordInput } from './use-word-input';
 
 export type GameContextData = {
@@ -9,7 +9,7 @@ export type GameContextData = {
   config: GameConfig;
   state: GameState;
   input: WordInput;
-  reset: () => void;
+  newGame: () => void;
 };
 
 export const GameContext = React.createContext<GameContextData>({
@@ -36,5 +36,5 @@ export const GameContext = React.createContext<GameContextData>({
     focusNextIndex: () => null,
     focusPreviousIndex: () => null,
   },
-  reset: () => null,
+  newGame: () => null,
 });

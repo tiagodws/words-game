@@ -1,5 +1,6 @@
+import { useCallback, useEffect, useState } from 'react';
 import { GameConfig } from './game-provider';
-import { getCharStates } from './get-char-state';
+import { getCharState, getCharStates } from './get-char-state';
 import {
   CharState,
   CharStates,
@@ -7,59 +8,81 @@ import {
   SubmittedWord,
   Word,
 } from './types';
+import { useWord } from './use-word';
 
 export type GameState = {
+  word?: Word;
   status: GameStatus;
   triesLeft: number;
   submittedWords: SubmittedWord[];
   charStates: CharStates;
 };
 
-type GameStateRaw = Omit<GameState, 'triesLeft' | 'status'>;
+type UseGameState = {
+  state: GameState;
+  submitWord(word: Word): void;
+  newGame(): void;
+};
 
-export const getGameState = (
-  config: GameConfig,
-  word?: Word,
-  state?: GameStateRaw
-): GameState => {
-  const { totalTries } = config;
-  const { submittedWords = [], charStates: prevCharStates = {} } = state || {};
-
-  const triesLeft = totalTries - submittedWords.length;
-
-  if (!word) {
-    return {
-      submittedWords: [],
-      charStates: {},
-      triesLeft,
-      status: GameStatus.Loading,
-    };
-  }
-
-  if (!submittedWords.length) {
-    return {
-      submittedWords: [],
-      charStates: {},
-      triesLeft,
-      status: GameStatus.Playing,
-    };
-  }
-
+const getStatus = (submittedWords: SubmittedWord[], totalTries: number) => {
   const lastWord = submittedWords[submittedWords.length - 1];
-  const charStates = getCharStates(lastWord, prevCharStates);
-  const newState = { word, charStates, submittedWords, triesLeft };
 
   if (lastWord.every((char) => char.state === CharState.Correct)) {
-    return {
-      ...newState,
-      status: GameStatus.Won,
-    };
+    return GameStatus.Won;
   } else if (submittedWords.length >= totalTries) {
-    return {
-      ...newState,
-      status: GameStatus.Lost,
-    };
+    return GameStatus.Lost;
   }
 
-  return { ...newState, status: GameStatus.Playing };
+  return GameStatus.Playing;
+};
+
+export const useGameState = (config: GameConfig): UseGameState => {
+  const { word, changeWord } = useWord(config);
+  const [state, setState] = useState<GameState>({
+    status: GameStatus.Loading,
+    submittedWords: [],
+    charStates: {},
+    triesLeft: 0,
+  });
+
+  const submitWord = useCallback(
+    (newWord: Word) => {
+      if (!word) {
+        return;
+      }
+
+      const submittedWord = newWord.map((char, i) => ({
+        char,
+        state: getCharState(i, newWord, word),
+      }));
+
+      setState((prev) => {
+        const submittedWords = [...prev.submittedWords, submittedWord];
+        const triesLeft = config.totalTries - submittedWords.length;
+        const charStates = getCharStates(submittedWord, prev.charStates);
+        return {
+          word,
+          charStates,
+          submittedWords,
+          triesLeft,
+          status: getStatus(submittedWords, config.totalTries),
+        };
+      });
+    },
+    [word, config.totalTries]
+  );
+
+  useEffect(() => {
+    if (word) {
+      setState({
+        word,
+        status: GameStatus.Playing,
+        submittedWords: [],
+        charStates: {},
+        triesLeft: config.totalTries,
+      });
+    }
+  }, [word, config.totalTries]);
+
+  return { state, submitWord, newGame: changeWord };
 };
