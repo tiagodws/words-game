@@ -4,6 +4,9 @@ import { App } from './app';
 import './index.css';
 import './locales/i18n';
 import reportWebVitals from './reportWebVitals';
+import { initGTM } from './utils/init-gtm';
+
+initGTM();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -4,4 +4,6 @@ const tagManagerArgs = {
   gtmId: 'GTM-PKJ3XD6',
 };
 
-TagManager.initialize(tagManagerArgs);
+export const initGTM = () => {
+  TagManager.initialize(tagManagerArgs);
+};
