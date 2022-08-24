@@ -16,12 +16,14 @@ export type WordInputValue = Char | undefined;
 export type WordInputState = {
   values: WordInputValue[];
   currentIndex: number;
+  isFocused: boolean;
   invalidIndexes: number[];
 };
 
 export type WordInput = {
   values: WordInputValue[];
   currentIndex: number;
+  isFocused: boolean;
   invalidIndexes: number[];
   type: (value: string) => void;
   erase: (goBack?: boolean) => void;
@@ -45,6 +47,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
   const [inputState, setInputState] = useState<WordInputState>({
     values: getArrayOfSize(wordLength),
     currentIndex: 0,
+    isFocused: true,
     invalidIndexes: [],
   });
 
@@ -57,18 +60,23 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     }
 
     setInputState((state) => {
-      const { values, currentIndex } = state;
+      const { values, currentIndex, isFocused } = state;
 
-      if (currentIndex >= values.length) {
+      if (!isFocused || currentIndex >= values.length) {
         return state;
       }
 
       const char = upperCase as Char;
       const newValues = [...values];
       newValues[currentIndex] = char as Char;
-      const newPos = getEmptyIndex(currentIndex, newValues);
+      const emptyIndex = getEmptyIndex(currentIndex, newValues);
 
-      return { values: newValues, currentIndex: newPos, invalidIndexes: [] };
+      return {
+        values: newValues,
+        currentIndex: emptyIndex ?? currentIndex,
+        isFocused: emptyIndex !== undefined,
+        invalidIndexes: [],
+      };
     });
   }, []);
 
@@ -82,7 +90,12 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
 
       if (!isCurrentIndexEmpty) {
         newValues[currentIndex] = undefined;
-        return { values: newValues, currentIndex, invalidIndexes: [] };
+        return {
+          values: newValues,
+          currentIndex,
+          isFocused: true,
+          invalidIndexes: [],
+        };
       }
 
       if (!goBack && isValidIndex) {
@@ -94,12 +107,18 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
         return {
           values: newValues,
           currentIndex: currentIndex - 1,
+          isFocused: true,
           invalidIndexes: [],
         };
       }
 
       if (currentIndex) {
-        return { values, currentIndex: currentIndex - 1, invalidIndexes: [] };
+        return {
+          values,
+          currentIndex: currentIndex - 1,
+          isFocused: true,
+          invalidIndexes: [],
+        };
       }
 
       return state;
@@ -138,6 +157,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     setInputState({
       values: getArrayOfSize(wordLength),
       currentIndex: 0,
+      isFocused: true,
       invalidIndexes: [],
     });
 
@@ -156,16 +176,21 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
   }, []);
 
   const focusEmptyIndex = useCallback(() => {
-    setInputState((state) => ({
-      ...state,
-      currentIndex: getEmptyIndex(state.currentIndex, state.values),
-    }));
+    setInputState((state) => {
+      const emptyIndex = getEmptyIndex(state.currentIndex, state.values);
+      return {
+        ...state,
+        currentIndex: emptyIndex ?? state.currentIndex,
+        isFocused: emptyIndex !== undefined,
+      };
+    });
   }, []);
 
   const focusNextIndex = useCallback((loop?: boolean) => {
     setInputState((state) => ({
       ...state,
       currentIndex: getNextIndex(state.currentIndex, state.values, loop),
+      isFocused: true,
     }));
   }, []);
 
@@ -173,6 +198,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     setInputState((state) => ({
       ...state,
       currentIndex: getPreviousIndex(state.currentIndex, state.values, loop),
+      isFocused: true,
     }));
   }, []);
 
@@ -180,12 +206,14 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     setInputState({
       values: getArrayOfSize(wordLength),
       currentIndex: 0,
+      isFocused: true,
       invalidIndexes: [],
     });
   }, [wordLength, possibleWords]);
 
   return {
     currentIndex: inputState.currentIndex,
+    isFocused: inputState.isFocused,
     values: inputState.values,
     invalidIndexes: inputState.invalidIndexes,
     type,

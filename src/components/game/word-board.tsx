@@ -18,7 +18,7 @@ const Char: FC<CharCellProps & { itemSize: number }> = ({
 
 export const WordBoard: FC = () => {
   const { wordLength, tries, triesLeft, submittedWords, input } = useGame();
-  const { values, currentIndex, invalidIndexes, focusIndex } = input;
+  const { values, currentIndex, invalidIndexes, isFocused, focusIndex } = input;
   const rows = tries;
   const cols = wordLength;
   const wordLengthArray = getArrayOfSize(wordLength);
@@ -57,7 +57,7 @@ export const WordBoard: FC = () => {
               key={j}
               char={char}
               onClick={() => focusIndex(j)}
-              isFocused={currentIndex === j}
+              isFocused={isFocused && currentIndex === j}
               state={invalidIndexes.includes(j) ? 'invalid' : 'default'}
               fontSize={fontSize}
               itemSize={itemSize}
