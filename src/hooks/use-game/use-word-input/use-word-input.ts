@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
 import { useSnacks } from '../../use-snacks';
+import { TrackingEvent, useTracking } from '../../use-tracking';
 import { Char } from '../char';
 import { Word } from '../types';
 import {
@@ -50,6 +51,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     isFocused: true,
     invalidIndexes: [],
   });
+  const { sendEvent } = useTracking();
 
   const type = useCallback((value: string) => {
     const upperCase = value && value.toUpperCase();
@@ -127,6 +129,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
 
   const submit = useCallback(() => {
     const word = [...inputState.values];
+    const wordString = word.join('');
     const invalidIndexes = word.reduce<number[]>((result, char, i) => {
       if (!char) {
         return [...result, i];
@@ -139,10 +142,14 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
       showSnack(t('validation:incomplete'), {
         variant: 'warning',
       });
+      sendEvent(TrackingEvent.GameWordTried, {
+        word: wordString,
+        isIncomplete: true,
+      });
       return;
     }
 
-    const isValidWord = possibleWords.some((w) => w === word.join(''));
+    const isValidWord = possibleWords.some((w) => w === wordString);
 
     if (!isValidWord) {
       setInputState((state) => ({
@@ -151,6 +158,10 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
       }));
 
       showSnack(t('validation:notValid'), { variant: 'warning' });
+      sendEvent(TrackingEvent.GameWordTried, {
+        word: wordString,
+        isIncomplete: false,
+      });
       return;
     }
 
@@ -161,6 +172,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
       invalidIndexes: [],
     });
 
+    sendEvent(TrackingEvent.GameWordSubmitted, { word: wordString });
     onSubmitSuccess(word as Char[]);
   }, [
     inputState.values,
@@ -169,6 +181,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     showSnack,
     onSubmitSuccess,
     t,
+    sendEvent,
   ]);
 
   const focusIndex = useCallback((index: number) => {

@@ -1,6 +1,6 @@
 import { Char } from './char';
 
-export enum GameState {
+export enum GameStatus {
   Playing = 'playing',
   Won = 'won',
   Lost = 'lost',

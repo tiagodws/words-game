@@ -8,7 +8,7 @@ import { WordBoard } from './word-board';
 
 export const Game: FC = () => {
   return (
-    <GameProvider wordLength={5} tries={6}>
+    <GameProvider wordLength={5} totalTries={6}>
       <ResultModal />
       <Box
         sx={{

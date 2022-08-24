@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './app';
+import { initTracking } from './hooks/use-tracking';
 import './index.css';
 import './locales/i18n';
 import reportWebVitals from './reportWebVitals';
-import { initGTM } from './utils/init-gtm';
 
-initGTM();
+initTracking();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
