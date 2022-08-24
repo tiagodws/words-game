@@ -4,7 +4,7 @@ export const getNextIndex = (
   currentIndex: number,
   values: WordInputValue[],
   loop?: boolean
-) => {
+): number => {
   const focusFirst = loop && currentIndex >= values.length - 1;
   const nextPos = Math.min(values.length - 1, currentIndex + 1);
   const newPos = focusFirst ? 0 : nextPos;
@@ -14,7 +14,7 @@ export const getNextIndex = (
 export const getEmptyIndex = (
   currentIndex: number,
   values: WordInputValue[]
-) => {
+): number | undefined => {
   const emptyIndexes = values.reduce<{ first?: number; next?: number }>(
     (result, char, i) => {
       if (result.first !== undefined && result.next !== undefined) {
@@ -23,11 +23,7 @@ export const getEmptyIndex = (
 
       const newResult = { ...result };
 
-      if (
-        !char &&
-        newResult.next === undefined &&
-        (i > currentIndex || i === values.length - 1)
-      ) {
+      if (!char && newResult.next === undefined && i > currentIndex) {
         newResult.next = i;
       }
 
@@ -40,15 +36,22 @@ export const getEmptyIndex = (
     {}
   );
 
-  const newPos = emptyIndexes.next ?? emptyIndexes.first ?? values.length;
-  return newPos;
+  if (emptyIndexes.next !== undefined) {
+    return emptyIndexes.next;
+  }
+
+  if (emptyIndexes.first !== undefined) {
+    return emptyIndexes.first;
+  }
+
+  return;
 };
 
 export const getPreviousIndex = (
   currentIndex: number,
   values: WordInputValue[],
   loop?: boolean
-) => {
+): number => {
   const focusLast = loop && currentIndex === 0;
   const previousPos = Math.max(0, currentIndex - 1);
   const newPos = focusLast ? values.length - 1 : previousPos;

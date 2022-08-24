@@ -24,6 +24,7 @@ export const GameContext = React.createContext<GameContextData>({
   input: {
     values: [],
     currentIndex: 0,
+    isFocused: false,
     invalidIndexes: [],
     type: () => {},
     erase: () => {},
