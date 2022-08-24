@@ -4,6 +4,7 @@ import { getArrayOfSize } from '../../../utils/get-array-of-size';
 import { useSnacks } from '../../use-snacks';
 import { TrackingEvent, useTracking } from '../../use-tracking';
 import { Char } from '../char';
+import { GameConfig } from '../game-provider';
 import { Word } from '../types';
 import {
   getEmptyIndex,
@@ -36,17 +37,17 @@ export type WordInput = {
 };
 
 type UseWordInputProps = {
-  wordLength: number;
+  config: GameConfig;
   onSubmitSuccess: (submittedWord: Word) => void;
 };
 
 export const useWordInput = (props: UseWordInputProps): WordInput => {
-  const { wordLength, onSubmitSuccess } = props;
+  const { config, onSubmitSuccess } = props;
   const { showSnack } = useSnacks();
-  const possibleWords = usePossibleWords({ wordLength });
+  const possibleWords = usePossibleWords(config);
   const { t } = useTranslation(['validation']);
   const [inputState, setInputState] = useState<WordInputState>({
-    values: getArrayOfSize(wordLength),
+    values: getArrayOfSize(config.wordLength),
     currentIndex: 0,
     isFocused: true,
     invalidIndexes: [],
@@ -166,7 +167,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
     }
 
     setInputState({
-      values: getArrayOfSize(wordLength),
+      values: getArrayOfSize(config.wordLength),
       currentIndex: 0,
       isFocused: true,
       invalidIndexes: [],
@@ -177,7 +178,7 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
   }, [
     inputState.values,
     possibleWords,
-    wordLength,
+    config,
     showSnack,
     onSubmitSuccess,
     t,
@@ -217,12 +218,12 @@ export const useWordInput = (props: UseWordInputProps): WordInput => {
 
   useEffect(() => {
     setInputState({
-      values: getArrayOfSize(wordLength),
+      values: getArrayOfSize(config.wordLength),
       currentIndex: 0,
       isFocused: true,
       invalidIndexes: [],
     });
-  }, [wordLength, possibleWords]);
+  }, [config, possibleWords]);
 
   return {
     currentIndex: inputState.currentIndex,

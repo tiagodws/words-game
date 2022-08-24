@@ -17,18 +17,13 @@ const Char: FC<CharCellProps & { itemSize: number }> = ({
 );
 
 export const WordBoard: FC = () => {
-  const {
-    wordLength,
-    totalTries: tries,
-    triesLeft,
-    submittedWords,
-    input,
-  } = useGame();
+  const { config, state, input } = useGame();
   const { values, currentIndex, invalidIndexes, isFocused, focusIndex } = input;
-  const rows = tries;
-  const cols = wordLength;
-  const wordLengthArray = getArrayOfSize(wordLength);
-  const triesArray = triesLeft > 1 ? getArrayOfSize(triesLeft - 1) : [];
+  const rows = config.totalTries;
+  const cols = config.wordLength;
+  const wordLengthArray = getArrayOfSize(config.wordLength);
+  const triesArray =
+    state.triesLeft > 1 ? getArrayOfSize(state.triesLeft - 1) : [];
 
   const [boardContainer, { itemSize, fontSize }] = useSquareCellBoard({
     rows,
@@ -49,7 +44,7 @@ export const WordBoard: FC = () => {
         alignContent: 'center',
       }}
     >
-      {submittedWords.map((submittedWord, i) => (
+      {state.submittedWords.map((submittedWord, i) => (
         <Fragment key={i}>
           {submittedWord.map((char, j) => (
             <Char key={j} {...char} fontSize={fontSize} itemSize={itemSize} />
@@ -57,7 +52,7 @@ export const WordBoard: FC = () => {
         </Fragment>
       ))}
 
-      {triesLeft
+      {state.triesLeft
         ? values.map((char, j) => (
             <Char
               key={j}

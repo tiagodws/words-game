@@ -1,26 +1,28 @@
 import React from 'react';
-import { CharStates, GameStatus, SubmittedWord, Word } from './types';
+import { GameConfig } from './game-provider';
+import { GameState } from './game-state';
+import { GameStatus, Word } from './types';
 import { WordInput } from './use-word-input';
 
 export type GameContextData = {
-  state: GameStatus;
   word?: Word;
-  wordLength: number;
-  totalTries: number;
-  triesLeft: number;
-  submittedWords: SubmittedWord[];
-  charStates: CharStates;
+  config: GameConfig;
+  state: GameState;
   input: WordInput;
   reset: () => void;
 };
 
 export const GameContext = React.createContext<GameContextData>({
-  state: GameStatus.Playing,
-  wordLength: 0,
-  totalTries: 0,
-  triesLeft: 0,
-  submittedWords: [],
-  charStates: {},
+  config: {
+    wordLength: 0,
+    totalTries: 0,
+  },
+  state: {
+    status: GameStatus.Playing,
+    triesLeft: 0,
+    submittedWords: [],
+    charStates: {},
+  },
   input: {
     values: [],
     currentIndex: 0,

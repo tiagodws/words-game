@@ -52,7 +52,7 @@ const Key: FC<
 );
 
 export const Keyboard: FC = () => {
-  const { charStates, input } = useGame();
+  const { state, input } = useGame();
   const { type, erase, submit } = input;
   const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
     useElementSize();
@@ -87,7 +87,7 @@ export const Keyboard: FC = () => {
           label={char}
           fontSize={keyboardFontSize}
           onClick={() => type(char)}
-          state={charStates[char]}
+          state={state.charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
         />
@@ -102,7 +102,7 @@ export const Keyboard: FC = () => {
           label={char}
           fontSize={keyboardFontSize}
           onClick={() => type(char)}
-          state={charStates[char]}
+          state={state.charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
         />
@@ -124,7 +124,7 @@ export const Keyboard: FC = () => {
           label={char}
           fontSize={keyboardFontSize}
           onClick={() => type(char)}
-          state={charStates[char]}
+          state={state.charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
         />

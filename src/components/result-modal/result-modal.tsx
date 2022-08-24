@@ -9,54 +9,26 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { GameStatus, useGame, Word } from '../../hooks/use-game';
+import { GameStatus, useGame } from '../../hooks/use-game';
 import { CharCell } from '../char-cell';
 import { Link } from '../link';
 import { Text } from '../text';
 import { useWordData } from './use-word-data';
 
-type ModalData = {
-  word?: Word;
-  state: GameStatus;
-};
-
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const { state, word, charStates, reset } = useGame();
-  const [modalData, setModalData] = useState<ModalData>({ word, state });
-  const [isOpen, setIsOpen] = useState(state !== GameStatus.Playing);
-  const [isExited, setIsExited] = useState(true);
+  const { word, state, reset } = useGame();
   const { data } = useWordData(word);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (isOpen && modalData.word !== word) {
-      setIsOpen(false);
-    }
-
-    if (isExited) {
-      setModalData({ word, state });
-    }
-  }, [isOpen, isExited, state, word, modalData.word]);
-
-  useEffect(() => {
-    if (modalData.state !== GameStatus.Playing) {
-      setIsOpen(true);
-    }
-  }, [modalData.state]);
-
-  useEffect(() => {
-    if (isOpen) {
-      setIsExited(false);
-    }
-  }, [isOpen]);
+    setIsOpen([GameStatus.Lost, GameStatus.Won].includes(state.status));
+  }, [state.status]);
 
   return (
-    <Dialog
-      open={isOpen}
-      TransitionProps={{ onExited: () => setIsExited(true) }}
-    >
+    <Dialog open={isOpen}>
       <DialogTitle textAlign="center">
-        {modalData.state === GameStatus.Won
+        {state.status === GameStatus.Won
           ? t('stats:titleWon')
           : t('stats:titleLost')}
       </DialogTitle>
@@ -85,7 +57,7 @@ export const ResultModal: FC = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  {modalData.word?.map((char, i) => (
+                  {word?.map((char, i) => (
                     <Box
                       key={i}
                       sx={{
@@ -96,7 +68,7 @@ export const ResultModal: FC = () => {
                     >
                       <CharCell
                         char={char}
-                        state={charStates[char]}
+                        state={state.charStates[char]}
                         fontSize={16}
                       />
                     </Box>
