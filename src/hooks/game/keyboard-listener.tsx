@@ -6,7 +6,7 @@ type KeyboardListenerProps = {
   isEnabled: boolean;
   onArrowLeft: () => void;
   onArrowRight: () => void;
-  onTab: () => void;
+  onTab: (shiftKey?: boolean) => void;
   onBackspace: () => void;
   onDelete: () => void;
   onEnter: () => void;
@@ -42,8 +42,6 @@ export const KeyboardListener: FC<KeyboardListenerProps> = (props) => {
       return;
     }
 
-    e.preventDefault();
-
     switch (e.key) {
       case Key.ArrowLeft: {
         onArrowLeft();
@@ -54,7 +52,8 @@ export const KeyboardListener: FC<KeyboardListenerProps> = (props) => {
         return;
       }
       case Key.Tab: {
-        onTab();
+        onTab(e.shiftKey);
+        e.preventDefault();
         return;
       }
       case Key.Backspace: {

@@ -80,7 +80,9 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
         isEnabled={state === GameState.Playing}
         onArrowLeft={() => input.focusPreviousIndex(true)}
         onArrowRight={() => input.focusNextIndex(true)}
-        onTab={() => input.focusNextIndex(true)}
+        onTab={(shiftKey) =>
+          shiftKey ? input.focusPreviousIndex(true) : input.focusNextIndex(true)
+        }
         onBackspace={() => input.erase(true)}
         onDelete={() => input.erase()}
         onSpace={() => input.focusEmptyIndex()}
