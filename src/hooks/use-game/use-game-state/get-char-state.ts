@@ -1,4 +1,4 @@
-import { CharState, CharStates, SubmittedWord, Word } from './types';
+import { CharState, CharStates, SubmittedWord, Word } from '../types';
 
 export const getCharState = (
   i: number,

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { GameConfig } from './game-provider';
-import { getCharState, getCharStates } from './get-char-state';
+import { GameConfig } from '../game-provider';
 import {
   CharState,
   CharStates,
   GameStatus,
   SubmittedWord,
   Word,
-} from './types';
+} from '../types';
+import { getCharState, getCharStates } from './get-char-state';
 import { useWord } from './use-word';
 
 export type GameState = {

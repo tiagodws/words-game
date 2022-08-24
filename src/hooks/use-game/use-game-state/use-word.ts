@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getValidWord } from '../../api/words';
-import { Word } from './types';
+import { getValidWord } from '../../../api/words';
+import { Word } from '../types';
 
 type UseWordProps = {
   wordLength: number;

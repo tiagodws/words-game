@@ -26,8 +26,8 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
   });
 
   useEffect(() => {
-    const { word, submittedWords } = state;
-    const tries = submittedWords.length;
+    const word = state.word?.join('');
+    const tries = state.submittedWords.length;
 
     if (state.status === GameStatus.Won) {
       sendEvent(TrackingEvent.GameFinished, { word, config, tries });
@@ -40,7 +40,7 @@ export const GameProvider: FC<GameProviderProps> = (props) => {
   }, [config, state, sendEvent]);
 
   useEffect(() => {
-    const word = state.word;
+    const word = state.word?.join('');
 
     if (state.status === GameStatus.Loading) {
       sendEvent(TrackingEvent.GameLoading, { config });
