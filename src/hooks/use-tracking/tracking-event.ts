@@ -1,7 +1,7 @@
 export enum TrackingEvent {
-  GameLoading = 'Game loading',
-  GameStarted = 'Game started',
-  GameWordTried = 'Game word tried',
-  GameWordSubmitted = 'Game word submitted',
-  GameFinished = 'Game finished',
+  GameLoading = 'game_loading',
+  GameStarted = 'game_started',
+  GameWordTried = 'game_word_tried',
+  GameWordSubmitted = 'game_word_submitted',
+  GameFinished = 'game_finished',
 }
