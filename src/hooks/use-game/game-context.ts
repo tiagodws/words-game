@@ -1,11 +1,10 @@
 import React from 'react';
 import { GameConfig } from './game-provider';
-import { GameStatus, Word } from './types';
+import { GameStatus } from './types';
 import { GameState } from './use-game-state';
 import { WordInput } from './use-word-input';
 
 export type GameContextData = {
-  word?: Word;
   config: GameConfig;
   state: GameState;
   input: WordInput;

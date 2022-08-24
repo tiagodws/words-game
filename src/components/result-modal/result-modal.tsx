@@ -17,8 +17,8 @@ import { useWordData } from './use-word-data';
 
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const { word, state, newGame } = useGame();
-  const { data } = useWordData(word);
+  const { state, newGame } = useGame();
+  const { data } = useWordData(state.word);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export const ResultModal: FC = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  {word?.map((char, i) => (
+                  {state.word?.map((char, i) => (
                     <Box
                       key={i}
                       sx={{
