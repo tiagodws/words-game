@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useElementSize } from 'usehooks-ts';
-import { Char, useGame } from '../../hooks/game';
+import { Char, useGame } from '../../hooks/use-game';
 import { KeyboardKey, KeyboardKeyProps } from './keyboard-key';
 
 const firstRow = [

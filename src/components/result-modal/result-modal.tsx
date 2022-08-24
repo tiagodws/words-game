@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { GameState, useGame, Word } from '../../hooks/game';
+import { GameState, useGame, Word } from '../../hooks/use-game';
 import { CharCell } from '../char-cell';
 import { Link } from '../link';
 import { Text } from '../text';
