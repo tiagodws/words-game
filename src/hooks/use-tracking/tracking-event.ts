@@ -3,5 +3,6 @@ export enum TrackingEvent {
   GameStarted = 'game_started',
   GameWordTried = 'game_word_tried',
   GameWordSubmitted = 'game_word_submitted',
-  GameFinished = 'game_finished',
+  GameWon = 'game_won',
+  GameLost = 'game_lost',
 }
