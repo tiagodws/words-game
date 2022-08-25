@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
-import { GameProvider } from '../../hooks/use-game';
+import { GameContainer } from '../../hooks/game/game';
 import { Container } from '../container';
 import { Keyboard } from '../keyboard';
 import { ResultModal } from '../result-modal/result-modal';
@@ -8,7 +8,7 @@ import { WordBoard } from './word-board';
 
 export const Game: FC = () => {
   return (
-    <GameProvider config={{ wordLength: 5, totalTries: 6 }}>
+    <GameContainer>
       <ResultModal />
       <Box
         sx={{
@@ -42,6 +42,6 @@ export const Game: FC = () => {
           <Keyboard />
         </Container>
       </Box>
-    </GameProvider>
+    </GameContainer>
   );
 };
