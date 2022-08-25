@@ -1,7 +1,9 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useElementSize } from 'usehooks-ts';
-import { Char, useGame } from '../../hooks/use-game';
+import { useGameInputActions } from '../../hooks/game/game-input';
+import { useGameState } from '../../hooks/game/game-state';
+import { Char } from '../../hooks/use-game';
 import { KeyboardKey, KeyboardKeyProps } from './keyboard-key';
 
 const firstRow = [
@@ -52,8 +54,8 @@ const Key: FC<
 );
 
 export const Keyboard: FC = () => {
-  const { state, input } = useGame();
-  const { type, erase, submit } = input;
+  const state = useGameState();
+  const inputActions = useGameInputActions();
   const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
     useElementSize();
 
@@ -86,7 +88,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           fontSize={keyboardFontSize}
-          onClick={() => type(char)}
+          onClick={() => inputActions.type(char)}
           state={state.charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
@@ -101,7 +103,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           fontSize={keyboardFontSize}
-          onClick={() => type(char)}
+          onClick={() => inputActions.type(char)}
           state={state.charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
@@ -111,7 +113,7 @@ export const Keyboard: FC = () => {
       <Key
         label={'<'}
         fontSize={keyboardFontSize}
-        onClick={() => erase(true)}
+        onClick={() => inputActions.erase(true)}
         itemHeight={keyboardKeyHeight}
         itemWidth={keyboardKeyWidth}
       />
@@ -123,7 +125,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           fontSize={keyboardFontSize}
-          onClick={() => type(char)}
+          onClick={() => inputActions.type(char)}
           state={state.charStates[char]}
           itemHeight={keyboardKeyHeight}
           itemWidth={keyboardKeyWidth}
@@ -135,7 +137,7 @@ export const Keyboard: FC = () => {
         label={'ENTER'}
         size={5}
         fontSize={keyboardFontSize}
-        onClick={() => submit()}
+        onClick={() => inputActions.submit()}
         itemHeight={keyboardKeyHeight}
         itemWidth={keyboardKeyWidth}
       />

@@ -1,6 +1,8 @@
 import { Box } from '@mui/material';
 import { FC, Fragment } from 'react';
-import { useGame } from '../../hooks/use-game';
+import { useGameConfig } from '../../hooks/game/game-config';
+import { useGameInput, useGameInputActions } from '../../hooks/game/game-input';
+import { useGameState } from '../../hooks/game/game-state';
 import { useSquareCellBoard } from '../../hooks/use-square-cell-board';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { CharCell, CharCellProps } from '../char-cell';
@@ -17,8 +19,10 @@ const Char: FC<CharCellProps & { itemSize: number }> = ({
 );
 
 export const WordBoard: FC = () => {
-  const { config, state, input } = useGame();
-  const { values, currentIndex, invalidIndexes, isFocused, focusIndex } = input;
+  const config = useGameConfig();
+  const state = useGameState();
+  const input = useGameInput();
+  const inputActions = useGameInputActions();
   const rows = config.totalTries;
   const cols = config.wordLength;
   const wordLengthArray = getArrayOfSize(config.wordLength);
@@ -53,13 +57,13 @@ export const WordBoard: FC = () => {
       ))}
 
       {state.triesLeft
-        ? values.map((char, j) => (
+        ? input.values.map((char, j) => (
             <Char
               key={j}
               char={char}
-              onClick={() => focusIndex(j)}
-              isFocused={isFocused && currentIndex === j}
-              state={invalidIndexes.includes(j) ? 'invalid' : 'default'}
+              onClick={() => inputActions.focusIndex(j)}
+              isFocused={input.isFocused && input.currentIndex === j}
+              state={input.invalidIndexes.includes(j) ? 'invalid' : 'default'}
               fontSize={fontSize}
               itemSize={itemSize}
             />

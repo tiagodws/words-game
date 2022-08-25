@@ -9,7 +9,8 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { GameStatus, useGame } from '../../hooks/use-game';
+import { useGameState, useGameStateActions } from '../../hooks/game/game-state';
+import { GameStatus } from '../../hooks/use-game';
 import { CharCell } from '../char-cell';
 import { Link } from '../link';
 import { Text } from '../text';
@@ -17,7 +18,8 @@ import { useWordData } from './use-word-data';
 
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const { state, newGame } = useGame();
+  const state = useGameState();
+  const actions = useGameStateActions();
   const { data } = useWordData(state.word);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -114,7 +116,7 @@ export const ResultModal: FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Button variant="contained" fullWidth onClick={newGame}>
+            <Button variant="contained" fullWidth onClick={actions.restart}>
               {t('stats:tryAgain')}
             </Button>
           </Grid>
