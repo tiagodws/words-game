@@ -37,7 +37,7 @@ export const ResultModal: FC = () => {
   }, [isOpen, isExited, state, modalState.word]);
 
   useEffect(() => {
-    if (modalState.status !== GameStatus.Playing) {
+    if ([GameStatus.Won, GameStatus.Lost].includes(modalState.status)) {
       setIsOpen(true);
     }
   }, [modalState.status]);
@@ -51,7 +51,7 @@ export const ResultModal: FC = () => {
   return (
     <Dialog
       open={isOpen}
-      TransitionProps={{ onExited: () => setIsOpen(false) }}
+      TransitionProps={{ onExited: () => setIsExited(true) }}
     >
       <DialogTitle textAlign="center">
         {modalState.status === GameStatus.Won
