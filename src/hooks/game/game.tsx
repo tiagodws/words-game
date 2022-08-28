@@ -2,6 +2,7 @@ import { FC, ReactNode } from 'react';
 import { GameConfigProvider } from './game-config';
 import { GameInputProvider } from './game-input';
 import { GameStateProvider } from './game-state';
+import { GameTracking } from './game-tracking';
 import { KeyboardListener } from './keyboard-listener';
 
 type GameProps = {
@@ -16,6 +17,7 @@ export const Game: FC<GameProps> = (props) => {
       <GameStateProvider>
         <GameInputProvider>
           <KeyboardListener />
+          <GameTracking />
           {children}
         </GameInputProvider>
       </GameStateProvider>

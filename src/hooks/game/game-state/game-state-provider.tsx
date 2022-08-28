@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { TrackingEvent, useTracking } from '../../use-tracking';
 import { useGameConfig } from '../game-config';
 import { CharState, GameStatus, SubmittedWord, Word } from '../types';
 import {
@@ -29,7 +28,6 @@ const getStatus = (submittedWords: SubmittedWord[], totalTries: number) => {
 export const GameStateProvider: FC<GameStateProviderProps> = (props) => {
   const { children } = props;
   const config = useGameConfig();
-  const { sendEvent } = useTracking();
   const { word, changeWord: restart } = useWord(config);
   const [state, setState] = useState<GameStateContextData>({
     status: GameStatus.Loading,
@@ -76,34 +74,6 @@ export const GameStateProvider: FC<GameStateProviderProps> = (props) => {
       });
     }
   }, [word, config.totalTries]);
-
-  useEffect(() => {
-    const word = state.word?.join('');
-    const status = state.status;
-    const submittedWords = state.submittedWords;
-    const lastSubmitted = submittedWords[submittedWords.length - 1];
-    const lastSubmittedString = lastSubmitted?.map(({ char }) => char).join('');
-
-    if (status === GameStatus.Playing && !submittedWords.length) {
-      sendEvent(TrackingEvent.GameStarted, { word });
-      return;
-    }
-
-    if (status === GameStatus.Won) {
-      sendEvent(TrackingEvent.GameWon, { word });
-      return;
-    }
-
-    if (status === GameStatus.Lost) {
-      sendEvent(TrackingEvent.GameLost, { word });
-      return;
-    }
-
-    if (status === GameStatus.Playing && lastSubmitted) {
-      sendEvent(TrackingEvent.GameWordSubmitted, { word: lastSubmittedString });
-      return;
-    }
-  }, [state.word, state.submittedWords, state.status, sendEvent]);
 
   const actions = useMemo(
     () => ({ submitWord, restart }),

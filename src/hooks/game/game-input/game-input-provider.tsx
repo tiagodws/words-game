@@ -2,14 +2,13 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
 import { useSnacks } from '../../use-snacks';
-import { TrackingEvent, useTracking } from '../../use-tracking';
 import { useGameConfig } from '../game-config';
 import { useGameStateActions } from '../game-state';
 import { Char, Word } from '../types';
 import {
   GameInputActionsContext,
   GameInputContext,
-  WordInputValue,
+  GameInputContextData,
 } from './game-input-context';
 import {
   getEmptyIndex,
@@ -22,23 +21,14 @@ export type GameInputProviderProps = {
   children?: React.ReactNode;
 };
 
-export type WordInputState = {
-  values: WordInputValue[];
-  currentIndex: number;
-  isFocused: boolean;
-  invalidIndexes: number[];
-  submittedValues?: WordInputValue[];
-};
-
 export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   const { children } = props;
   const { t } = useTranslation();
   const { showSnack } = useSnacks();
-  const { sendEvent } = useTracking();
   const config = useGameConfig();
   const { submitWord } = useGameStateActions();
   const possibleWords = usePossibleWords(config);
-  const [inputState, setInputState] = useState<WordInputState>({
+  const [inputState, setInputState] = useState<GameInputContextData>({
     values: getArrayOfSize(config.wordLength),
     currentIndex: 0,
     isFocused: true,
@@ -227,7 +217,6 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
     }
 
     showSnack(t('validation:notValid'), { variant: 'warning' });
-    sendEvent(TrackingEvent.GameWordTried, { word: submittedValues.join('') });
   }, [
     inputState.submittedValues,
     inputState.invalidIndexes,
@@ -236,7 +225,6 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
     t,
     showSnack,
     submitWord,
-    sendEvent,
   ]);
 
   const actions = useMemo(
