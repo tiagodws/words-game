@@ -1,18 +1,14 @@
 import { FC, useEffect } from 'react';
 import { Key } from 'ts-key-enum';
-import { Char, GameStatus } from '../use-game';
 import { useGameInputActions } from './game-input';
 import { useGameState } from './game-state';
+import { Char, GameStatus } from './types';
 
 const validChars = Object.values(Char);
 
-export const KeyboardListener: FC = (props) => {
+export const KeyboardListener: FC = () => {
   const { status } = useGameState();
   const inputActions = useGameInputActions();
-
-  useEffect(() => {
-    console.log('tet');
-  }, [inputActions.submit]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);

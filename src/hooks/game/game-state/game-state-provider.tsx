@@ -1,16 +1,13 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { CharState, GameStatus, SubmittedWord, Word } from '../../use-game';
-import {
-  getCharState,
-  getCharStates,
-} from '../../use-game/use-game-state/get-char-state';
-import { useWord } from '../../use-game/use-game-state/use-word';
 import { useGameConfig } from '../game-config';
+import { CharState, GameStatus, SubmittedWord, Word } from '../types';
 import {
   GameStateActionsContext,
   GameStateContext,
   GameStateContextData,
 } from './game-state-context';
+import { getCharState, getCharStates } from './get-char-state';
+import { useWord } from './use-word';
 
 export type GameStateProviderProps = {
   children?: React.ReactNode;

@@ -11,9 +11,9 @@ export const useSquareCellBoard = (props: UseSquareCellBoardProps) => {
     useElementSize();
 
   const biggerDim = Math.max(rows, cols);
-  const itemSize =
+  const cellSize =
     boardHeight > boardWidth ? boardWidth / biggerDim : boardHeight / biggerDim;
-  const fontSize = Math.min(itemSize * 0.4, 28);
+  const fontSize = Math.min(cellSize * 0.4, 28);
 
-  return [boardContainer, { itemSize, fontSize }] as const;
+  return [boardContainer, { cellSize, fontSize }] as const;
 };

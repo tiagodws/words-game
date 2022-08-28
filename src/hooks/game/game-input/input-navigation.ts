@@ -1,4 +1,4 @@
-import { WordInputValue } from './use-word-input';
+import { WordInputValue } from './game-input-context';
 
 export const getNextIndex = (
   currentIndex: number,
