@@ -1,5 +1,7 @@
 import React from 'react';
-import { WordInputValue } from '../../use-game/use-word-input';
+import { Char } from '../types';
+
+export type WordInputValue = Char | undefined;
 
 export type GameInputContextData = {
   values: WordInputValue[];

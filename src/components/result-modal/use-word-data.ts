@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { Word } from '../../hooks/use-game';
+import { Word } from '../../hooks/game';
 
 type ApiResponse = {
   word: string;

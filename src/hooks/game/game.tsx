@@ -8,7 +8,7 @@ type GameProps = {
   children?: ReactNode;
 };
 
-export const GameContainer: FC<GameProps> = (props) => {
+export const Game: FC<GameProps> = (props) => {
   const { children } = props;
 
   return (

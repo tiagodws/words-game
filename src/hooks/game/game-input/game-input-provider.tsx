@@ -1,41 +1,49 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
-import { Char } from '../../use-game';
-import { WordInputState } from '../../use-game/use-word-input';
+import { useSnacks } from '../../use-snacks';
+import { TrackingEvent, useTracking } from '../../use-tracking';
+import { useGameConfig } from '../game-config';
+import { useGameStateActions } from '../game-state';
+import { Char, Word } from '../types';
+import {
+  GameInputActionsContext,
+  GameInputContext,
+  WordInputValue,
+} from './game-input-context';
 import {
   getEmptyIndex,
   getNextIndex,
   getPreviousIndex,
-} from '../../use-game/use-word-input/input-navigation';
-import { usePossibleWords } from '../../use-game/use-word-input/use-possible-words';
-import { useSnacks } from '../../use-snacks';
-import { useTracking } from '../../use-tracking';
-import { useGameConfig } from '../game-config';
-import { useGameStateActions } from '../game-state';
-import {
-  GameInputActionsContext,
-  GameInputContext,
-} from './game-input-context';
+} from './input-navigation';
+import { usePossibleWords } from './use-possible-words';
 
 export type GameInputProviderProps = {
   children?: React.ReactNode;
 };
 
+export type WordInputState = {
+  values: WordInputValue[];
+  currentIndex: number;
+  isFocused: boolean;
+  invalidIndexes: number[];
+  submittedValues?: WordInputValue[];
+};
+
 export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   const { children } = props;
+  const { t } = useTranslation();
+  const { showSnack } = useSnacks();
+  const { sendEvent } = useTracking();
   const config = useGameConfig();
   const { submitWord } = useGameStateActions();
-  const { showSnack } = useSnacks();
   const possibleWords = usePossibleWords(config);
-  const { t } = useTranslation(['validation']);
   const [inputState, setInputState] = useState<WordInputState>({
     values: getArrayOfSize(config.wordLength),
     currentIndex: 0,
     isFocused: true,
     invalidIndexes: [],
   });
-  const { sendEvent } = useTracking();
 
   const type = useCallback((value: string) => {
     const upperCase = value && value.toUpperCase();
@@ -56,12 +64,15 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
       const newValues = [...values];
       newValues[currentIndex] = char as Char;
       const emptyIndex = getEmptyIndex(currentIndex, newValues);
+      const invalidIndexes = state.invalidIndexes.length
+        ? []
+        : state.invalidIndexes;
 
       return {
         values: newValues,
         currentIndex: emptyIndex ?? currentIndex,
         isFocused: emptyIndex !== undefined,
-        invalidIndexes: [],
+        invalidIndexes,
       };
     });
   }, []);
@@ -73,6 +84,9 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
       const isCurrentIndexEmpty = !newValues[currentIndex];
       const isPreviousIndexEmpty = !newValues[currentIndex - 1];
       const isValidIndex = currentIndex < values.length;
+      const invalidIndexes = state.invalidIndexes.length
+        ? []
+        : state.invalidIndexes;
 
       if (!isCurrentIndexEmpty) {
         newValues[currentIndex] = undefined;
@@ -80,7 +94,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values: newValues,
           currentIndex,
           isFocused: true,
-          invalidIndexes: [],
+          invalidIndexes,
         };
       }
 
@@ -94,7 +108,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values: newValues,
           currentIndex: currentIndex - 1,
           isFocused: true,
-          invalidIndexes: [],
+          invalidIndexes,
         };
       }
 
@@ -103,7 +117,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values,
           currentIndex: currentIndex - 1,
           isFocused: true,
-          invalidIndexes: [],
+          invalidIndexes,
         };
       }
 
@@ -114,7 +128,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   const submit = useCallback(() => {
     setInputState((prev) => {
       const word = prev.values;
-      const wordString = word.join('');
+
       const invalidIndexes = word.reduce<number[]>((result, char, i) => {
         if (!char) {
           return [...result, i];
@@ -123,15 +137,17 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
       }, []);
 
       if (invalidIndexes.length) {
-        return { ...prev, invalidIndexes };
+        return { ...prev, invalidIndexes, submittedValues: word };
       }
 
+      const wordString = word.join('');
       const isValidWord = possibleWords.some((w) => w === wordString);
 
       if (!isValidWord) {
         return {
           ...prev,
           invalidIndexes: word.map((_, i) => i),
+          submittedValues: word,
         };
       }
 
@@ -140,9 +156,19 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
         currentIndex: 0,
         isFocused: true,
         invalidIndexes: [],
+        submittedValues: word,
       };
     });
   }, [config.wordLength, possibleWords]);
+
+  const clear = useCallback(() => {
+    setInputState({
+      values: getArrayOfSize(config.wordLength),
+      currentIndex: 0,
+      isFocused: true,
+      invalidIndexes: [],
+    });
+  }, [config.wordLength]);
 
   const focusIndex = useCallback((index: number) => {
     setInputState((state) => ({ ...state, currentIndex: index }));
@@ -176,13 +202,42 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    setInputState({
-      values: getArrayOfSize(config.wordLength),
-      currentIndex: 0,
-      isFocused: true,
-      invalidIndexes: [],
-    });
-  }, [config, possibleWords]);
+    clear();
+  }, [clear]);
+
+  useEffect(() => {
+    const submittedValues = inputState.submittedValues?.filter((v) => !!v);
+    const invalidIndexes = inputState.invalidIndexes;
+
+    if (submittedValues?.length && !invalidIndexes.length) {
+      submitWord(submittedValues as Word);
+      clear();
+      return;
+    }
+
+    if (!invalidIndexes.length) {
+      return;
+    }
+
+    if (submittedValues?.length !== config.wordLength) {
+      showSnack(t('validation:incomplete'), {
+        variant: 'warning',
+      });
+      return;
+    }
+
+    showSnack(t('validation:notValid'), { variant: 'warning' });
+    sendEvent(TrackingEvent.GameWordTried, { word: submittedValues.join('') });
+  }, [
+    inputState.submittedValues,
+    inputState.invalidIndexes,
+    config.wordLength,
+    clear,
+    t,
+    showSnack,
+    submitWord,
+    sendEvent,
+  ]);
 
   const actions = useMemo(
     () => ({

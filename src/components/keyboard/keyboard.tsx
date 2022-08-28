@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useElementSize } from 'usehooks-ts';
+import { Char } from '../../hooks/game';
 import { useGameInputActions } from '../../hooks/game/game-input';
 import { useGameState } from '../../hooks/game/game-state';
-import { Char } from '../../hooks/use-game';
-import { KeyboardKey, KeyboardKeyProps } from './keyboard-key';
+import { KeyboardCell } from './keyboard-cell';
 
 const firstRow = [
   Char.Q,
@@ -35,24 +35,6 @@ const rows = 3;
 const cols = 22;
 const defaultKeySize = 2;
 
-const Key: FC<
-  {
-    size?: number;
-    itemWidth: number;
-    itemHeight: number;
-  } & KeyboardKeyProps
-> = ({ size = defaultKeySize, itemHeight, itemWidth, ...props }) => (
-  <Box
-    sx={{
-      gridColumn: `span ${size}`,
-      mx: `${itemWidth * 0.05}px`,
-      my: `${itemWidth * 0.05}px`,
-    }}
-  >
-    <KeyboardKey {...props} />
-  </Box>
-);
-
 export const Keyboard: FC = () => {
   const state = useGameState();
   const inputActions = useGameInputActions();
@@ -61,7 +43,6 @@ export const Keyboard: FC = () => {
 
   const keyboardKeyHeight = Math.min(keyboardHeight / rows, 64);
   const keyboardKeyWidth = Math.min(keyboardWidth / cols, 32);
-
   const keyboardFontSize = Math.min(
     keyboardKeyWidth * defaultKeySize > keyboardKeyHeight
       ? keyboardKeyHeight * 0.4
@@ -84,14 +65,15 @@ export const Keyboard: FC = () => {
       }}
     >
       {firstRow.map((char) => (
-        <Key
+        <KeyboardCell
           key={char}
           label={char}
-          fontSize={keyboardFontSize}
           onClick={() => inputActions.type(char)}
           state={state.charStates[char]}
-          itemHeight={keyboardKeyHeight}
-          itemWidth={keyboardKeyWidth}
+          size={defaultKeySize}
+          fontSize={keyboardFontSize}
+          cellHeight={keyboardKeyHeight}
+          cellWidth={keyboardKeyWidth}
         />
       ))}
       <Box />
@@ -99,47 +81,50 @@ export const Keyboard: FC = () => {
 
       <Box />
       {secondRow.map((char) => (
-        <Key
+        <KeyboardCell
           key={char}
           label={char}
-          fontSize={keyboardFontSize}
           onClick={() => inputActions.type(char)}
           state={state.charStates[char]}
-          itemHeight={keyboardKeyHeight}
-          itemWidth={keyboardKeyWidth}
+          size={defaultKeySize}
+          fontSize={keyboardFontSize}
+          cellHeight={keyboardKeyHeight}
+          cellWidth={keyboardKeyWidth}
         />
       ))}
       <Box />
-      <Key
+      <KeyboardCell
         label={'<'}
-        fontSize={keyboardFontSize}
         onClick={() => inputActions.erase(true)}
-        itemHeight={keyboardKeyHeight}
-        itemWidth={keyboardKeyWidth}
+        size={defaultKeySize}
+        fontSize={keyboardFontSize}
+        cellHeight={keyboardKeyHeight}
+        cellWidth={keyboardKeyWidth}
       />
 
       <Box />
       <Box />
       {thirdRow.map((char) => (
-        <Key
+        <KeyboardCell
           key={char}
           label={char}
-          fontSize={keyboardFontSize}
           onClick={() => inputActions.type(char)}
           state={state.charStates[char]}
-          itemHeight={keyboardKeyHeight}
-          itemWidth={keyboardKeyWidth}
+          size={defaultKeySize}
+          fontSize={keyboardFontSize}
+          cellHeight={keyboardKeyHeight}
+          cellWidth={keyboardKeyWidth}
         />
       ))}
 
       <Box />
-      <Key
-        label={'ENTER'}
+      <KeyboardCell
+        label="ENTER"
         size={5}
-        fontSize={keyboardFontSize}
         onClick={() => inputActions.submit()}
-        itemHeight={keyboardKeyHeight}
-        itemWidth={keyboardKeyWidth}
+        fontSize={keyboardFontSize}
+        cellHeight={keyboardKeyHeight}
+        cellWidth={keyboardKeyWidth}
       />
     </Box>
   );

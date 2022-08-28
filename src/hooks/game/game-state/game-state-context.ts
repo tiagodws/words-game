@@ -1,5 +1,5 @@
 import React from 'react';
-import { CharStates, GameStatus, SubmittedWord, Word } from '../../use-game';
+import { CharStates, GameStatus, SubmittedWord, Word } from '../types';
 
 export type GameStateContextData = {
   word?: Word;
