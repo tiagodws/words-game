@@ -25,11 +25,11 @@ export const KeyboardListener: FC = () => {
 
     switch (e.key) {
       case Key.ArrowLeft: {
-        inputActions.focusPreviousIndex();
+        inputActions.focusPreviousIndex(true);
         return;
       }
       case Key.ArrowRight: {
-        inputActions.focusNextIndex();
+        inputActions.focusNextIndex(true);
         return;
       }
       case Key.Tab: {

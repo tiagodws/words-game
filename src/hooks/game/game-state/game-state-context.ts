@@ -2,6 +2,7 @@ import React from 'react';
 import { CharStates, GameStatus, SubmittedWord, Word } from '../types';
 
 export type GameStateContextData = {
+  id?: string;
   word?: Word;
   status: GameStatus;
   triesLeft: number;

@@ -1,4 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocalStorage } from 'react-use';
+import { v4 } from 'uuid';
 import { useGameConfig } from '../game-config';
 import { CharState, GameStatus, SubmittedWord, Word } from '../types';
 import {
@@ -7,7 +9,7 @@ import {
   GameStateContextData,
 } from './game-state-context';
 import { getCharState, getCharStates } from './get-char-state';
-import { useWord } from './use-word';
+import { getWord } from './use-word';
 
 export type GameStateProviderProps = {
   children?: React.ReactNode;
@@ -25,19 +27,27 @@ const getStatus = (submittedWords: SubmittedWord[], totalTries: number) => {
   return GameStatus.Playing;
 };
 
+const startState: GameStateContextData = {
+  status: GameStatus.Loading,
+  submittedWords: [],
+  charStates: {},
+  triesLeft: 0,
+};
+
 export const GameStateProvider: FC<GameStateProviderProps> = (props) => {
   const { children } = props;
   const config = useGameConfig();
-  const { word, changeWord: restart } = useWord(config);
-  const [state, setState] = useState<GameStateContextData>({
-    status: GameStatus.Loading,
-    submittedWords: [],
-    charStates: {},
-    triesLeft: 0,
-  });
+  const [state, setState] = useState<GameStateContextData>(startState);
+  const [savedState, saveState] = useLocalStorage<GameStateContextData | null>(
+    'gameState',
+    null
+  );
+  const [isRestored, setIsRestored] = useState(false);
 
   const submitWord = useCallback(
     (newWord: Word) => {
+      const word = state.word;
+
       if (!word) {
         return;
       }
@@ -52,6 +62,7 @@ export const GameStateProvider: FC<GameStateProviderProps> = (props) => {
         const triesLeft = config.totalTries - submittedWords.length;
         const charStates = getCharStates(submittedWord, prev.charStates);
         return {
+          ...prev,
           word,
           charStates,
           submittedWords,
@@ -60,20 +71,45 @@ export const GameStateProvider: FC<GameStateProviderProps> = (props) => {
         };
       });
     },
-    [word, config.totalTries]
+    [state.word, config.totalTries]
   );
 
+  const restart = useCallback(() => {
+    setState(startState);
+  }, []);
+
   useEffect(() => {
-    if (word) {
-      setState({
-        word,
-        status: GameStatus.Playing,
-        submittedWords: [],
-        charStates: {},
-        triesLeft: config.totalTries,
-      });
+    saveState(state);
+  }, [state, saveState]);
+
+  useEffect(() => {
+    if (isRestored && !state.word) {
+      const loadWord = async () => {
+        const word = await getWord(config.wordLength);
+        setState({
+          id: v4(),
+          word,
+          status: GameStatus.Playing,
+          submittedWords: [],
+          charStates: {},
+          triesLeft: config.totalTries,
+        });
+      };
+
+      loadWord();
+      return;
     }
-  }, [word, config.totalTries]);
+
+    if (isRestored) {
+      return;
+    }
+
+    if (savedState) {
+      setState(savedState);
+    }
+
+    setIsRestored(true);
+  }, [isRestored, state, savedState, config, saveState]);
 
   const actions = useMemo(
     () => ({ submitWord, restart }),

@@ -13,6 +13,7 @@ export const TrackingProvider: FC<TrackingProviderProps> = ({ children }) => {
     (eventName: TrackingEvent, data?: TrackingEventData) => {
       if (isDevEnv()) {
         console.debug(`Sending event "${eventName}"`, data);
+        return;
       }
 
       TagManager.dataLayer({

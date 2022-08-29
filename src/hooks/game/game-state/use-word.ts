@@ -11,7 +11,7 @@ type UseWord = {
   changeWord(): void;
 };
 
-const getWord = async (wordLength: number) => {
+export const getWord = async (wordLength: number) => {
   const wordString = await getValidWord({ wordLength });
   return wordString.split('') as Word;
 };
