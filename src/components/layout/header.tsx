@@ -5,7 +5,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Grid, IconButton } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useElementSize } from 'usehooks-ts';
+import { useMeasure } from 'react-use';
 import { Container } from '../container';
 import { DynamicLogo } from './dynamic-logo';
 
@@ -13,7 +13,7 @@ type HeaderProps = {};
 
 export const Header: FC<HeaderProps> = () => {
   const { t } = useTranslation(['header', 'common']);
-  const [container, { height }] = useElementSize();
+  const [container, { height }] = useMeasure();
 
   return (
     <Box
@@ -28,7 +28,6 @@ export const Header: FC<HeaderProps> = () => {
     >
       <Container sx={{ height: '100%' }}>
         <Grid
-          ref={container}
           container
           sx={{
             alignItems: 'center',

@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
-import { useElementSize } from 'usehooks-ts';
+import { useMeasure } from 'react-use';
 import { Char } from '../../hooks/game';
 import { useGameInputActions } from '../../hooks/game/game-input';
 import { useGameState } from '../../hooks/game/game-state';
@@ -39,7 +39,7 @@ export const Keyboard: FC = () => {
   const state = useGameState();
   const inputActions = useGameInputActions();
   const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
-    useElementSize();
+    useMeasure();
 
   const keyboardKeyHeight = Math.min(keyboardHeight / rows, 64);
   const keyboardKeyWidth = Math.min(keyboardWidth / cols, 32);
