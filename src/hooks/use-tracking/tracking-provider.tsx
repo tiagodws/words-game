@@ -1,6 +1,6 @@
 import { FC, ReactNode, useCallback } from 'react';
 import TagManager from 'react-gtm-module';
-import { isDevEnv } from '../../utils/is-dev-env';
+import { isDebugging } from '../../utils/is-debugging';
 import { TrackingContext, TrackingEventData } from './tracking-context';
 import { TrackingEvent } from './tracking-event';
 
@@ -11,7 +11,7 @@ type TrackingProviderProps = {
 export const TrackingProvider: FC<TrackingProviderProps> = ({ children }) => {
   const sendEvent = useCallback(
     (eventName: TrackingEvent, data?: TrackingEventData) => {
-      if (isDevEnv()) {
+      if (isDebugging()) {
         console.debug(`Sending event "${eventName}"`, data);
         return;
       }
