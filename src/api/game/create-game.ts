@@ -1,4 +1,4 @@
-import { getValidWord } from '../../api/words';
+import { getValidWord } from '../words';
 import { TOTAL_TRIES, WORD_LENGTH } from './consts';
 import { Game, GameState } from './types';
 import { stringToWord } from './word-utils';

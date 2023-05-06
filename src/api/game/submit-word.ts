@@ -1,4 +1,4 @@
-import { getPossibleWords } from '../../api/words/get-possible-words';
+import { getPossibleWords } from '../words/get-possible-words';
 import { WORD_LENGTH } from './consts';
 import { getCharStates } from './get-char-state';
 import { getCurrentGame } from './get-current-game';

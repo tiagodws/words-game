@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { getValidWord } from '../../../api/words';
-import { getPossibleWords } from '../../../api/words/get-possible-words';
+import { getValidWord } from '../../words';
+import { getPossibleWords } from '../../words/get-possible-words';
 import { createGame } from '../create-game';
 import { getCurrentGame } from '../get-current-game';
 import { setCurrentGame } from '../set-current-game';
