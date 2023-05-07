@@ -141,6 +141,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
         animation: animation ? `${animation} 400ms` : undefined,
         transitionDelay: `${animationDelayMultiplier * 100}ms`,
         boxShadow: `2px 2px ${theme.palette.common.black}`,
+        WebkitTapHighlightColor: 'transparent',
       })}
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}

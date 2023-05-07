@@ -1,7 +1,5 @@
 import InfoIcon from '@mui/icons-material/Info';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import MenuIcon from '@mui/icons-material/Menu';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Grid, IconButton } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,12 +39,6 @@ export const Header: FC<HeaderProps> = () => {
             <Grid container spacing={1} sx={{ flexWrap: 'nowrap' }}>
               <Grid item>
                 <IconButton color="secondary" size="small">
-                  <MenuIcon sx={{ fontSize: height * 0.4 }} />
-                </IconButton>
-              </Grid>
-
-              <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <IconButton color="secondary" size="small">
                   <InfoIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>
@@ -75,12 +67,6 @@ export const Header: FC<HeaderProps> = () => {
               <Grid item>
                 <IconButton color="secondary" size="small">
                   <LeaderboardIcon sx={{ fontSize: height * 0.4 }} />
-                </IconButton>
-              </Grid>
-
-              <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <IconButton color="secondary" size="small">
-                  <SettingsIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>
             </Grid>
