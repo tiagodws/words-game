@@ -1,15 +1,24 @@
 import { Box } from '@mui/material';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { GameState } from '../../api/game';
+import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { Game } from '../../hooks/game/game';
 import { Container } from '../container';
 import { Keyboard } from '../keyboard';
-import { ResultModal } from '../result-modal/result-modal';
+import { ResultDialog } from '../result-dialog';
 import { WordBoard } from './word-board';
 
 export const GameContainer: FC = () => {
+  const { data: game } = useCurrentGame();
+  const [isShowingResults, setIsShowingResults] = useState(false);
+
+  useEffect(() => {
+    setIsShowingResults(game.state !== GameState.Playing);
+  }, [game.state]);
+
   return (
     <Game>
-      <ResultModal />
+      <ResultDialog isOpen={isShowingResults} />
       <Box
         sx={{
           display: 'flex',

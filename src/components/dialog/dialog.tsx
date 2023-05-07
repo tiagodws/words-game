@@ -13,13 +13,18 @@ type DialogProps = {
   isOpen?: boolean;
   children?: ReactNode;
   onClose?: () => void;
+  onInvisible?: () => void;
 };
 
 export const Dialog: FC<DialogProps> = (props) => {
-  const { title, isOpen = false, children, onClose } = props;
+  const { title, isOpen = false, children, onClose, onInvisible } = props;
 
   return (
-    <MuiDialog open={isOpen} onClose={onClose}>
+    <MuiDialog
+      open={isOpen}
+      onClose={onClose}
+      TransitionProps={{ onExited: onInvisible }}
+    >
       {!!title && (
         <DialogTitle>
           <Grid
