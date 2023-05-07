@@ -7,7 +7,7 @@ const getConnectionSpeed = (): string => {
     return '';
   }
 
-  const connection = navigator.connection as
+  const connection = navigator.connection as unknown as
     | undefined
     | Record<string, unknown>;
 
@@ -19,7 +19,9 @@ const getConnectionSpeed = (): string => {
     return '';
   }
 
-  const effectiveType = connection.effectiveType as undefined | string;
+  const effectiveType = connection.effectiveType as unknown as
+    | undefined
+    | string;
   return effectiveType ?? '';
 };
 
