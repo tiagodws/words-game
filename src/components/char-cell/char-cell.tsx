@@ -1,7 +1,7 @@
 import { Keyframes, keyframes } from '@emotion/react';
 import { Theme, Zoom, useTheme } from '@mui/material';
 import { Box, darken, lighten } from '@mui/system';
-import { CSSProperties, FC, useEffect, useState } from 'react';
+import { CSSProperties, FC, useEffect, useLayoutEffect, useState } from 'react';
 import { Text } from '../text';
 
 export type CellState =
@@ -17,6 +17,7 @@ export type CharCellProps = {
   state?: CellState;
   isFocused?: boolean;
   fontSize?: CSSProperties['fontSize'];
+  animationDelayMultiplier?: number;
   onClick?: () => void;
 };
 
@@ -86,12 +87,19 @@ from, to {
 `);
 
 export const CharCell: FC<CharCellProps> = (props) => {
-  const { value, isFocused, state = 'default', fontSize, onClick } = props;
+  const {
+    value,
+    isFocused,
+    state = 'default',
+    fontSize,
+    animationDelayMultiplier = 0,
+    onClick,
+  } = props;
   const { bgcolor, borderColor, color } = useStateColors(state);
   const [animation, setAnimation] = useState<Keyframes>();
   const [isDirty, setIsDirty] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (state === 'invalid') {
       setAnimation(invalid);
       return;
@@ -131,6 +139,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
         userSelect: 'none',
         cursor: onClick ? 'pointer' : 'default',
         animation: animation ? `${animation} 400ms` : undefined,
+        transitionDelay: `${animationDelayMultiplier * 100}ms`,
         boxShadow: `2px 2px ${theme.palette.common.black}`,
       })}
       onClick={onClick}

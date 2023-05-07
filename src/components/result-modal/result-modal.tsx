@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useDebounce } from 'react-use';
 import { Game, GameState } from '../../api/game';
 import { useCreateGame } from '../../hooks/game/api/use-create-game';
 import { useCurrentGame } from '../../hooks/game/api/use-current-game';
@@ -24,7 +25,10 @@ export const ResultModal: FC = () => {
   const [modalGame, setModalGame] = useState<Game>(game);
   const { data } = useWordData(modalGame.word.stringValue);
   const [isOpen, setIsOpen] = useState(false);
+  const [debouncedIsOpen, setDebouncedIsOpen] = useState(isOpen);
   const [isExited, setIsExited] = useState(true);
+
+  useDebounce(() => setDebouncedIsOpen(isOpen), 600, [isOpen]);
 
   useEffect(() => {
     if (isOpen && modalGame.word !== game.word) {
@@ -50,7 +54,7 @@ export const ResultModal: FC = () => {
 
   return (
     <Dialog
-      open={isOpen}
+      open={isOpen && debouncedIsOpen}
       TransitionProps={{ onExited: () => setIsExited(true) }}
     >
       <DialogTitle textAlign="center">
