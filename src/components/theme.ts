@@ -79,7 +79,7 @@ export const theme = createTheme({
       black: '#333333',
       white: '#F5F5F5',
     },
-    divider: '#F5F5F5',
+    divider: '#CCCCCC88',
   },
   typography: {
     fontFamily: 'Azeret Mono',
@@ -96,6 +96,13 @@ export const theme = createTheme({
     h3: {
       fontSize: '1.2rem',
       fontWeight: 'bold',
+    },
+    h4: {
+      fontSize: '1rem',
+      fontWeight: 'bold',
+    },
+    body1: {
+      fontSize: '1rem',
     },
   },
 });

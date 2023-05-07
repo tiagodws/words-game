@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { CharValue } from '../../api/game';
 import { CellState, CharCell } from '../char-cell';
@@ -21,7 +21,7 @@ const getNextState = (state: CellState): CellState => {
 type Cells = Record<number, { char: CharValue; state: CellState }>;
 
 export const DynamicLogo: FC<DynamicLogoProps> = (props) => {
-  const { containerHeight, word } = props;
+  const { word } = props;
   const [cells, setCells] = useState<Cells>({});
 
   const onClickCell = (i: number) => {
@@ -47,24 +47,17 @@ export const DynamicLogo: FC<DynamicLogoProps> = (props) => {
   }, [word]);
 
   return (
-    <>
+    <Grid container spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
       {Object.values(cells).map((cell, i) => (
-        <Box
-          key={i}
-          sx={{
-            mx: containerHeight * 0.06 * 0.05,
-            height: containerHeight * 0.45,
-            width: containerHeight * 0.45,
-          }}
-        >
+        <Grid item key={i}>
           <CharCell
+            width={28}
             state={cell.state}
             value={cell.char}
-            fontSize={containerHeight * 0.25}
             onClick={() => onClickCell(i)}
           />
-        </Box>
+        </Grid>
       ))}
-    </>
+    </Grid>
   );
 };

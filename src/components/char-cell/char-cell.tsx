@@ -18,6 +18,7 @@ export type CharCellProps = {
   isFocused?: boolean;
   fontSize?: CSSProperties['fontSize'];
   animationDelayMultiplier?: number;
+  width?: CSSProperties['width'];
   onClick?: () => void;
 };
 
@@ -93,6 +94,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
     state = 'default',
     fontSize,
     animationDelayMultiplier = 0,
+    width = '100%',
     onClick,
   } = props;
   const { bgcolor, borderColor, color } = useStateColors(state);
@@ -125,15 +127,15 @@ export const CharCell: FC<CharCellProps> = (props) => {
   return (
     <Box
       sx={(theme) => ({
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 0.5,
         borderStyle: 'solid',
         borderColor,
         borderWidth: isFocused ? 4 : 2,
-        height: '100%',
-        width: '100%',
+        height: width,
+        width: width,
         bgcolor: isFocused ? lighten(bgcolor, 0.3) : bgcolor,
         transition: 'all 0.2s',
         userSelect: 'none',

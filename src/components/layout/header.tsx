@@ -1,10 +1,11 @@
-import InfoIcon from '@mui/icons-material/Info';
+import HelpIcon from '@mui/icons-material/Help';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { Box, Grid, IconButton } from '@mui/material';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMeasure } from 'react-use';
 import { Container } from '../container';
+import { InfoDialog } from '../info-dialog';
 import { DynamicLogo } from './dynamic-logo';
 
 type HeaderProps = {};
@@ -12,6 +13,7 @@ type HeaderProps = {};
 export const Header: FC<HeaderProps> = () => {
   const { t } = useTranslation(['header', 'common']);
   const [container, { height }] = useMeasure();
+  const [isShowingInfo, setIsShowingInfo] = useState(false);
 
   return (
     <Box
@@ -38,8 +40,16 @@ export const Header: FC<HeaderProps> = () => {
           <Grid item sx={{ flex: 1 }}>
             <Grid container spacing={1} sx={{ flexWrap: 'nowrap' }}>
               <Grid item>
-                <IconButton color="secondary" size="small">
-                  <InfoIcon sx={{ fontSize: height * 0.4 }} />
+                <InfoDialog
+                  isOpen={isShowingInfo}
+                  onClose={() => setIsShowingInfo(false)}
+                />
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() => setIsShowingInfo(true)}
+                >
+                  <HelpIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>
             </Grid>

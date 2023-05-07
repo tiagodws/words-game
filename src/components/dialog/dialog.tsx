@@ -7,6 +7,7 @@ import {
   Dialog as MuiDialog,
 } from '@mui/material';
 import { FC, ReactNode } from 'react';
+import { Text } from '../text';
 
 type DialogProps = {
   title?: string;
@@ -24,6 +25,7 @@ export const Dialog: FC<DialogProps> = (props) => {
       open={isOpen}
       onClose={onClose}
       TransitionProps={{ onExited: onInvisible }}
+      PaperProps={{ sx: { p: 1 } }}
     >
       {!!title && (
         <DialogTitle>
@@ -32,24 +34,27 @@ export const Dialog: FC<DialogProps> = (props) => {
             spacing={1}
             sx={{
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
               flexWrap: 'nowrap',
             }}
           >
+            <Grid item xs={1}></Grid>
+
             <Grid
               item
-              sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}
+              xs={10}
+              sx={{ display: 'flex', justifyContent: 'center' }}
             >
-              {title}
+              <Text variant="h3">{title}</Text>
             </Grid>
 
-            {onClose && (
-              <Grid item>
+            <Grid item xs={1}>
+              {onClose && (
                 <IconButton color="secondary" onClick={onClose}>
                   <CloseIcon />
                 </IconButton>
-              </Grid>
-            )}
+              )}
+            </Grid>
           </Grid>
         </DialogTitle>
       )}

@@ -1,0 +1,10 @@
+{
+  "howToTitle": "How to play",
+  "howToDescription": "Discover the correct word in 6 tries. After a try, you can check the color of each letter to help with your next guess.",
+  "howToRuleLength": "Every guess must be a valid 5-letter word",
+  "howToRuleRepeated": "Words may contain repeated letters",
+  "exampleTitle": "Example",
+  "correctExample": "<char/> exists in the word and is in the right place",
+  "hintExample": "<char/> exists in the word but is in the wrong place",
+  "incorrectExample": "<char/> do not exist in the word in any place"
+}

@@ -15,7 +15,7 @@ type TextProps = {
     | 'body2'
     | 'caption';
   color?: string;
-  component?: 'div' | 'span' | 'p';
+  component?: 'div' | 'span' | 'p' | 'li';
   fontSize?: CSSProperties['fontSize'];
   fontWeight?: CSSProperties['fontWeight'];
   textAlign?: CSSProperties['textAlign'];
