@@ -16,7 +16,7 @@ type ResultDialogProps = {
 
 export const ResultDialog: FC<ResultDialogProps> = (props) => {
   const { isOpen } = props;
-  const { t } = useTranslation(['stats']);
+  const { t } = useTranslation('result');
   const { data: game } = useCurrentGame();
   const { mutate: createGame } = useCreateGame();
   const [dialogGame, setDialogGame] = useState<Game>(game);
@@ -40,9 +40,7 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
       isOpen={isOpen}
       onInvisible={() => setIsVisible(false)}
       title={
-        dialogGame.state === GameState.Won
-          ? t('stats:titleWon')
-          : t('stats:titleLost')
+        dialogGame.state === GameState.Won ? t('titleWon') : t('titleLost')
       }
     >
       <Grid
@@ -61,7 +59,7 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
             sx={{ flexWrap: 'nowrap' }}
           >
             <Grid item>
-              <Text textAlign="center">{t('stats:theWordWas')}</Text>
+              <Text textAlign="center">{t('theWordWas')}</Text>
             </Grid>
 
             <Grid item>
@@ -104,7 +102,7 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
                 />
               )}
 
-              {t('stats:wordDefinition', {
+              {t('wordDefinition', {
                 definition: data.meaning?.definition,
               })}
             </Text>
@@ -119,7 +117,7 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
                 fontSize="0.5rem"
               >
                 <Trans
-                  i18nKey="stats:wordDefinitionSource"
+                  i18nKey="wordDefinitionSource"
                   values={{ source: data.source }}
                   components={[<Link href={data?.source} target="_blank" />]}
                 />
@@ -137,7 +135,7 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
               createGame();
             }}
           >
-            {t('stats:tryAgain')}
+            {t('tryAgain')}
           </Button>
         </Grid>
       </Grid>

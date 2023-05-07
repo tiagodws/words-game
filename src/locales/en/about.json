@@ -1,4 +1,5 @@
 {
+  "aboutTitle": "About the game",
   "howToTitle": "How to play",
   "howToDescription": "Discover the correct word in 6 tries. After a try, you can check the color of each letter to help with your next guess.",
   "howToRuleLength": "Every guess must be a valid 5-letter word",

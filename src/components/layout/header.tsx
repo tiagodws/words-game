@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useMeasure } from 'react-use';
 import { Container } from '../container';
 import { InfoDialog } from '../info-dialog';
+import { StatsDialog } from '../stats-dialog';
 import { DynamicLogo } from './dynamic-logo';
 
 type HeaderProps = {};
@@ -14,6 +15,7 @@ export const Header: FC<HeaderProps> = () => {
   const { t } = useTranslation(['header', 'common']);
   const [container, { height }] = useMeasure();
   const [isShowingInfo, setIsShowingInfo] = useState(false);
+  const [isShowingStats, setIsShowingStats] = useState(false);
 
   return (
     <Box
@@ -75,7 +77,15 @@ export const Header: FC<HeaderProps> = () => {
               spacing={1}
             >
               <Grid item>
-                <IconButton color="secondary" size="small">
+                <StatsDialog
+                  isOpen={isShowingStats}
+                  onClose={() => setIsShowingStats(false)}
+                />
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  onClick={() => setIsShowingStats(true)}
+                >
                   <LeaderboardIcon sx={{ fontSize: height * 0.4 }} />
                 </IconButton>
               </Grid>

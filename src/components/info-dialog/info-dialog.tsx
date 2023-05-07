@@ -15,7 +15,7 @@ export const InfoDialog: FC<InfoDialogProps> = (props) => {
   const { t } = useTranslation('about');
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="About the game">
+    <Dialog isOpen={isOpen} onClose={onClose} title={t('aboutTitle')}>
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Grid container spacing={3}>

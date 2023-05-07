@@ -32,7 +32,7 @@ export const Dialog: FC<DialogProps> = (props) => {
       fullScreen={fullScreen}
     >
       {!!title && (
-        <DialogTitle paddingBottom={0}>
+        <DialogTitle>
           <Grid
             container
             spacing={1}
@@ -64,8 +64,18 @@ export const Dialog: FC<DialogProps> = (props) => {
         </DialogTitle>
       )}
 
-      <DialogContent>
-        <Box sx={{ p: 1 }}>{children}</Box>
+      <DialogContent sx={{ padding: 0 }}>
+        <Box
+          sx={{
+            p: 4,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+          }}
+        >
+          {children}
+        </Box>
       </DialogContent>
     </MuiDialog>
   );
