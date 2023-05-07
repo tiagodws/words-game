@@ -7,15 +7,14 @@ export type GameInputContextData = {
   values: WordInputValue[];
   currentIndex: number;
   isFocused: boolean;
-  emptyIndexes: number[];
-  submittedWord?: string;
+  invalidIndexes: number[];
 };
 
 export const GameInputContext = React.createContext<GameInputContextData>({
   values: [],
   currentIndex: 0,
   isFocused: false,
-  emptyIndexes: [],
+  invalidIndexes: [],
 });
 
 export type GameInputActionsContextData = {

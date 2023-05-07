@@ -20,7 +20,7 @@ export const BoardRowInput: FC<BoardRowInputProps> = (props) => {
           value={char}
           onClick={() => inputActions.focusIndex(j)}
           isFocused={input.isFocused && input.currentIndex === j}
-          state={input.emptyIndexes.includes(j) ? 'invalid' : 'default'}
+          state={input.invalidIndexes.includes(j) ? 'invalid' : 'default'}
           fontSize={fontSize}
           cellSize={cellSize}
         />

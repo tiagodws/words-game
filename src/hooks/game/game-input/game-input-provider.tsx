@@ -4,7 +4,6 @@ import { CharValue } from '../../../api/game';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
 import { useSnacks } from '../../use-snacks';
 import { useCurrentGame } from '../api/use-current-game';
-import { useIsValidWord } from '../api/use-is-valid-word';
 import { useSubmitWord } from '../api/use-submit-word';
 import {
   GameInputActionsContext,
@@ -16,6 +15,7 @@ import {
   getNextIndex,
   getPreviousIndex,
 } from './input-navigation';
+import { usePossibleWords } from './use-possible-words';
 
 export type GameInputProviderProps = {
   children?: React.ReactNode;
@@ -32,11 +32,11 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
     values: getArrayOfSize(game?.config.wordLength),
     currentIndex: 0,
     isFocused: true,
-    emptyIndexes: [],
+    invalidIndexes: [],
   });
-  const { data: validationData, isLoading: isValidating } = useIsValidWord(
-    inputState.submittedWord
-  );
+  const possibleWords = usePossibleWords({
+    wordLength: game?.config.wordLength,
+  });
 
   const type = useCallback((value: string) => {
     const upperCase = value && value.toUpperCase();
@@ -59,13 +59,15 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
       const newValues = [...values];
       newValues[currentIndex] = char as CharValue;
       const emptyIndex = getEmptyIndex(currentIndex, newValues);
-      const emptyIndexes = state.emptyIndexes.length ? [] : state.emptyIndexes;
+      const invalidIndexes = state.invalidIndexes.length
+        ? []
+        : state.invalidIndexes;
 
       return {
         values: newValues,
         currentIndex: emptyIndex ?? currentIndex,
         isFocused: emptyIndex !== undefined,
-        emptyIndexes,
+        invalidIndexes,
       };
     });
   }, []);
@@ -77,7 +79,9 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
       const isCurrentIndexEmpty = !newValues[currentIndex];
       const isPreviousIndexEmpty = !newValues[currentIndex - 1];
       const isValidIndex = currentIndex < values.length;
-      const emptyIndexes = state.emptyIndexes.length ? [] : state.emptyIndexes;
+      const invalidIndexes = state.invalidIndexes.length
+        ? []
+        : state.invalidIndexes;
 
       if (!isCurrentIndexEmpty) {
         newValues[currentIndex] = undefined;
@@ -85,7 +89,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values: newValues,
           currentIndex,
           isFocused: true,
-          emptyIndexes,
+          invalidIndexes,
         };
       }
 
@@ -99,7 +103,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values: newValues,
           currentIndex: currentIndex - 1,
           isFocused: true,
-          emptyIndexes,
+          invalidIndexes,
         };
       }
 
@@ -108,7 +112,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values,
           currentIndex: currentIndex - 1,
           isFocused: true,
-          emptyIndexes,
+          invalidIndexes,
         };
       }
 
@@ -119,32 +123,38 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   const submit = useCallback(() => {
     setInputState((prev) => {
       const word = prev.values;
+      const wordString = word.join('');
 
-      const emptyIndexes = word.reduce<number[]>((result, char, i) => {
+      const invalidIndexes = word.reduce<number[]>((result, char, i) => {
         if (!char) {
           return [...result, i];
         }
         return result;
       }, []);
 
-      if (emptyIndexes.length) {
-        return { ...prev, emptyIndexes };
+      if (invalidIndexes.length) {
+        return { ...prev, invalidIndexes };
       }
+
+      if (!possibleWords.some((word) => word === wordString)) {
+        return { ...prev, invalidIndexes: prev.values.map((_, i) => i) };
+      }
+
+      submitWord(wordString);
 
       return {
         ...prev,
-        emptyIndexes: [],
-        submittedWord: word.join(''),
+        invalidIndexes: [],
       };
     });
-  }, []);
+  }, [possibleWords, submitWord]);
 
   const clear = useCallback(() => {
     setInputState({
       values: getArrayOfSize(config.wordLength),
       currentIndex: 0,
       isFocused: true,
-      emptyIndexes: [],
+      invalidIndexes: [],
     });
   }, [config.wordLength]);
 
@@ -184,26 +194,32 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   }, [clear, game]);
 
   useEffect(() => {
-    if (inputState.emptyIndexes.length) {
-      showSnack(t('validation:incomplete'), {
-        variant: 'warning',
-      });
-    }
-  }, [inputState.emptyIndexes, t, showSnack]);
+    const hasInvalidValues = !!inputState.invalidIndexes.length;
+    const isInvalidWord =
+      hasInvalidValues &&
+      inputState.invalidIndexes.length === inputState.values.length;
 
-  useEffect(() => {
-    if (isValidating) {
-      return;
-    }
-
-    if (validationData?.isValid) {
-      submitWord(validationData.word);
-    } else {
+    if (isInvalidWord) {
       showSnack(t('validation:notValid'), {
         variant: 'warning',
       });
+
+      return;
     }
-  }, [validationData, isValidating, submitWord, t, showSnack]);
+
+    if (hasInvalidValues) {
+      showSnack(t('validation:incomplete'), {
+        variant: 'warning',
+      });
+
+      return;
+    }
+  }, [
+    inputState.invalidIndexes.length,
+    inputState.values.length,
+    t,
+    showSnack,
+  ]);
 
   const actions = useMemo(
     () => ({

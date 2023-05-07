@@ -20,27 +20,27 @@ import { useWordData } from './use-word-data';
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
   const { data: game } = useCurrentGame();
-  const createGame = useCreateGame();
-  const [modalState, setModalState] = useState<Game>(game);
-  const { data } = useWordData(modalState.word.stringValue);
+  const { mutate: createGame } = useCreateGame();
+  const [modalGame, setModalGame] = useState<Game>(game);
+  const { data } = useWordData(modalGame.word.stringValue);
   const [isOpen, setIsOpen] = useState(false);
   const [isExited, setIsExited] = useState(true);
 
   useEffect(() => {
-    if (isOpen && modalState.word !== game.word) {
+    if (isOpen && modalGame.word !== game.word) {
       setIsOpen(false);
     }
 
     if (isExited) {
-      setModalState(game);
+      setModalGame(game);
     }
-  }, [isOpen, isExited, game, modalState.word]);
+  }, [isOpen, isExited, game, modalGame.word]);
 
   useEffect(() => {
-    if ([GameState.Won, GameState.Lost].includes(modalState.state)) {
+    if ([GameState.Won, GameState.Lost].includes(modalGame.state)) {
       setIsOpen(true);
     }
-  }, [modalState.state]);
+  }, [modalGame.state]);
 
   useEffect(() => {
     if (isOpen) {
@@ -54,7 +54,7 @@ export const ResultModal: FC = () => {
       TransitionProps={{ onExited: () => setIsExited(true) }}
     >
       <DialogTitle textAlign="center">
-        {modalState.state === GameState.Won
+        {modalGame.state === GameState.Won
           ? t('stats:titleWon')
           : t('stats:titleLost')}
       </DialogTitle>
@@ -83,7 +83,7 @@ export const ResultModal: FC = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  {modalState.word?.chars.map((char, i) => (
+                  {modalGame.word?.chars.map((char, i) => (
                     <Box
                       key={i}
                       sx={{
@@ -94,7 +94,7 @@ export const ResultModal: FC = () => {
                     >
                       <CharCell
                         value={char.displayValue}
-                        state={modalState.charStates[char.value]}
+                        state={modalGame.charStates[char.value]}
                         fontSize={16}
                       />
                     </Box>
@@ -140,11 +140,7 @@ export const ResultModal: FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => createGame.mutate}
-            >
+            <Button variant="contained" fullWidth onClick={() => createGame()}>
               {t('stats:tryAgain')}
             </Button>
           </Grid>
