@@ -144,7 +144,12 @@ export const ResultModal: FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Button variant="contained" fullWidth onClick={() => createGame()}>
+            <Button
+              variant="contained"
+              autoFocus
+              fullWidth
+              onClick={() => createGame()}
+            >
               {t('stats:tryAgain')}
             </Button>
           </Grid>

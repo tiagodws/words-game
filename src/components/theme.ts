@@ -57,7 +57,7 @@ export const theme = createTheme({
       disabled: '#CCCCCC88',
     },
     primary: {
-      main: '#25557e',
+      main: '#252422',
     },
     secondary: {
       main: '#dddddd',
