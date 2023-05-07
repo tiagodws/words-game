@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { Word } from '../../hooks/game';
 
 type ApiResponse = {
   word: string;
@@ -57,8 +56,7 @@ const transformData = (data: ApiResponse): WordData => {
   } as WordData;
 };
 
-export const useWordData = (word?: Word): UseWordData => {
-  const wordString = word?.join('');
+export const useWordData = (wordString?: string): UseWordData => {
   const { data: apiData } = useQuery(
     ['word-data', wordString],
     () =>

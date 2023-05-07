@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { SubmittedWord } from '../../hooks/game';
+import { SubmittedWord } from '../../api/game';
 import { BoardCell } from './board-cell';
 
 type BoardRowSubmittedProps = {
@@ -13,7 +13,7 @@ export const BoardRowSubmitted: FC<BoardRowSubmittedProps> = (props) => {
 
   return (
     <>
-      {submittedWord.map((char, j) => (
+      {submittedWord.chars.map((char, j) => (
         <BoardCell key={j} {...char} fontSize={fontSize} cellSize={cellSize} />
       ))}
     </>

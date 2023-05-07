@@ -1,13 +1,13 @@
 import { FC, useEffect } from 'react';
 import { Key } from 'ts-key-enum';
+import { CharValue, GameState } from '../../api/game';
+import { useCurrentGame } from './api/use-current-game';
 import { useGameInputActions } from './game-input';
-import { useGameState } from './game-state';
-import { Char, GameStatus } from './types';
 
-const validChars = Object.values(Char);
+const validChars = Object.values(CharValue);
 
 export const KeyboardListener: FC = () => {
-  const { status } = useGameState();
+  const { data: game } = useCurrentGame();
   const inputActions = useGameInputActions();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export const KeyboardListener: FC = () => {
   });
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (status !== GameStatus.Playing) {
+    if (game?.state !== GameState.Playing) {
       return;
     }
 
@@ -54,7 +54,7 @@ export const KeyboardListener: FC = () => {
         return;
       }
       default: {
-        const char = e.key.toUpperCase() as Char;
+        const char = e.key.toUpperCase() as CharValue;
 
         if (validChars.includes(char)) {
           inputActions.type(char);

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useGameConfig } from '../../hooks/game/game-config';
+import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { BoardCell } from './board-cell';
 
@@ -10,8 +10,9 @@ type BoardRowDisabledProps = {
 
 export const BoardRowDisabled: FC<BoardRowDisabledProps> = (props) => {
   const { fontSize, cellSize } = props;
-  const { wordLength } = useGameConfig();
-  const wordLengthArray = getArrayOfSize(wordLength);
+  const { data: game } = useCurrentGame();
+  const { config } = game;
+  const wordLengthArray = getArrayOfSize(config.wordLength);
 
   return (
     <>

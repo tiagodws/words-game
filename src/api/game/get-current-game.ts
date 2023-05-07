@@ -1,17 +1,18 @@
-import { CURRENT_GAME_STORAGE_KEY } from './consts';
+import { createGame } from './create-game';
+import { getLocalStorageValue } from './local-storage';
 import { Game } from './types';
 
-export const getCurrentGame = async (): Promise<Game | null> => {
+export const getCurrentGame = async (): Promise<Game> => {
   try {
-    const currentGameData = localStorage.getItem(CURRENT_GAME_STORAGE_KEY);
+    const currentGameData = await getLocalStorageValue();
 
     if (!currentGameData) {
-      return null;
+      return createGame();
     }
 
-    return JSON.parse(currentGameData);
+    return currentGameData;
   } catch (err) {
     console.error(`Error loading current game`, err);
-    return null;
+    return createGame();
   }
 };

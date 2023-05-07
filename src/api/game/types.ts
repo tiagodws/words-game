@@ -17,7 +17,7 @@ export enum GameState {
   Lost = 'lost',
 }
 
-export type CharStates = Partial<Record<CharValue, SubmittedCharState>>;
+export type CharStates = Partial<Record<CharValue, CharState>>;
 
 export type Word = {
   stringValue: string;
@@ -31,10 +31,11 @@ export type SubmittedWord = Word & {
 export type Char = {
   value: CharValue;
   displayValue: string;
+  state?: CharState;
 };
 
 export type SubmittedChar = Char & {
-  state: SubmittedCharState;
+  state: CharState;
 };
 
 export enum CharValue {
@@ -66,7 +67,7 @@ export enum CharValue {
   Z = 'Z',
 }
 
-export enum SubmittedCharState {
+export enum CharState {
   Correct = 'correct',
   Incorrect = 'incorrect',
   Hint = 'hint',

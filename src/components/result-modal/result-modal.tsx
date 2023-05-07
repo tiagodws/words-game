@@ -9,9 +9,9 @@ import {
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { GameStatus } from '../../hooks/game';
-import { useGameState, useGameStateActions } from '../../hooks/game/game-state';
-import { GameStateContextData } from '../../hooks/game/game-state/game-state-context';
+import { Game, GameState } from '../../api/game';
+import { useCreateGame } from '../../hooks/game/api/use-create-game';
+import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { CharCell } from '../char-cell';
 import { Link } from '../link';
 import { Text } from '../text';
@@ -19,28 +19,28 @@ import { useWordData } from './use-word-data';
 
 export const ResultModal: FC = () => {
   const { t } = useTranslation(['stats']);
-  const state = useGameState();
-  const actions = useGameStateActions();
-  const [modalState, setModalState] = useState<GameStateContextData>(state);
-  const { data } = useWordData(modalState.word);
+  const { data: game } = useCurrentGame();
+  const createGame = useCreateGame();
+  const [modalState, setModalState] = useState<Game>(game);
+  const { data } = useWordData(modalState.word.stringValue);
   const [isOpen, setIsOpen] = useState(false);
   const [isExited, setIsExited] = useState(true);
 
   useEffect(() => {
-    if (isOpen && modalState.word !== state.word) {
+    if (isOpen && modalState.word !== game.word) {
       setIsOpen(false);
     }
 
     if (isExited) {
-      setModalState(state);
+      setModalState(game);
     }
-  }, [isOpen, isExited, state, modalState.word]);
+  }, [isOpen, isExited, game, modalState.word]);
 
   useEffect(() => {
-    if ([GameStatus.Won, GameStatus.Lost].includes(modalState.status)) {
+    if ([GameState.Won, GameState.Lost].includes(modalState.state)) {
       setIsOpen(true);
     }
-  }, [modalState.status]);
+  }, [modalState.state]);
 
   useEffect(() => {
     if (isOpen) {
@@ -54,7 +54,7 @@ export const ResultModal: FC = () => {
       TransitionProps={{ onExited: () => setIsExited(true) }}
     >
       <DialogTitle textAlign="center">
-        {modalState.status === GameStatus.Won
+        {modalState.state === GameState.Won
           ? t('stats:titleWon')
           : t('stats:titleLost')}
       </DialogTitle>
@@ -83,7 +83,7 @@ export const ResultModal: FC = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  {modalState.word?.map((char, i) => (
+                  {modalState.word?.chars.map((char, i) => (
                     <Box
                       key={i}
                       sx={{
@@ -93,8 +93,8 @@ export const ResultModal: FC = () => {
                       }}
                     >
                       <CharCell
-                        char={char}
-                        state={modalState.charStates[char]}
+                        value={char.displayValue}
+                        state={modalState.charStates[char.value]}
                         fontSize={16}
                       />
                     </Box>
@@ -140,7 +140,11 @@ export const ResultModal: FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <Button variant="contained" fullWidth onClick={actions.restart}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => createGame.mutate}
+            >
               {t('stats:tryAgain')}
             </Button>
           </Grid>

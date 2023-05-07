@@ -1,42 +1,50 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
 import { useMeasure } from 'react-use';
-import { Char } from '../../hooks/game';
+import { CharValue } from '../../api/game';
+import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { useGameInputActions } from '../../hooks/game/game-input';
-import { useGameState } from '../../hooks/game/game-state';
 import { KeyboardCell } from './keyboard-cell';
 
 const firstRow = [
-  Char.Q,
-  Char.W,
-  Char.E,
-  Char.R,
-  Char.T,
-  Char.Y,
-  Char.U,
-  Char.I,
-  Char.O,
-  Char.P,
+  CharValue.Q,
+  CharValue.W,
+  CharValue.E,
+  CharValue.R,
+  CharValue.T,
+  CharValue.Y,
+  CharValue.U,
+  CharValue.I,
+  CharValue.O,
+  CharValue.P,
 ];
 const secondRow = [
-  Char.A,
-  Char.S,
-  Char.D,
-  Char.F,
-  Char.G,
-  Char.H,
-  Char.J,
-  Char.K,
-  Char.L,
+  CharValue.A,
+  CharValue.S,
+  CharValue.D,
+  CharValue.F,
+  CharValue.G,
+  CharValue.H,
+  CharValue.J,
+  CharValue.K,
+  CharValue.L,
 ];
-const thirdRow = [Char.Z, Char.X, Char.C, Char.V, Char.B, Char.N, Char.M];
+const thirdRow = [
+  CharValue.Z,
+  CharValue.X,
+  CharValue.C,
+  CharValue.V,
+  CharValue.B,
+  CharValue.N,
+  CharValue.M,
+];
 
 const rows = 3;
 const cols = 22;
 const defaultKeySize = 2;
 
 export const Keyboard: FC = () => {
-  const state = useGameState();
+  const { data: game } = useCurrentGame();
   const inputActions = useGameInputActions();
   const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
     useMeasure();
@@ -69,7 +77,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           onClick={() => inputActions.type(char)}
-          state={state.charStates[char]}
+          state={game.charStates[char]}
           size={defaultKeySize}
           fontSize={keyboardFontSize}
           cellHeight={keyboardKeyHeight}
@@ -85,7 +93,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           onClick={() => inputActions.type(char)}
-          state={state.charStates[char]}
+          state={game.charStates[char]}
           size={defaultKeySize}
           fontSize={keyboardFontSize}
           cellHeight={keyboardKeyHeight}
@@ -109,7 +117,7 @@ export const Keyboard: FC = () => {
           key={char}
           label={char}
           onClick={() => inputActions.type(char)}
-          state={state.charStates[char]}
+          state={game.charStates[char]}
           size={defaultKeySize}
           fontSize={keyboardFontSize}
           cellHeight={keyboardKeyHeight}

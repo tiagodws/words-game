@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { Char } from '../../hooks/game';
+import { CharValue } from '../../api/game';
 import { CellState, CharCell } from '../char-cell';
 
 type DynamicLogoProps = {
@@ -18,7 +18,7 @@ const getNextState = (state: CellState): CellState => {
     : stateArray[nextIndex];
 };
 
-type Cells = Record<number, { char: Char; state: CellState }>;
+type Cells = Record<number, { char: CharValue; state: CellState }>;
 
 export const DynamicLogo: FC<DynamicLogoProps> = (props) => {
   const { containerHeight, word } = props;
@@ -36,7 +36,7 @@ export const DynamicLogo: FC<DynamicLogoProps> = (props) => {
       (result, char, i) => ({
         ...result,
         [i]: {
-          char: char as Char,
+          char: char as CharValue,
           state: isNaN(Number(char)) ? 'disabled' : 'correct',
         },
       }),
@@ -59,7 +59,7 @@ export const DynamicLogo: FC<DynamicLogoProps> = (props) => {
         >
           <CharCell
             state={cell.state}
-            char={cell.char}
+            value={cell.char}
             fontSize={containerHeight * 0.25}
             onClick={() => onClickCell(i)}
           />

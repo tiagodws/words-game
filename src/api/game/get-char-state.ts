@@ -1,18 +1,21 @@
-import { CharStates, SubmittedCharState, SubmittedWord, Word } from './types';
+import { CharState, CharStates, SubmittedWord, Word } from './types';
 
 export const getCharState = (
   i: number,
   word: Word,
   correctWord: Word
-): SubmittedCharState => {
+): CharState => {
   const char = word.chars[i];
 
-  if (correctWord.chars[i] === char) {
-    return SubmittedCharState.Correct;
+  if (correctWord.chars[i].value === char.value) {
+    return CharState.Correct;
   }
 
   const misses = correctWord.chars.reduce<number[]>((result, wordChar, i) => {
-    if (wordChar === char && word.chars[i] !== wordChar) {
+    if (
+      wordChar.value === char.value &&
+      word.chars[i].value !== wordChar.value
+    ) {
       return [...result, i];
     }
 
@@ -20,7 +23,10 @@ export const getCharState = (
   }, []);
 
   const tries = word.chars.reduce<number[]>((result, submittedChar, i) => {
-    if (submittedChar === char && correctWord.chars[i] !== submittedChar) {
+    if (
+      submittedChar.value === char.value &&
+      correctWord.chars[i].value !== submittedChar.value
+    ) {
       return [...result, i];
     }
     return result;
@@ -29,10 +35,10 @@ export const getCharState = (
   const hints = tries.slice(0, misses.length);
 
   if (hints.includes(i)) {
-    return SubmittedCharState.Hint;
+    return CharState.Hint;
   }
 
-  return SubmittedCharState.Incorrect;
+  return CharState.Incorrect;
 };
 
 export const getCharStates = (
@@ -47,21 +53,18 @@ export const getCharStates = (
   const { value, state } = submittedWord.chars[i];
   const prevState = states[value];
 
-  if (prevState === state || prevState === SubmittedCharState.Correct) {
+  if (prevState === state || prevState === CharState.Correct) {
     return getCharStates(submittedWord, states, i + 1);
   }
 
-  if (!prevState || state === SubmittedCharState.Correct) {
+  if (!prevState || state === CharState.Correct) {
     return getCharStates(submittedWord, { ...states, [value]: state }, i + 1);
   }
 
-  if (
-    prevState === SubmittedCharState.Hint ||
-    state === SubmittedCharState.Hint
-  ) {
+  if (prevState === CharState.Hint || state === CharState.Hint) {
     return getCharStates(
       submittedWord,
-      { ...states, [value]: SubmittedCharState.Hint },
+      { ...states, [value]: CharState.Hint },
       i + 1
     );
   }

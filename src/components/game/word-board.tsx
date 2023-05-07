@@ -1,7 +1,6 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
-import { useGameConfig } from '../../hooks/game/game-config';
-import { useGameState } from '../../hooks/game/game-state';
+import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { useSquareCellBoard } from '../../hooks/use-square-cell-board';
 import { getArrayOfSize } from '../../utils/get-array-of-size';
 import { BoardRowDisabled } from './board-row-disabled';
@@ -11,12 +10,11 @@ import { BoardRowSubmitted } from './board-row-submitted';
 const BOARD_MAX_HEIGHT_PX = 520;
 
 export const WordBoard: FC = () => {
-  const config = useGameConfig();
-  const state = useGameState();
-  const rows = config.totalTries;
-  const cols = config.wordLength;
-  const triesArray =
-    state.triesLeft > 1 ? getArrayOfSize(state.triesLeft - 1) : [];
+  const { data: game } = useCurrentGame();
+  const rows = game.config.totalTries;
+  const cols = game.config.wordLength;
+  const triesLeft = game.config.totalTries - game.submittedWords.length;
+  const triesArray = triesLeft > 1 ? getArrayOfSize(triesLeft - 1) : [];
 
   const [boardContainer, { cellSize, fontSize }] = useSquareCellBoard({
     rows,
@@ -37,7 +35,7 @@ export const WordBoard: FC = () => {
         alignContent: 'center',
       }}
     >
-      {state.submittedWords.map((submittedWord, i) => (
+      {game.submittedWords.map((submittedWord, i) => (
         <BoardRowSubmitted
           key={i}
           submittedWord={submittedWord}
@@ -46,9 +44,7 @@ export const WordBoard: FC = () => {
         />
       ))}
 
-      {!!state.triesLeft && (
-        <BoardRowInput fontSize={fontSize} cellSize={cellSize} />
-      )}
+      {!!triesLeft && <BoardRowInput fontSize={fontSize} cellSize={cellSize} />}
 
       {triesArray.map((_, i) => (
         <BoardRowDisabled key={i} fontSize={fontSize} cellSize={cellSize} />

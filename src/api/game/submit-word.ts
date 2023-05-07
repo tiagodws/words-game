@@ -1,21 +1,23 @@
-import { getPossibleWords } from '../words/get-possible-words';
-import { WORD_LENGTH } from './consts';
+import { InvalidGameError, InvalidWordError } from './errors';
 import { getCharStates } from './get-char-state';
 import { getCurrentGame } from './get-current-game';
+import { isValidWord } from './is-valid-word';
 import { setCurrentGame } from './set-current-game';
-import { Game, GameState, Word } from './types';
+import { Game, GameState } from './types';
 import { stringToWord, wordToSubmittedWord } from './word-utils';
 
 export const submitWord = async (wordString: string): Promise<Game> => {
   const game = await getCurrentGame();
 
   if (game?.state !== GameState.Playing) {
-    throw Error('No game currently in progress');
+    throw new InvalidGameError('No game currently in progress');
+  }
+
+  if (!isValidWord(wordString)) {
+    throw new InvalidWordError('Invalid word');
   }
 
   const word = stringToWord(wordString);
-  await validateWord(word);
-
   const submittedWord = wordToSubmittedWord(word, game.word);
   const submittedWords = [...game.submittedWords, submittedWord];
   const submittedWordString = submittedWord.chars
@@ -38,19 +40,6 @@ export const submitWord = async (wordString: string): Promise<Game> => {
   await setCurrentGame(updatedGame);
 
   return updatedGame;
-};
-
-const validateWord = async (word: Word): Promise<void> => {
-  const possibleWords = await getPossibleWords({ wordLength: WORD_LENGTH });
-  const hasValidLength = word.stringValue.length === WORD_LENGTH;
-  const isPossibleWord = possibleWords.some(
-    (possibleWord) => possibleWord === word.stringValue
-  );
-  const isValidWord = hasValidLength && isPossibleWord;
-
-  if (!isValidWord) {
-    throw new Error('Invalid word');
-  }
 };
 
 const getState = (hasWon: boolean, hasLost: boolean): GameState => {

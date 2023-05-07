@@ -1,5 +1,5 @@
 import { Keyframes, keyframes } from '@emotion/react';
-import { Theme, useTheme, Zoom } from '@mui/material';
+import { Theme, Zoom, useTheme } from '@mui/material';
 import { Box, darken, lighten } from '@mui/system';
 import { CSSProperties, FC, useEffect, useState } from 'react';
 import { Text } from '../text';
@@ -13,7 +13,7 @@ export type CellState =
   | 'disabled';
 
 export type CharCellProps = {
-  char?: string;
+  value?: string;
   state?: CellState;
   isFocused?: boolean;
   fontSize?: CSSProperties['fontSize'];
@@ -86,7 +86,7 @@ from, to {
 `);
 
 export const CharCell: FC<CharCellProps> = (props) => {
-  const { char, isFocused, state = 'default', fontSize, onClick } = props;
+  const { value, isFocused, state = 'default', fontSize, onClick } = props;
   const { bgcolor, borderColor, color } = useStateColors(state);
   const [animation, setAnimation] = useState<Keyframes>();
   const [isDirty, setIsDirty] = useState(false);
@@ -97,22 +97,22 @@ export const CharCell: FC<CharCellProps> = (props) => {
       return;
     }
 
-    if (state === 'default' && char) {
+    if (state === 'default' && value) {
       setAnimation(type);
       return;
     }
 
-    if (isDirty && state === 'default' && !char) {
+    if (isDirty && state === 'default' && !value) {
       setAnimation(erase);
       return;
     }
-  }, [state, char, isDirty]);
+  }, [state, value, isDirty]);
 
   useEffect(() => {
-    if (char && !isDirty) {
+    if (value && !isDirty) {
       setIsDirty(true);
     }
-  }, [char, isDirty]);
+  }, [value, isDirty]);
 
   return (
     <Box
@@ -136,9 +136,9 @@ export const CharCell: FC<CharCellProps> = (props) => {
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}
     >
-      <Zoom appear={false} in={!!char} timeout={400}>
+      <Zoom appear={false} in={!!value} timeout={400}>
         <Text fontWeight="bold" fontSize={fontSize} color={color}>
-          {char?.toUpperCase()}
+          {value?.toLocaleUpperCase()}
         </Text>
       </Zoom>
     </Box>

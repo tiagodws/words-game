@@ -17,10 +17,10 @@ export const BoardRowInput: FC<BoardRowInputProps> = (props) => {
       {input.values.map((char, j) => (
         <BoardCell
           key={j}
-          char={char}
+          value={char}
           onClick={() => inputActions.focusIndex(j)}
           isFocused={input.isFocused && input.currentIndex === j}
-          state={input.invalidIndexes.includes(j) ? 'invalid' : 'default'}
+          state={input.emptyIndexes.includes(j) ? 'invalid' : 'default'}
           fontSize={fontSize}
           cellSize={cellSize}
         />

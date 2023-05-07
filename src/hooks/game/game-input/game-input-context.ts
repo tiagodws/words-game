@@ -1,21 +1,21 @@
 import React from 'react';
-import { Char } from '../types';
+import { CharValue } from '../../../api/game';
 
-export type WordInputValue = Char | undefined;
+export type WordInputValue = CharValue | undefined;
 
 export type GameInputContextData = {
   values: WordInputValue[];
   currentIndex: number;
   isFocused: boolean;
-  invalidIndexes: number[];
-  submittedValues?: WordInputValue[];
+  emptyIndexes: number[];
+  submittedWord?: string;
 };
 
 export const GameInputContext = React.createContext<GameInputContextData>({
   values: [],
   currentIndex: 0,
   isFocused: false,
-  invalidIndexes: [],
+  emptyIndexes: [],
 });
 
 export type GameInputActionsContextData = {

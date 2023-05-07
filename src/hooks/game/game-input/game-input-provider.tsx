@@ -1,10 +1,11 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CharValue } from '../../../api/game';
 import { getArrayOfSize } from '../../../utils/get-array-of-size';
 import { useSnacks } from '../../use-snacks';
-import { useGameConfig } from '../game-config';
-import { useGameStateActions } from '../game-state';
-import { Char, Word } from '../types';
+import { useCurrentGame } from '../api/use-current-game';
+import { useIsValidWord } from '../api/use-is-valid-word';
+import { useSubmitWord } from '../api/use-submit-word';
 import {
   GameInputActionsContext,
   GameInputContext,
@@ -15,7 +16,6 @@ import {
   getNextIndex,
   getPreviousIndex,
 } from './input-navigation';
-import { usePossibleWords } from './use-possible-words';
 
 export type GameInputProviderProps = {
   children?: React.ReactNode;
@@ -25,19 +25,24 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
   const { children } = props;
   const { t } = useTranslation();
   const { showSnack } = useSnacks();
-  const config = useGameConfig();
-  const { submitWord } = useGameStateActions();
-  const possibleWords = usePossibleWords(config);
+  const { data: game } = useCurrentGame();
+  const { config } = game;
+  const { mutate: submitWord } = useSubmitWord();
   const [inputState, setInputState] = useState<GameInputContextData>({
-    values: getArrayOfSize(config.wordLength),
+    values: getArrayOfSize(game?.config.wordLength),
     currentIndex: 0,
     isFocused: true,
-    invalidIndexes: [],
+    emptyIndexes: [],
   });
+  const { data: validationData, isLoading: isValidating } = useIsValidWord(
+    inputState.submittedWord
+  );
 
   const type = useCallback((value: string) => {
     const upperCase = value && value.toUpperCase();
-    const isValidChar = Object.values(Char).includes(upperCase as Char);
+    const isValidChar = Object.values(CharValue).includes(
+      upperCase as CharValue
+    );
 
     if (upperCase && !isValidChar) {
       return;
@@ -50,19 +55,17 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
         return state;
       }
 
-      const char = upperCase as Char;
+      const char = upperCase as CharValue;
       const newValues = [...values];
-      newValues[currentIndex] = char as Char;
+      newValues[currentIndex] = char as CharValue;
       const emptyIndex = getEmptyIndex(currentIndex, newValues);
-      const invalidIndexes = state.invalidIndexes.length
-        ? []
-        : state.invalidIndexes;
+      const emptyIndexes = state.emptyIndexes.length ? [] : state.emptyIndexes;
 
       return {
         values: newValues,
         currentIndex: emptyIndex ?? currentIndex,
         isFocused: emptyIndex !== undefined,
-        invalidIndexes,
+        emptyIndexes,
       };
     });
   }, []);
@@ -74,9 +77,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
       const isCurrentIndexEmpty = !newValues[currentIndex];
       const isPreviousIndexEmpty = !newValues[currentIndex - 1];
       const isValidIndex = currentIndex < values.length;
-      const invalidIndexes = state.invalidIndexes.length
-        ? []
-        : state.invalidIndexes;
+      const emptyIndexes = state.emptyIndexes.length ? [] : state.emptyIndexes;
 
       if (!isCurrentIndexEmpty) {
         newValues[currentIndex] = undefined;
@@ -84,7 +85,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values: newValues,
           currentIndex,
           isFocused: true,
-          invalidIndexes,
+          emptyIndexes,
         };
       }
 
@@ -98,7 +99,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values: newValues,
           currentIndex: currentIndex - 1,
           isFocused: true,
-          invalidIndexes,
+          emptyIndexes,
         };
       }
 
@@ -107,7 +108,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
           values,
           currentIndex: currentIndex - 1,
           isFocused: true,
-          invalidIndexes,
+          emptyIndexes,
         };
       }
 
@@ -119,44 +120,31 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
     setInputState((prev) => {
       const word = prev.values;
 
-      const invalidIndexes = word.reduce<number[]>((result, char, i) => {
+      const emptyIndexes = word.reduce<number[]>((result, char, i) => {
         if (!char) {
           return [...result, i];
         }
         return result;
       }, []);
 
-      if (invalidIndexes.length) {
-        return { ...prev, invalidIndexes, submittedValues: word };
-      }
-
-      const wordString = word.join('');
-      const isValidWord = possibleWords.some((w) => w === wordString);
-
-      if (!isValidWord) {
-        return {
-          ...prev,
-          invalidIndexes: word.map((_, i) => i),
-          submittedValues: word,
-        };
+      if (emptyIndexes.length) {
+        return { ...prev, emptyIndexes };
       }
 
       return {
-        values: getArrayOfSize(config.wordLength),
-        currentIndex: 0,
-        isFocused: true,
-        invalidIndexes: [],
-        submittedValues: word,
+        ...prev,
+        emptyIndexes: [],
+        submittedWord: word.join(''),
       };
     });
-  }, [config.wordLength, possibleWords]);
+  }, []);
 
   const clear = useCallback(() => {
     setInputState({
       values: getArrayOfSize(config.wordLength),
       currentIndex: 0,
       isFocused: true,
-      invalidIndexes: [],
+      emptyIndexes: [],
     });
   }, [config.wordLength]);
 
@@ -193,39 +181,29 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
 
   useEffect(() => {
     clear();
-  }, [clear]);
+  }, [clear, game]);
 
   useEffect(() => {
-    const submittedValues = inputState.submittedValues?.filter((v) => !!v);
-    const invalidIndexes = inputState.invalidIndexes;
-
-    if (submittedValues?.length && !invalidIndexes.length) {
-      submitWord(submittedValues as Word);
-      clear();
-      return;
-    }
-
-    if (!invalidIndexes.length) {
-      return;
-    }
-
-    if (submittedValues?.length !== config.wordLength) {
+    if (inputState.emptyIndexes.length) {
       showSnack(t('validation:incomplete'), {
         variant: 'warning',
       });
+    }
+  }, [inputState.emptyIndexes, t, showSnack]);
+
+  useEffect(() => {
+    if (isValidating) {
       return;
     }
 
-    showSnack(t('validation:notValid'), { variant: 'warning' });
-  }, [
-    inputState.submittedValues,
-    inputState.invalidIndexes,
-    config.wordLength,
-    clear,
-    t,
-    showSnack,
-    submitWord,
-  ]);
+    if (validationData?.isValid) {
+      submitWord(validationData.word);
+    } else {
+      showSnack(t('validation:notValid'), {
+        variant: 'warning',
+      });
+    }
+  }, [validationData, isValidating, submitWord, t, showSnack]);
 
   const actions = useMemo(
     () => ({
