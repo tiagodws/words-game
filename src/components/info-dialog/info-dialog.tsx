@@ -24,12 +24,16 @@ export const InfoDialog: FC<InfoDialogProps> = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              <Text>{t('howToDescription')}</Text>
+              <Text variant="body2">{t('howToDescription')}</Text>
             </Grid>
 
             <Grid item xs={12} component="ul">
-              <Text component="li">{t('howToRuleLength')}</Text>
-              <Text component="li">{t('howToRuleRepeated')}</Text>
+              <Text variant="body2" component="li">
+                {t('howToRuleLength')}
+              </Text>
+              <Text variant="body2" component="li">
+                {t('howToRuleRepeated')}
+              </Text>
             </Grid>
           </Grid>
         </Grid>
@@ -78,7 +82,7 @@ export const InfoDialog: FC<InfoDialogProps> = (props) => {
                 </Grid>
 
                 <Grid item xs={12} component="ul">
-                  <Text component="li">
+                  <Text variant="body2" component="li">
                     <Trans
                       i18nKey="about:correctExample"
                       components={{
@@ -94,7 +98,7 @@ export const InfoDialog: FC<InfoDialogProps> = (props) => {
                     />
                   </Text>
 
-                  <Text component="li">
+                  <Text variant="body2" component="li">
                     <Trans
                       i18nKey="about:hintExample"
                       components={{
@@ -110,7 +114,7 @@ export const InfoDialog: FC<InfoDialogProps> = (props) => {
                     />
                   </Text>
 
-                  <Text component="li">
+                  <Text variant="body2" component="li">
                     <Trans
                       i18nKey="about:incorrectExample"
                       components={{

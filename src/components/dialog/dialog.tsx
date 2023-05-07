@@ -1,13 +1,15 @@
 import CloseIcon from '@mui/icons-material/Close';
 import {
+  Box,
   DialogContent,
   DialogTitle,
   Grid,
   IconButton,
   Dialog as MuiDialog,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { FC, ReactNode } from 'react';
-import { Text } from '../text';
 
 type DialogProps = {
   title?: string;
@@ -19,16 +21,18 @@ type DialogProps = {
 
 export const Dialog: FC<DialogProps> = (props) => {
   const { title, isOpen = false, children, onClose, onInvisible } = props;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <MuiDialog
       open={isOpen}
       onClose={onClose}
       TransitionProps={{ onExited: onInvisible }}
-      PaperProps={{ sx: { p: 1 } }}
+      fullScreen={fullScreen}
     >
       {!!title && (
-        <DialogTitle>
+        <DialogTitle paddingBottom={0}>
           <Grid
             container
             spacing={1}
@@ -36,6 +40,7 @@ export const Dialog: FC<DialogProps> = (props) => {
               alignItems: 'center',
               justifyContent: 'space-between',
               flexWrap: 'nowrap',
+              px: 2,
             }}
           >
             <Grid item xs={1}></Grid>
@@ -45,7 +50,7 @@ export const Dialog: FC<DialogProps> = (props) => {
               xs={10}
               sx={{ display: 'flex', justifyContent: 'center' }}
             >
-              <Text variant="h3">{title}</Text>
+              {title}
             </Grid>
 
             <Grid item xs={1}>
@@ -59,7 +64,9 @@ export const Dialog: FC<DialogProps> = (props) => {
         </DialogTitle>
       )}
 
-      <DialogContent>{children}</DialogContent>
+      <DialogContent>
+        <Box sx={{ p: 1 }}>{children}</Box>
+      </DialogContent>
     </MuiDialog>
   );
 };
