@@ -33,7 +33,7 @@ const BoardsContainer: FC = () => {
         minHeight: 0,
         display: 'flex',
         alignItems: 'center',
-        py: '2vh',
+        py: '8vh',
       }}
     >
       <WordBoard />
