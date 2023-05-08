@@ -117,9 +117,9 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
                 fontSize="0.5rem"
               >
                 <Trans
-                  i18nKey="wordDefinitionSource"
+                  i18nKey="result:wordDefinitionSource"
                   values={{ source: data.source }}
-                  components={[<Link href={data?.source} target="_blank" />]}
+                  components={[<Link href={data.source} target="_blank" />]}
                 />
               </Text>
             </Box>
