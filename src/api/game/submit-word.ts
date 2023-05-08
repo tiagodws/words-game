@@ -1,3 +1,4 @@
+import { updateStats } from '../stats/update-stats';
 import { InvalidGameError, InvalidWordError } from './errors';
 import { getCharStates } from './get-char-state';
 import { getCurrentGame } from './get-current-game';
@@ -38,6 +39,7 @@ export const submitWord = async (wordString: string): Promise<Game> => {
   };
 
   await setCurrentGame(updatedGame);
+  await updateStats(updatedGame);
 
   return updatedGame;
 };

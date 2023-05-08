@@ -17,13 +17,6 @@ export const theme = createTheme({
         },
       },
     },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          whiteSpace: 'pre-wrap',
-        },
-      },
-    },
     MuiLink: {
       styleOverrides: {
         root: {
@@ -37,6 +30,21 @@ export const theme = createTheme({
         root: {
           boxShadow: `3px 3px #333333`,
           borderRadius: '8px',
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          border: '2px solid #AAAAAA',
+          boxShadow: `8px 8px #333`,
+        },
+      },
+    },
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'rgba(51, 51, 51, 0.9)',
         },
       },
     },

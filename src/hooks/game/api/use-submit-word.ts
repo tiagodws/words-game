@@ -7,6 +7,7 @@ export const useSubmitWord = () => {
   return useMutation(['submitWord'], submitWord, {
     onSuccess: (game) => {
       queryClient.setQueryData(['game'], game);
+      queryClient.invalidateQueries(['stats']);
     },
   });
 };

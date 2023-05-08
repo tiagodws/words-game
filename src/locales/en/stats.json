@@ -1,3 +1,8 @@
 {
-  "statsTitle": "Your stats"
+  "statsTitle": "Your stats",
+  "totalGamesLabel": "Total games",
+  "winRateLabel": "Win rate",
+  "winRateValue": "{{value}}%",
+  "currentStreakLabel": "Current streak",
+  "bestStreakLabel": "Best streak"
 }

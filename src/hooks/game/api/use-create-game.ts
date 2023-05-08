@@ -7,6 +7,7 @@ export const useCreateGame = () => {
   return useMutation(['createGame'], createGame, {
     onSuccess: (game) => {
       queryClient.setQueryData(['game'], game);
+      queryClient.invalidateQueries(['stats']);
     },
   });
 };
