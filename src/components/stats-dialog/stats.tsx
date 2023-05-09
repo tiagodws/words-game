@@ -13,7 +13,7 @@ export const Stats: FC = () => {
   const maxOccurrences = [...winOccurrences, stats.losses.total].sort(
     (a, b) => b - a
   )[0];
-  const winRate = Math.round((stats.wins.total / stats.totalGames) * 100);
+  const winRate = stats.totalGames ? Math.round((stats.wins.total / stats.totalGames) * 100) : 0;
 
   return (
     <Grid container spacing={4}>
