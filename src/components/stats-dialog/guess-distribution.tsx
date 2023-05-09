@@ -1,11 +1,11 @@
-import { Divider, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStats } from '../../hooks/game/api/use-stats';
+import { Text } from '../text';
 import { DistributionBar } from './distribution-bar';
-import { StatValue } from './stat-value';
 
-export const Stats: FC = () => {
+export const GuessDistribution: FC = () => {
   const { t } = useTranslation('stats');
   const { data: stats } = useStats();
   const winDistArray = Object.entries(stats.wins.distribution);
@@ -13,38 +13,11 @@ export const Stats: FC = () => {
   const maxOccurrences = [...winOccurrences, stats.losses.total].sort(
     (a, b) => b - a
   )[0];
-  const winRate = stats.totalGames ? Math.round((stats.wins.total / stats.totalGames) * 100) : 0;
 
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={6} sm={3}>
-            <StatValue label={t('totalGamesLabel')} value={stats.totalGames} />
-          </Grid>
-          <Grid item xs={6} sm={3}>
-            <StatValue
-              label={t('winRateLabel')}
-              value={t('winRateValue', { value: winRate })}
-            />
-          </Grid>
-          <Grid item xs={6} sm={3}>
-            <StatValue
-              label={t('currentStreakLabel')}
-              value={stats.wins.currentStreak}
-            />
-          </Grid>
-          <Grid item xs={6} sm={3}>
-            <StatValue
-              label={t('bestStreakLabel')}
-              value={stats.wins.maxStreak}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Divider />
+        <Text textAlign={'center'}>{t('guessDistributionTitle')}</Text>
       </Grid>
 
       <Grid item xs={12}>

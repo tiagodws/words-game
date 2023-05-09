@@ -39,6 +39,10 @@ export const theme = createTheme({
           border: '2px solid #AAAAAA',
           boxShadow: `8px 8px #333`,
         },
+        paperFullScreen: {
+          border: 'none',
+          boxShadow: `none`,
+        },
       },
     },
     MuiBackdrop: {
@@ -98,7 +102,7 @@ export const theme = createTheme({
       fontWeight: 'normal',
     },
     h2: {
-      fontSize: '2.4rem',
+      fontSize: '2.0rem',
       fontWeight: 'normal',
     },
     h3: {
@@ -111,6 +115,9 @@ export const theme = createTheme({
     },
     body1: {
       fontSize: '1rem',
+    },
+    body2: {
+      fontSize: '0.8rem',
     },
   },
 });

@@ -4,5 +4,6 @@
   "winRateLabel": "Win rate",
   "winRateValue": "{{value}}%",
   "currentStreakLabel": "Current streak",
-  "bestStreakLabel": "Best streak"
+  "bestStreakLabel": "Best streak",
+  "guessDistributionTitle": "Guess distribution"
 }

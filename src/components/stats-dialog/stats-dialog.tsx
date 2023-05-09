@@ -1,7 +1,9 @@
+import { Divider, Grid } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog } from '../dialog';
-import { Stats } from './stats';
+import { GuessDistribution } from './guess-distribution';
+import { StatsSummary } from './stats-summary';
 
 type StatsDialogProps = {
   isOpen: boolean;
@@ -14,7 +16,19 @@ export const StatsDialog: FC<StatsDialogProps> = (props) => {
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title={t('statsTitle')}>
-      <Stats />
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <StatsSummary />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+
+        <Grid item xs={12}>
+          <GuessDistribution />
+        </Grid>
+      </Grid>
     </Dialog>
   );
 };
