@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Grid } from '@mui/material';
+import { Box, Button, Chip, Divider, Grid } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Game, GameState } from '../../api/game';
@@ -7,6 +7,8 @@ import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { CharCell } from '../char-cell';
 import { Dialog } from '../dialog';
 import { Link } from '../link';
+import { GuessDistribution } from '../stats-dialog/guess-distribution';
+import { StatsSummary } from '../stats-dialog/stats-summary';
 import { Text } from '../text';
 import { useWordData } from './use-word-data';
 
@@ -52,17 +54,14 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
         }}
       >
         <Grid item xs={12}>
-          <Grid
-            container
-            direction="column"
-            spacing={2}
-            sx={{ flexWrap: 'nowrap' }}
-          >
-            <Grid item>
-              <Text textAlign="center">{t('theWordWas')}</Text>
+          <Grid container direction="row" spacing={2}>
+            <Grid item xs={12}>
+              <Text textAlign="center" variant="body2">
+                {t('theWordWas')}
+              </Text>
             </Grid>
 
-            <Grid item>
+            <Grid item xs={12}>
               <Box
                 sx={{
                   display: 'flex',
@@ -71,59 +70,78 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
                 }}
               >
                 {dialogGame.word?.chars.map((char, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      mx: '2px',
-                      height: 36,
-                      width: 36,
-                    }}
-                  >
+                  <Box key={i} sx={{ mx: '2px' }}>
                     <CharCell
+                      width={32}
                       value={char.displayValue}
                       state={dialogGame.charStates[char.value]}
-                      fontSize={16}
                     />
                   </Box>
                 ))}
               </Box>
             </Grid>
+
+            <Grid item xs={12}>
+              {data?.meaning && (
+                <Text textAlign="center" component="div">
+                  {data?.meaning?.partOfSpeech && (
+                    <Chip
+                      label={data?.meaning?.partOfSpeech}
+                      size="small"
+                      sx={{ mr: 1 }}
+                    />
+                  )}
+
+                  {t('wordDefinition', {
+                    definition: data.meaning?.definition,
+                  })}
+                </Text>
+              )}
+
+              {data?.source && (
+                <Box sx={{ mt: 1 }}>
+                  <Text
+                    textAlign="center"
+                    variant="caption"
+                    color="secondary"
+                    fontSize="0.5rem"
+                  >
+                    <Trans
+                      i18nKey="result:wordDefinitionSource"
+                      values={{ source: data.source }}
+                      components={[<Link href={data.source} target="_blank" />]}
+                    />
+                  </Text>
+                </Box>
+              )}
+            </Grid>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
-          {data?.meaning && (
-            <Text textAlign="center" component="div">
-              {data?.meaning?.partOfSpeech && (
-                <Chip
-                  label={data?.meaning?.partOfSpeech}
-                  size="small"
-                  sx={{ mr: 1 }}
-                />
-              )}
+          <Divider />
+        </Grid>
 
-              {t('wordDefinition', {
-                definition: data.meaning?.definition,
-              })}
-            </Text>
-          )}
+        <Grid item xs={12}>
+          <StatsSummary />
+        </Grid>
 
-          {data?.source && (
-            <Box sx={{ mt: 1 }}>
-              <Text
-                textAlign="center"
-                variant="caption"
-                color="secondary"
-                fontSize="0.5rem"
-              >
-                <Trans
-                  i18nKey="result:wordDefinitionSource"
-                  values={{ source: data.source }}
-                  components={[<Link href={data.source} target="_blank" />]}
-                />
-              </Text>
-            </Box>
-          )}
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+
+        <Grid item xs={12}>
+          <GuessDistribution
+            highlightValue={
+              game.state === GameState.Lost
+                ? 'X'
+                : game.submittedWords.length.toString()
+            }
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Divider />
         </Grid>
 
         <Grid item xs={12}>

@@ -5,7 +5,12 @@ import { useStats } from '../../hooks/game/api/use-stats';
 import { Text } from '../text';
 import { DistributionBar } from './distribution-bar';
 
-export const GuessDistribution: FC = () => {
+type GuessDistributionProps = {
+  highlightValue?: string;
+};
+
+export const GuessDistribution: FC<GuessDistributionProps> = (props) => {
+  const { highlightValue } = props;
   const { t } = useTranslation('stats');
   const { data: stats } = useStats();
   const winDistArray = Object.entries(stats.wins.distribution);
@@ -17,7 +22,9 @@ export const GuessDistribution: FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Text textAlign={'center'}>{t('guessDistributionTitle')}</Text>
+        <Text textAlign={'center'} variant="body2">
+          {t('guessDistributionTitle')}
+        </Text>
       </Grid>
 
       <Grid item xs={12}>
@@ -28,6 +35,7 @@ export const GuessDistribution: FC = () => {
                 value={value}
                 occurrences={occurrences}
                 total={maxOccurrences}
+                highlight={value === highlightValue}
               />
             </Grid>
           ))}
@@ -37,6 +45,7 @@ export const GuessDistribution: FC = () => {
               value={'X'}
               occurrences={stats.losses.total}
               total={maxOccurrences}
+              highlight={'X' === highlightValue}
             />
           </Grid>
         </Grid>

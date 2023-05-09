@@ -106,7 +106,7 @@ export const theme = createTheme({
       fontWeight: 'normal',
     },
     h3: {
-      fontSize: '1.2rem',
+      fontSize: '1.6rem',
       fontWeight: 'bold',
     },
     h4: {

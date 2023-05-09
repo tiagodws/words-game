@@ -81,7 +81,7 @@ export const InfoDialog: FC<InfoDialogProps> = (props) => {
                   </Box>
                 </Grid>
 
-                <Grid item xs={12} component="ul">
+                <Grid item xs={12} component="ul" sx={{ listStyle: 'none' }}>
                   <Text variant="body2" component="li">
                     <Trans
                       i18nKey="about:correctExample"

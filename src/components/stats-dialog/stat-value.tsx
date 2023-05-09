@@ -13,7 +13,7 @@ export const StatValue: FC<StatValueProps> = (props) => {
   return (
     <Grid container sx={{ justifyContent: 'center', alignItems: 'center' }}>
       <Grid item xs={12}>
-        <Text variant="h2" textAlign={'center'}>
+        <Text variant="h3" textAlign={'center'}>
           {value}
         </Text>
       </Grid>

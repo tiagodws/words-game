@@ -67,10 +67,10 @@ export const Dialog: FC<DialogProps> = (props) => {
       <DialogContent sx={{ padding: 0 }}>
         <Box
           sx={{
-            p: 4,
+            px: 3,
+            py: 3,
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             height: '100%',
           }}
         >
