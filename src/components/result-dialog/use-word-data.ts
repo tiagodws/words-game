@@ -33,6 +33,7 @@ type WordData = {
 
 type UseWordData = {
   data?: WordData;
+  isPaused: boolean;
 };
 
 const transformData = (data: ApiResponse): WordData => {
@@ -57,13 +58,19 @@ const transformData = (data: ApiResponse): WordData => {
 };
 
 export const useWordData = (wordString?: string): UseWordData => {
-  const { data: apiData } = useQuery(
+  const { data: apiData, isPaused } = useQuery(
     ['word-data', wordString],
     () =>
       fetch(
         `https://api.dictionaryapi.dev/api/v2/entries/en/${wordString}`
       ).then((res) => res.json()),
-    { enabled: !!wordString }
+    {
+      enabled: !!wordString,
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: true,
+    }
   );
   const [data, setData] = useState<WordData>();
 
@@ -75,5 +82,6 @@ export const useWordData = (wordString?: string): UseWordData => {
 
   return {
     data,
+    isPaused,
   };
 };

@@ -12,5 +12,6 @@ const initialData: Game = {
 export const useCurrentGame = () => {
   return useQuery(['game'], getCurrentGame, {
     initialData,
+    networkMode: 'always',
   });
 };

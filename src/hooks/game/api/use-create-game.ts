@@ -9,5 +9,6 @@ export const useCreateGame = () => {
       queryClient.setQueryData(['game'], game);
       queryClient.invalidateQueries(['stats']);
     },
+    networkMode: 'always',
   });
 };

@@ -27,5 +27,6 @@ const initialData: Stats = {
 export const useStats = () => {
   return useQuery(['stats'], getStats, {
     initialData,
+    networkMode: 'always',
   });
 };

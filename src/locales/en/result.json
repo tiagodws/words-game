@@ -4,5 +4,6 @@
   "theWordWas": "The word was",
   "tryAgain": "Try again",
   "wordDefinition": "{{definition}}",
-  "wordDefinitionSource": "Source: <0>{{source}}</0>"
+  "wordDefinitionSource": "Source: <0>{{source}}</0>",
+  "wordDefinitionOfflineAlert": "Go online to see the word's definition."
 }

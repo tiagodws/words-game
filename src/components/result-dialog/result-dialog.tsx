@@ -1,16 +1,15 @@
-import { Box, Button, Chip, Divider, Grid } from '@mui/material';
+import { Box, Button, Divider, Grid } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Game, GameState } from '../../api/game';
 import { useCreateGame } from '../../hooks/game/api/use-create-game';
 import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { CharCell } from '../char-cell';
 import { Dialog } from '../dialog';
-import { Link } from '../link';
 import { GuessDistribution } from '../stats-dialog/guess-distribution';
 import { StatsSummary } from '../stats-dialog/stats-summary';
 import { Text } from '../text';
-import { useWordData } from './use-word-data';
+import { WordMeaning } from './word-meaning';
 
 type ResultDialogProps = {
   isOpen: boolean;
@@ -22,7 +21,6 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
   const { data: game } = useCurrentGame();
   const { mutate: createGame } = useCreateGame();
   const [dialogGame, setDialogGame] = useState<Game>(game);
-  const { data } = useWordData(dialogGame.word.stringValue);
   const [isVisible, setIsVisible] = useState(isOpen);
 
   useEffect(() => {
@@ -82,38 +80,7 @@ export const ResultDialog: FC<ResultDialogProps> = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              {data?.meaning && (
-                <Text textAlign="center" component="div">
-                  {data?.meaning?.partOfSpeech && (
-                    <Chip
-                      label={data?.meaning?.partOfSpeech}
-                      size="small"
-                      sx={{ mr: 1 }}
-                    />
-                  )}
-
-                  {t('wordDefinition', {
-                    definition: data.meaning?.definition,
-                  })}
-                </Text>
-              )}
-
-              {data?.source && (
-                <Box sx={{ mt: 1 }}>
-                  <Text
-                    textAlign="center"
-                    variant="caption"
-                    color="secondary"
-                    fontSize="0.5rem"
-                  >
-                    <Trans
-                      i18nKey="result:wordDefinitionSource"
-                      values={{ source: data.source }}
-                      components={[<Link href={data.source} target="_blank" />]}
-                    />
-                  </Text>
-                </Box>
-              )}
+              <WordMeaning word={dialogGame.word.stringValue} />
             </Grid>
           </Grid>
         </Grid>

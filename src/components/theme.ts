@@ -30,6 +30,8 @@ export const theme = createTheme({
         root: {
           boxShadow: `3px 3px #333333`,
           borderRadius: '8px',
+          justifyContent: 'center',
+          alignItems: 'center',
         },
       },
     },
