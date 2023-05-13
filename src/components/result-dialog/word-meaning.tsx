@@ -15,7 +15,7 @@ export const WordMeaning: FC<WordMeaningProps> = (props) => {
   const { t } = useTranslation('result');
   const { data, isPaused } = useWordData(word);
 
-  return !isPaused ? (
+  return isPaused ? (
     <Alert color="info" icon={<WifiOffIcon fontSize="small" />}>
       {t('wordDefinitionOfflineAlert')}
     </Alert>

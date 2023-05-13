@@ -30,6 +30,7 @@ export const Dialog: FC<DialogProps> = (props) => {
       onClose={onClose}
       TransitionProps={{ onExited: onInvisible }}
       fullScreen={fullScreen}
+      PaperProps={{ elevation: 8 }}
     >
       {!!title && (
         <DialogTitle>

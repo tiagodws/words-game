@@ -1,6 +1,6 @@
 import { Keyframes, keyframes } from '@emotion/react';
-import { Theme, Zoom, useTheme } from '@mui/material';
-import { Box, darken, lighten } from '@mui/system';
+import { Box, Theme, Zoom, useTheme } from '@mui/material';
+import { darken, lighten } from '@mui/system';
 import { CSSProperties, FC, useEffect, useLayoutEffect, useState } from 'react';
 import { Text } from '../text';
 
@@ -126,7 +126,7 @@ export const CharCell: FC<CharCellProps> = (props) => {
 
   return (
     <Box
-      sx={(theme) => ({
+      sx={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -142,9 +142,9 @@ export const CharCell: FC<CharCellProps> = (props) => {
         cursor: onClick ? 'pointer' : 'default',
         animation: animation ? `${animation} 400ms` : undefined,
         transitionDelay: `${animationDelayMultiplier * 100}ms`,
-        boxShadow: `2px 2px ${theme.palette.common.black}`,
         WebkitTapHighlightColor: 'transparent',
-      })}
+        boxShadow: 1,
+      }}
       onClick={onClick}
       onAnimationEnd={() => setAnimation(undefined)}
     >

@@ -66,10 +66,10 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
         width: '100%',
         height: '100%',
         userSelect: 'none',
-        boxShadow: `2px 2px ${theme.palette.common.black}`,
         '&:hover': {
           bgcolor: darken(bgcolor, 0.2),
         },
+        boxShadow: 1,
       })}
     >
       {icon ? (

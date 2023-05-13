@@ -1,11 +1,20 @@
 import { createTheme } from '@mui/material/styles';
+import { palette } from './palette';
+import { shadows } from './shadows';
+import { typography } from './typography';
 
 export const theme = createTheme({
+  palette,
+  typography,
+  shadows,
   shape: {
     borderRadius: 16,
   },
   components: {
     MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
       styleOverrides: {
         root: {
           textTransform: 'none',
@@ -28,7 +37,6 @@ export const theme = createTheme({
     MuiAlert: {
       styleOverrides: {
         root: {
-          boxShadow: `3px 3px #333333`,
           borderRadius: '8px',
           justifyContent: 'center',
           alignItems: 'center',
@@ -39,7 +47,6 @@ export const theme = createTheme({
       styleOverrides: {
         paper: {
           border: '2px solid #AAAAAA',
-          boxShadow: `8px 8px #333`,
         },
         paperFullScreen: {
           border: 'none',
@@ -50,7 +57,7 @@ export const theme = createTheme({
     MuiBackdrop: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(51, 51, 51, 0.9)',
+          backgroundColor: 'rgba(51, 51, 51, 0.95)',
         },
       },
     },
@@ -62,64 +69,6 @@ export const theme = createTheme({
           marginBottom: '0.5em',
         },
       },
-    },
-  },
-  palette: {
-    text: {
-      primary: '#F5F5F5',
-      secondary: '#CCCCCC',
-      disabled: '#CCCCCC88',
-    },
-    primary: {
-      main: '#252422',
-    },
-    secondary: {
-      main: '#dddddd',
-    },
-    success: {
-      main: '#43aa8b',
-    },
-    warning: {
-      main: '#f4a261',
-    },
-    info: {
-      main: '#25557e',
-    },
-    background: {
-      default: '#767676',
-      paper: '#767676',
-    },
-    common: {
-      black: '#333333',
-      white: '#F5F5F5',
-    },
-    divider: '#CCCCCC88',
-  },
-  typography: {
-    fontFamily: 'Azeret Mono',
-    fontWeightRegular: 400,
-    fontWeightBold: 600,
-    h1: {
-      fontSize: '4rem',
-      fontWeight: 'normal',
-    },
-    h2: {
-      fontSize: '2.0rem',
-      fontWeight: 'normal',
-    },
-    h3: {
-      fontSize: '1.6rem',
-      fontWeight: 'bold',
-    },
-    h4: {
-      fontSize: '1rem',
-      fontWeight: 'bold',
-    },
-    body1: {
-      fontSize: '1rem',
-    },
-    body2: {
-      fontSize: '0.8rem',
     },
   },
 });

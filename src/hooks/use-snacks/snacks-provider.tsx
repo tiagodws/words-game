@@ -31,7 +31,9 @@ export const SnacksProvider: FC<SnacksProviderProps> = ({ children }) => {
         autoHideDuration={2000}
         onClose={() => setIsVisible(false)}
       >
-        <Alert severity={current?.variant}>{current?.text}</Alert>
+        <Alert elevation={4} severity={current?.variant}>
+          {current?.text}
+        </Alert>
       </Snackbar>
       {children}
     </SnacksContext.Provider>
