@@ -49,7 +49,7 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
   return (
     <Button
       onClick={onClick}
-      sx={(theme) => ({
+      sx={{
         p: 0,
         minWidth: 0,
         minHeight: 0,
@@ -70,7 +70,7 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
           bgcolor: darken(bgcolor, 0.2),
         },
         boxShadow: 1,
-      })}
+      }}
     >
       {icon ? (
         icon
