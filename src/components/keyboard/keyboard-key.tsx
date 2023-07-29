@@ -1,5 +1,5 @@
 import { alpha, Button, darken, lighten, Theme, useTheme } from '@mui/material';
-import { CSSProperties, FC, ReactNode } from 'react';
+import { CSSProperties, FC, MouseEvent, ReactNode, TouchEvent } from 'react';
 import { Text } from '../text';
 
 export type KeyState = 'default' | 'correct' | 'incorrect' | 'hint';
@@ -9,7 +9,12 @@ export type KeyboardKeyProps = {
   state?: KeyState;
   icon?: ReactNode;
   fontSize?: CSSProperties['fontSize'];
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
+  onMouseDown?: (event: MouseEvent<HTMLElement>) => void;
+  onMouseUp?: (event: MouseEvent<HTMLElement>) => void;
+  onMouseLeave?: (event: MouseEvent<HTMLElement>) => void;
+  onTouchStart?: (event: TouchEvent<HTMLElement>) => void;
+  onTouchEnd?: (event: TouchEvent<HTMLElement>) => void;
 };
 
 const bgColorMap: Record<KeyState, (theme: Theme) => string> = {
@@ -43,12 +48,28 @@ const useStateColors = (state: KeyState) => {
 };
 
 export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
-  const { label, state = 'default', icon, fontSize, onClick } = props;
+  const {
+    label,
+    state = 'default',
+    icon,
+    fontSize,
+    onClick,
+    onMouseDown,
+    onMouseUp,
+    onMouseLeave,
+    onTouchStart,
+    onTouchEnd,
+  } = props;
   const { bgcolor, borderColor, color } = useStateColors(state);
 
   return (
     <Button
       onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       sx={{
         p: 0,
         minWidth: 0,

@@ -44,11 +44,7 @@ export const getEmptyIndex = (
     return emptyIndexes.first;
   }
 
-  if (currentIndex === values.length - 1) {
-    return;
-  }
-
-  return currentIndex + 1;
+  return currentIndex;
 };
 
 export const getPreviousIndex = (

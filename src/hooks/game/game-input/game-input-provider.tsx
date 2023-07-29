@@ -225,6 +225,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
     () => ({
       type,
       erase,
+      clear,
       submit,
       focusEmptyIndex,
       focusIndex,
@@ -234,6 +235,7 @@ export const GameInputProvider: FC<GameInputProviderProps> = (props) => {
     [
       type,
       erase,
+      clear,
       submit,
       focusEmptyIndex,
       focusIndex,

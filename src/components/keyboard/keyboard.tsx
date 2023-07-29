@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { FC } from 'react';
-import { useMeasure } from 'react-use';
+import { useLongPress, useMeasure } from 'react-use';
 import { CharValue } from '../../api/game';
 import { useCurrentGame } from '../../hooks/game/api/use-current-game';
 import { useGameInputActions } from '../../hooks/game/game-input';
@@ -48,6 +48,11 @@ export const Keyboard: FC = () => {
   const inputActions = useGameInputActions();
   const [keyboardContainer, { width: keyboardWidth, height: keyboardHeight }] =
     useMeasure();
+
+  const longPressEvent = useLongPress(() => inputActions.clear(), {
+    isPreventDefault: true,
+    delay: 600,
+  });
 
   const keyboardKeyHeight = Math.min(keyboardHeight / rows, 64);
   const keyboardKeyWidth = Math.min(keyboardWidth / cols, 32);
@@ -103,6 +108,7 @@ export const Keyboard: FC = () => {
       <Box />
       <KeyboardCell
         label={'<'}
+        {...longPressEvent}
         onClick={() => inputActions.erase(true)}
         size={defaultKeySize}
         fontSize={keyboardFontSize}

@@ -20,6 +20,7 @@ export const GameInputContext = React.createContext<GameInputContextData>({
 export type GameInputActionsContextData = {
   type: (value: string) => void;
   erase: (goBack?: boolean) => void;
+  clear: () => void;
   submit: () => void;
   focusIndex: (index: number) => void;
   focusEmptyIndex: () => void;
@@ -31,6 +32,7 @@ export const GameInputActionsContext =
   React.createContext<GameInputActionsContextData>({
     type: () => null,
     erase: () => null,
+    clear: () => null,
     submit: () => null,
     focusIndex: () => null,
     focusEmptyIndex: () => null,
