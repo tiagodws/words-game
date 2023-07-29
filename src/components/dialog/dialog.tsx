@@ -6,6 +6,7 @@ import {
   Grid,
   IconButton,
   Dialog as MuiDialog,
+  darken,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -33,7 +34,9 @@ export const Dialog: FC<DialogProps> = (props) => {
       PaperProps={{ elevation: 8 }}
     >
       {!!title && (
-        <DialogTitle>
+        <DialogTitle
+          sx={{ bgcolor: darken(theme.palette.background.default, 0.1) }}
+        >
           <Grid
             container
             spacing={1}
@@ -49,7 +52,11 @@ export const Dialog: FC<DialogProps> = (props) => {
             <Grid
               item
               xs={10}
-              sx={{ display: 'flex', justifyContent: 'center' }}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                textAlign: 'center',
+              }}
             >
               {title}
             </Grid>
@@ -73,6 +80,7 @@ export const Dialog: FC<DialogProps> = (props) => {
             display: 'flex',
             alignItems: 'flex-start',
             height: '100%',
+            overflow: 'auto',
           }}
         >
           {children}
