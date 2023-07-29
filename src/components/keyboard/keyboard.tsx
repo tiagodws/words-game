@@ -50,7 +50,7 @@ export const Keyboard: FC = () => {
     useMeasure();
 
   const longPressEvent = useLongPress(() => inputActions.clear(), {
-    isPreventDefault: true,
+    isPreventDefault: false,
     delay: 600,
   });
 
