@@ -1,4 +1,4 @@
-import { alpha, Button, darken, lighten, Theme, useTheme } from '@mui/material';
+import { alpha, Box, darken, lighten, Theme, useTheme } from '@mui/material';
 import { CSSProperties, FC, MouseEvent, ReactNode, TouchEvent } from 'react';
 import { Text } from '../text';
 
@@ -63,7 +63,7 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
   const { bgcolor, borderColor, color } = useStateColors(state);
 
   return (
-    <Button
+    <Box
       onClick={onClick}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
@@ -100,6 +100,6 @@ export const KeyboardKey: FC<KeyboardKeyProps> = (props) => {
           {label?.toUpperCase()}
         </Text>
       )}
-    </Button>
+    </Box>
   );
 };
